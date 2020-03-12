@@ -78,7 +78,7 @@ def sac_dm(filename, N, threshold):
 
 	#plot SAC-DM:
 	#print data
-	return sacdm
+	return sacdm, data
 
 	
 
@@ -93,8 +93,8 @@ N = int(sys.argv[3])
 file = sys.argv[1]
 file2 = sys.argv[2]
 
-sac = sac_dm(file, N, threshold)
-sac2 = sac_dm(file2, N, threshold)
+sac, sinal = sac_dm(file, N, threshold)
+sac2, sinal2 = sac_dm(file2, N, threshold)
 
 fig3 = plt.figure()
 
@@ -107,6 +107,19 @@ ax3.plot(sac2,color='g', label='Without queen')
 
 ax3.legend(['Hive with a queen', 'Hive without a queen'], loc='upper right')
 #ax3.legend(['y = MACCD2', 'y = Outro'], loc='upper left')
+
+
+
+
+fig = plt.figure()
+
+plt.ylabel('dB') 
+plt.xlabel('Time (sec.)')
+ax = fig.add_subplot(111)
+ax.set_title("Sound")   
+ax.plot(sinal,color='r', label='With queen')
+ax.plot(sinal2,color='g', label='Without queen')
+ax.legend(['Hive with a queen', 'Hive without a queen'], loc='upper right')
 
 
 
