@@ -1,0 +1,21 @@
+{
+    "project_name":       "bootloader",
+    "project_path":       "/home/tassany/esp/esp-idf/components/bootloader/subproject",
+    "build_dir":          "/home/tassany/esp/hello_world/build/bootloader",
+    "config_file":        "/home/tassany/esp/hello_world/sdkconfig",
+    "config_defaults":    "",
+    "app_elf":            "bootloader.elf",
+    "app_bin":            "bootloader.bin",
+    "git_revision":       "v4.4.4-148-g4c2afac355",
+    "target":             "esp32",
+    "rev":                "0",
+    "phy_data_partition": "",
+    "monitor_baud" :      "115200",
+    "monitor_toolprefix": "xtensa-esp32-elf-",
+    "config_environment" : {
+        "COMPONENT_KCONFIGS" : "/home/tassany/esp/esp-idf/components/efuse/Kconfig;/home/tassany/esp/esp-idf/components/esp32/Kconfig;/home/tassany/esp/esp-idf/components/esp_common/Kconfig;/home/tassany/esp/esp-idf/components/esp_hw_support/Kconfig;/home/tassany/esp/esp-idf/components/esp_system/Kconfig;/home/tassany/esp/esp-idf/components/freertos/Kconfig;/home/tassany/esp/esp-idf/components/hal/Kconfig;/home/tassany/esp/esp-idf/components/log/Kconfig;/home/tassany/esp/esp-idf/components/newlib/Kconfig;/home/tassany/esp/esp-idf/components/spi_flash/Kconfig",
+        "COMPONENT_KCONFIGS_PROJBUILD" : "/home/tassany/esp/esp-idf/components/bootloader/Kconfig.projbuild;/home/tassany/esp/esp-idf/components/esp_rom/Kconfig.projbuild;/home/tassany/esp/esp-idf/components/esptool_py/Kconfig.projbuild;/home/tassany/esp/esp-idf/components/partition_table/Kconfig.projbuild"
+    },
+    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp32", "esp_common", "esp_hw_support", "esp_rom", "esp_system", "esptool_py", "freertos", "hal", "log", "main", "micro-ecc", "newlib", "partition_table", "soc", "spi_flash", "xtensa", "" ],
+    "build_component_paths" : [ "/home/tassany/esp/esp-idf/components/bootloader", "/home/tassany/esp/esp-idf/components/bootloader_support", "/home/tassany/esp/esp-idf/components/efuse", "/home/tassany/esp/esp-idf/components/esp32", "/home/tassany/esp/esp-idf/components/esp_common", "/home/tassany/esp/esp-idf/components/esp_hw_support", "/home/tassany/esp/esp-idf/components/esp_rom", "/home/tassany/esp/esp-idf/components/esp_system", "/home/tassany/esp/esp-idf/components/esptool_py", "/home/tassany/esp/esp-idf/components/freertos", "/home/tassany/esp/esp-idf/components/hal", "/home/tassany/esp/esp-idf/components/log", "/home/tassany/esp/esp-idf/components/bootloader/subproject/main", "/home/tassany/esp/esp-idf/components/bootloader/subproject/components/micro-ecc", "/home/tassany/esp/esp-idf/components/newlib", "/home/tassany/esp/esp-idf/components/partition_table", "/home/tassany/esp/esp-idf/components/soc", "/home/tassany/esp/esp-idf/components/spi_flash", "/home/tassany/esp/esp-idf/components/xtensa", "" ]
+}
