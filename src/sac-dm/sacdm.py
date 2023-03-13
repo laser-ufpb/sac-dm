@@ -29,6 +29,7 @@ import os.path as path
 # 	return data, Fs
 
 # Calcula SAC-DM medio total utilizando a funcao find_peaks do Python
+
 def sac_dm_avg(data):
 	peaks, _ = find_peaks(data)
 	
@@ -222,25 +223,25 @@ def test(file1, file2):
 
 #************************************
 
-	# corr = auto.autocorrelation(data, N)
-	# corr2 = auto.autocorrelation(data2, N)
+	corr = auto.autocorrelation(data, N)
+	corr2 = auto.autocorrelation(data2, N)
 
-	# util.show([corr, corr2], "Autocorrelation")
+	util.show([corr, corr2], "Autocorrelation")
 
-	# #le = lyapunov_e(data[0:10000], 1000)
-	# lr = chaos.lyapunov_e(data, N)
-	# lr2 = chaos.lyapunov_e(data2, N)
+	#le = lyapunov_e(data[0:10000], 1000)
+	lr = chaos.lyapunov_e(data, N)
+	lr2 = chaos.lyapunov_e(data2, N)
 
-	# #print (le.shape)
-	# print (lr.shape)
+	#print (le.shape)
+	print (lr.shape)
 
-	# util.show([lr, lr2], 'lyapunov coef')
+	util.show([lr, lr2], 'lyapunov coef')
 
-	# l = max(lr)
-	# l2 = max(lr2)
+	l = max(lr)
+	l2 = max(lr2)
 
-	# print ('lyapunov max coef: ', l)
-	# print ('lyapunov max coef: ', l2)
+	print ('lyapunov max coef: ', l)
+	print ('lyapunov max coef: ', l2)
 
 	plt.show()
 
