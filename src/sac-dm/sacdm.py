@@ -164,12 +164,12 @@ def test(file1, file2):
 	#data = mat['y1']
 	#data2 = mat2['y1']
 
-	d = np.genfromtxt(filename, delimiter='', names=['acc'])
-	d2 = np.genfromtxt(filename2, delimiter='', names=['acc'])
+	d = np.genfromtxt( filename, delimiter=';', names=['x','y','z','s','t'])
+	d2 = np.genfromtxt( filename2, delimiter=';', names=['x','y','z','s','t'])
 
 
-	data = d['acc'].reshape(-1)
-	data2 = d2['acc'].reshape(-1)
+	data = d['z'].reshape(-1)
+	data2 = d2['z'].reshape(-1)
 
 
 	data = data.flatten()
@@ -190,8 +190,8 @@ def test(file1, file2):
 	#wm2 = sac_wm(data2, N)
 	
 
-	util.show(sac, sac2, "SAC-DM")
-	util.show(am, am2, "SAC-AM")
+	util.show([sac, sac2], "SAC-DM")
+	util.show([am, am2], "SAC-AM")
 	#util.show(pm, pm2, "SAC-PM")
 	#util.show(wm, wm2, "SAC-WM")
 
@@ -204,7 +204,7 @@ def test(file1, file2):
 	corr = auto.autocorrelation(data, N)
 	corr2 = auto.autocorrelation(data2, N)
 
-	util.show(corr, corr2, "Autocorrelation")
+	util.show([corr, corr2], "Autocorrelation")
 
 	#le = lyapunov_e(data[0:10000], 1000)
 	lr = chaos.lyapunov_e(data, N)
@@ -213,7 +213,7 @@ def test(file1, file2):
 	#print (le.shape)
 	print (lr.shape)
 
-	util.show(lr, lr2, 'lyapunov coef')
+	util.show([lr, lr2], 'lyapunov coef')
 
 	l = max(lr)
 	l2 = max(lr2)
@@ -227,12 +227,14 @@ def test(file1, file2):
 
 
 #********* Main ********
-#filename = sys.argv[1]
-#filename2 = sys.argv[2]
+filename = sys.argv[1]
+filename2 = sys.argv[2]
 
-#test(filename, filename2)
+test(filename, filename2)
 
-	
+#comando para execucao
+#                  caminho completo até o arquivo1   caminho completo até o arquivo2    pontos por pico
+# python3 sacdm.py /home/nathan/Documentos/aviacao-nthnr/sac-dm/files/drone_signals/accel_80_F0.csv /home/nathan/Documentos/aviacao-nthnr/sac-dm/files/drone_signals/accel_80_F14.csv 2000
 
 
 
