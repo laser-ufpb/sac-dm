@@ -232,9 +232,6 @@ filename2 = sys.argv[2]
 
 test(filename, filename2)
 
-#comando para execucao
-#                  caminho completo até o arquivo1   caminho completo até o arquivo2    pontos por pico
-# python3 sacdm.py /home/nathan/Documentos/aviacao-nthnr/sac-dm/files/drone_signals/accel_80_F0.csv /home/nathan/Documentos/aviacao-nthnr/sac-dm/files/drone_signals/accel_80_F14.csv 2000
 
 
 
