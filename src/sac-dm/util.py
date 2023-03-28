@@ -22,17 +22,18 @@ def compress(a, n=3):
 
 def show(dataset, title):
 	print("dataset ", len(dataset))
-	fig = plt.figure()
+	fig, ax = plt.subplots()
 
 	plt.ylabel(title) 
 	plt.xlabel('Time (ms)')
-	ax = fig.add_subplot(111)
-
+	
 	ax.set_title(title)  
 	colors = list(mcolors.CSS4_COLORS) 
+
 	for i in range(len(dataset)):
 		print("sub dataset ", len(dataset[i]))
-		ax.plot(dataset[i],color=colors[i+10], label=("Data" ,i))
+		ax.plot(dataset[i],color=colors[i+10], label=("Data" ,i))	
+		
 	plt.legend(loc='upper left')
 
 
