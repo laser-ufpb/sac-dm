@@ -1,6 +1,0 @@
-{
-    "idf.adapterTargetName": "esp32",
-    "files.associations": {
-        "string.h": "c"
-    }
-}
