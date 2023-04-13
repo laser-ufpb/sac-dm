@@ -4,13 +4,15 @@ import random
 from typing import List, Optional
 from pydantic import BaseModel
 from uuid import uuid4
-from database import insert_data_device, insert_data_sac_dm, insert_data_accelerometer_register #, delete_data, update_data
+from database import insert_data_device, insert_data_sac_dm, insert_data_accelerometer_register, get_all_data, get_all_accelerometer_data, create_db #, delete_data, update_data
 import sqlite3
 import datetime
+import json
 
 app = FastAPI()
+create_db()
 
-origins =['http://127.0.0.1:5500']
+origins =['*']
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -67,24 +69,21 @@ def new_sacdm(sac_dm_data: sac_dm_data):
 # Route to insert a new data into the accelerometer_register table
 @app.post("/accelerometer")
 def new_accelerometer_data(accelerometer_data: accelerometer_data):
-    #accelerometer_data.device_code = "MAC345"
-    accelerometer_data.time_stamp = datetime.date.today()
-    accelerometer_data.ACx = round(random.uniform(100,200), 3)
-    accelerometer_data.ACy = round(random.uniform(100,200), 3)
-    accelerometer_data.ACz = round(random.uniform(100,200), 3)
-    
-    insert_data_accelerometer_register((accelerometer_data.device_code, accelerometer_data.time_stamp, accelerometer_data.ACx, accelerometer_data.ACy, accelerometer_data.ACz))
-
+    time_stamp = datetime.datetime.now()    
+    insert_data_accelerometer_register((accelerometer_data.device_code, time_stamp, accelerometer_data.ACx, accelerometer_data.ACy, accelerometer_data.ACz))
     return accelerometer_data
 
-
-
-#banco_dados: List[devices] = []
 #ids_cadastrados = []
 
-#@app.get("/dispositivos")
-#def mostrar_dispositivos():
-#    return banco_dados
+@app.get("/device")
+def mostrar_dispositivos():
+    banco_dados: List[devices] = get_all_data()
+    return banco_dados
+
+@app.get("/accelerometer")
+def mostrar_dispositivos():
+    registers: List[accelerometer_data] = get_all_accelerometer_data()
+    return registers
 
 #@app.delete("/dispositivos/{id}")
 #def deletar_dispositivo(id: str):
