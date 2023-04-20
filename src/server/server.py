@@ -23,7 +23,7 @@ app.add_middleware(
 
 # New class for the devices data
 class devices(BaseModel):
-    device_code: Optional[str]
+    device_code: str
     time_stamp: Optional[str]
 
 # New class for the sac_dm datas
@@ -51,9 +51,9 @@ def new_device(device: devices):
     #device.device_code = "MAC123"
     device.time_stamp = datetime.date.today()
     
-    insert_data_device((device.device_code, device.time_stamp))
+    res = insert_data_device((device.device_code, device.time_stamp))
 
-    return device
+    return res.response
 
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")

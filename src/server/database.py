@@ -1,6 +1,8 @@
 import sqlite3
 import tempfile
 import os
+from flask import Response
+
 tmpdir = tempfile.gettempdir()
 path_db = os.path.join(tmpdir, 'tables.db')
 
@@ -11,7 +13,7 @@ def create_db():
     # Create table device
     c.execute("""CREATE TABLE IF NOT EXISTS device (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        device_code text NOT NULL,
+        device_code text NOT NULL UNIQUE,
         date_time text
 
     )""")
@@ -41,12 +43,28 @@ def create_db():
           
 # Function to insert data into device table
 def insert_data_device(data):
-    conn = sqlite3.connect(path_db)
-    c = conn.cursor()
-    c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
-    conn.commit()
-    conn.close()
-    print("Dados inserido com sucesso")
+    # conn = sqlite3.connect(path_db)
+    try:
+        with sqlite3.connect(path_db) as conn:
+            c = conn.cursor()
+            c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
+            conn.commit()
+            return Response(status=200, response="Dados inserido com sucesso")
+    except Exception as e:
+        return Response(status=500, response=str(e))
+        
+
+# Function to insert data into device table
+# def insert_data_device(data):
+#     # conn = sqlite3.connect(path_db)
+#     try:
+#         with sqlite3.connect(path_db) as conn:
+#             c = conn.cursor()
+#             c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
+#             conn.commit()
+#             print("Dados inserido com sucesso")
+#     except Exception as e:
+#         print("Erro ao inserir dados: ", str(e))
 
 # Function to insert data into sac_dm table
 def insert_data_sac_dm(data):
