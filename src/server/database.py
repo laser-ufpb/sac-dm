@@ -43,48 +43,40 @@ def create_db():
           
 # Function to insert data into device table
 def insert_data_device(data):
-    # conn = sqlite3.connect(path_db)
     try:
         with sqlite3.connect(path_db) as conn:
             c = conn.cursor()
             c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
             conn.commit()
-            return Response(status=200, response="Dados inserido com sucesso")
+            return Response(status=200, response="Dados inserido com sucesso!")
     except Exception as e:
         return Response(status=500, response=str(e))
         
-
-# Function to insert data into device table
-# def insert_data_device(data):
-#     # conn = sqlite3.connect(path_db)
-#     try:
-#         with sqlite3.connect(path_db) as conn:
-#             c = conn.cursor()
-#             c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
-#             conn.commit()
-#             print("Dados inserido com sucesso")
-#     except Exception as e:
-#         print("Erro ao inserir dados: ", str(e))
-
 # Function to insert data into sac_dm table
 def insert_data_sac_dm(data):
-    conn = sqlite3.connect(path_db)
-    c = conn.cursor()
-    c.execute("INSERT INTO sac_dm (value, device_code, date_time) VALUES (?, ?, ?)", data)
-    print("Dados inserido com sucesso")
-    conn.commit()
-    conn.close()
+    try:
+        with sqlite3.connect(path_db) as conn:
+            c = conn.cursor()
+            c.execute("INSERT INTO sac_dm (value, device_code, date_time) VALUES (?, ?, ?)", data)
+            print("Dados inserido com sucesso")
+            conn.commit()
+            return Response(status=200, response="Dados inserido com sucesso!")
+    except Exception as e:
+        return Response(status=500, response=str(e))
 
 # Function to insert data into accelerometer_register table
 def insert_data_accelerometer_register(data):
-    conn = sqlite3.connect(path_db)
-    c = conn.cursor()
-    c.execute("INSERT INTO accelerometer_register (device_code, date_time, ACx, ACy, ACz) VALUES (?, ?, ?, ?, ?)", data)
-    print("Dados inserido com sucesso")
-    conn.commit()
-    conn.close()
+    try:
+        with sqlite3.connect(path_db) as conn:
+            c = conn.cursor()
+            c.execute("INSERT INTO accelerometer_register (device_code, date_time, ACx, ACy, ACz) VALUES (?, ?, ?, ?, ?)", data)
+            print("Dados inserido com sucesso")
+            conn.commit()
+            return Response(status=200, response="Dados inseridos com suesso!")
+    except Exception as e:
+        return Response(status=500, response=str(e))
 
-# Define uma função para recuperar todos os dados da tabela device
+# Function to get all data from device table
 def get_all_data():
     conn = sqlite3.connect(path_db)
     c = conn.cursor()
@@ -93,6 +85,7 @@ def get_all_data():
     conn.close()
     return data
 
+# Function to get all data from accelerometer_data table
 def get_all_accelerometer_data():
     conn = sqlite3.connect(path_db)
     c = conn.cursor()
@@ -100,19 +93,3 @@ def get_all_accelerometer_data():
     data = c.fetchall()
     conn.close()
     return data
-
-# Apaga uma linha da tabela de acordo com o seu id
-#def delete_data(id):
-#    with sqlite3.connect('dispositivos.db') as conn:
-#        c = conn.cursor()
-#    c.execute("DELETE FROM dispositivos WHERE id=?", (id,))
-#    conn.commit()
-
-#def update_data(id, new_dens):
-#    conn = sqlite3.connect('dispositivos.db')
-#    c = conn.cursor()
-#    c.execute("""UPDATE dispositivos SET densidade_maxima = ? WHERE id = ?""", (new_dens, id))
-#    conn.commit()
-#    conn.close()
-          
-
