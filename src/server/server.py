@@ -3,7 +3,7 @@ import datetime
 import json
 import random
 from classes import Devices, Sac_dm_data, Accelerometer_data
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from pydantic import BaseModel
@@ -31,7 +31,7 @@ def show_devices():
 # Route to insert a new data into the devices table
 @app.post("/device")
 def new_device(device: Devices):
-    device.time_stamp = datetime.date.today()
+    device.time_stamp = datetime.datetime.now()
     res = insert_data_device((device.device_code, device.time_stamp))
 
     return res.response
@@ -40,18 +40,19 @@ def new_device(device: Devices):
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")
 def new_sacdm(sac_dm_data: Sac_dm_data):
-    sac_dm_data.time_stamp = datetime.date.today()
-    sac_dm_data.value = random.randint(1, 8)
-    res = insert_data_sac_dm((sac_dm_data.value, sac_dm_data.device_code, sac_dm_data.time_stamp))
-
-    return res.response
+    sac_dm_data.time_stamp = datetime.datetime.now()
+    if (str(sac_dm_data.value).strip()):
+        res = insert_data_sac_dm((sac_dm_data.value, sac_dm_data.device_code, sac_dm_data.time_stamp))
+        return res.response
 
 
 # Route to insert a new data into the accelerometer_register table
 @app.post("/accelerometer")
 def new_accelerometer_data(accelerometer_data: Accelerometer_data):
-    res = insert_data_accelerometer_register((accelerometer_data.device_code, accelerometer_data.time_stamp, accelerometer_data.ACx, accelerometer_data.ACy, accelerometer_data.ACz))
-    return res.response
+    if(str(accelerometer_data.ACx).strip() and str(accelerometer_data.ACy).strip() and str(accelerometer_data.ACz).strip()):
+        res = insert_data_accelerometer_register((accelerometer_data.device_code, accelerometer_data.time_stamp, accelerometer_data.ACx, accelerometer_data.ACy, accelerometer_data.ACz))
+        return res.response
+    return Response(status=500, response="Dados inválidos")
 
 
 @app.get("/device")
