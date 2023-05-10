@@ -24,6 +24,11 @@ def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
 
 
+def store_variable_in_file(variable, filename):
+    with open(filename, 'w') as file:
+        file.write(str(variable))
+
+
 while 1:
 
     if len(sensor_buffer) == 10:
@@ -42,6 +47,8 @@ client.on_connect = on_connect
 client.on_message = on_message
 
 client.connect("broker.hivemq.com", 1883, 60)
+file_name = 'output.txt'
+store_variable_in_file(sensor_buffer, file_name)
 ret = client.publish("/aviacao", sensor_buffer)
 print(ret.text)
 client.loop_forever()
