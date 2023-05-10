@@ -84,6 +84,7 @@ log = open("log.txt","a")
 temp = open("temp.txt","a")
 
 start = time.time()
+esp_serial = str(ser.readline())
 
 while True:
 	
@@ -98,12 +99,15 @@ while True:
 			x=0
 			#asyncio.run(send_http(sensor_buffer))
 			#t_http = Thread(target=send_http, args=(sensor_buffer))
+			sensor_buffer.clear()
 				
 		else:
 			t_temp = Thread(target=write_temp, args=(temp, sensor_buffer, temp_lock))
 			t_temp.start()
+			sensor_buffer.clear()
 			
 	if ((time.time() - start) > 100):
-		print("finishing")
+		print("finishing\n")
+		print(time.time() - start)
 		break
 				
