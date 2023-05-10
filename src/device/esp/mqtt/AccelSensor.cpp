@@ -28,3 +28,19 @@ void AccelSensor::setConfig()
 
     delay(100);
 }
+
+char* AccelSensor::dataOutput(float AcclX, float AcclY, float AcclZ)
+{
+  
+    std::string data = "Aceleração nos vetores: X = ";
+  
+    // data += std::to_string(AcclX);
+    // data += " Y = ";
+    // data += std::to_string(AcclY);
+    // data += " Z = ";
+    // data += std::to_string(AcclZ);
+    char aux[data.size()];
+
+    strcat(aux,data.c_str());
+    return aux;
+}

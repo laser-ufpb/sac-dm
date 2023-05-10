@@ -140,7 +140,6 @@ void WifiConnect::MqttSetup(char *broker_mqtt, int broker_port)
 void WifiConnect::MqttPublish(char *broker_topic, String data)
 {
     const char *pub = data.c_str();
-    delay(5000);
     MQTT.publish(broker_topic, pub);
     
 }

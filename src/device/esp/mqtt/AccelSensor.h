@@ -1,3 +1,4 @@
+#include <memory>
 #ifndef AccelSensor_h
 #define AccelSensor_h
 
@@ -5,6 +6,9 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
+#include <stdio.h>
+
+
 
 class AccelSensor
 {
@@ -18,6 +22,7 @@ public:
     AccelSensor();
     void setConfig();
     void getEvent();
+    char* dataOutput(float AcclX, float AcclY, float AcclZ);
 };
 
 #endif
