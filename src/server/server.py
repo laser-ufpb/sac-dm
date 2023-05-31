@@ -13,7 +13,7 @@ from database import insert_data_device, insert_data_sac_dm, insert_data_acceler
 app = FastAPI()
 create_db()
 
-origins = ['http://localhost:8100',]
+origins = ['*','http://localhost:8000']
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -64,6 +64,7 @@ def get_accelerometter_data():
 
 @app.post("/login")
 def login(login_request: Login_request):
+    print("Back login")
     if login_request.username == "admin" and login_request.password == "admin":
         return {"success": True, "message": "Login realizado com sucesso"}
     else:
