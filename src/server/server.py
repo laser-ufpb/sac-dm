@@ -48,7 +48,7 @@ def new_sacdm(sac_dm_data: Sac_dm_data):
 def new_accelerometer_data(accelerometer_data: Accelerometer_data):
     if(str(accelerometer_data.ACx).strip() and str(accelerometer_data.ACy).strip() and str(accelerometer_data.ACz).strip()):
         return insert_data_accelerometer_register((accelerometer_data.device_code, accelerometer_data.time_stamp, accelerometer_data.ACx, accelerometer_data.ACy, accelerometer_data.ACz))
-    return Response(status=500, response="Dados inválidos")
+    return Response(status=500, response="Invalid data!")
 
 
 @app.get("/device")

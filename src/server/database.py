@@ -53,7 +53,7 @@ def insert_data_device(data):
             c = conn.cursor()
             c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
             conn.commit()
-            return JSONResponse(status_code=200, content="Dados inseridos com sucesso!")
+            return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
         return JSONResponse(status_code=500, content=str(e))
         
@@ -65,7 +65,7 @@ def insert_data_sac_dm(data):
             c.execute("INSERT INTO sac_dm (value, device_code, date_time) VALUES (?, ?, ?)", data)
             print("Dados inserido com sucesso")
             conn.commit()
-            return JSONResponse(status_code=200, content="Dados inseridos com sucesso!")
+            return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
         return JSONResponse(status_code=500, content=str(e))
 
@@ -77,7 +77,7 @@ def insert_data_accelerometer_register(data):
             c.execute("INSERT INTO accelerometer_register (device_code, date_time, ACx, ACy, ACz) VALUES (?, ?, ?, ?, ?)", data)
             print("Dados inserido com sucesso")
             conn.commit()
-            return JSONResponse(status_code=200, content="Dados inseridos com sucesso!")
+            return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
         return JSONResponse(status_code=500, content=str(e))
 
