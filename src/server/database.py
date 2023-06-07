@@ -1,5 +1,4 @@
 import sqlite3
-import tempfile
 import os
 from fastapi.responses import JSONResponse
 
@@ -55,7 +54,7 @@ def insert_data_device(data):
             conn.commit()
             return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
-        return JSONResponse(status_code=500, content=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
         
 # Function to insert data into sac_dm table
 def insert_data_sac_dm(data):
@@ -67,7 +66,7 @@ def insert_data_sac_dm(data):
             conn.commit()
             return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
-        return JSONResponse(status_code=500, content=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
 
 # Function to insert data into accelerometer_register table
 def insert_data_accelerometer_register(data):
@@ -79,7 +78,7 @@ def insert_data_accelerometer_register(data):
             conn.commit()
             return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
-        return JSONResponse(status_code=500, content=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
 
 # Function to get all data from device table
 def get_all_data():
@@ -90,7 +89,7 @@ def get_all_data():
             data = c.fetchall()
             return data
     except Exception as e:
-        return JSONResponse(status_code=500, content=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
 
 # Function to get all data from accelerometer_data table
 def get_all_accelerometer_data():
@@ -101,4 +100,4 @@ def get_all_accelerometer_data():
             data = c.fetchall()
             return data
     except Exception as e:
-        return JSONResponse(status_code=500, content=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
