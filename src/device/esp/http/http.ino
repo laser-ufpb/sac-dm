@@ -1,37 +1,42 @@
 #include "WifiConnect.h"
 #include "AccelSensor.h"
 
-WifiConnect wifi;
+// Sensor reading type struct
+typedef struct {
+int16_t ax;
+int16_t ay;
+int16_t az;
+
+} SensorList;
+
+
 AccelSensor accel;
-String data;
+SensorList data_buffer[100000];
 
+// Serial and Accelerometer sensor configuration
 void setup() {
-
   Serial.begin(115200);
-  //wifi.WifiSetup("iPhone de Francisco", "xgdkmomw6");
   accel.setConfig();
-  
-  
+
 }
-//unsigned long start = millis();
-//int count=0;
 void loop() {
 
-  accel.getEvent();
-  data = String(accel.ax) +","+ String(accel.ay) +","+ String(accel.az);
-  Serial.println(data);
-  //count++;
-/*
-  if((millis()- start)>=10000){
-    Serial.print(count);
-    while(1){}
+  // Store 100.000 sensor data in the buffer
+  for(int i=0; i< sizeof(data_buffer); i++){
+    accel.getEvent();
+    data_buffer[i].ax = accel.ax;
+    data_buffer[i].ay = accel.ay;
+    data_buffer[i].az = accel.az;
+
   }
 
-  */
+  // Send all buffer by serial communication
+  for(int i=0; i< sizeof(data_buffer); i++){
+    Serial.println(String(data_buffer[i].ax) +","+ String(data_buffer[i].ay) +","+ String(data_buffer[i].az));
 
-  //wifi.HttpPostAccel(String(accel.a.acceleration.x), String(accel.a.acceleration.y), String(accel.a.acceleration.z));
-  //delay(1000);
-
-
+  }
+  
+  // Lock the ESP32 in an infinite loop to stop its execution
+  while(1){}
   
 }
