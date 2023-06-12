@@ -1,37 +1,37 @@
 #include "WifiConnect.h"
 #include "AccelSensor.h"
 
-WifiConnect wifi;
+int16_t ax_list[10000];
+int16_t ay_list[10000];
+int16_t az_list[10000];
+
 AccelSensor accel;
-String data;
+int i;
 
+// Serial and Accelerometer sensor configuration
 void setup() {
-
   Serial.begin(115200);
-  //wifi.WifiSetup("iPhone de Francisco", "xgdkmomw6");
   accel.setConfig();
-  
-  
+
 }
-//unsigned long start = millis();
-//int count=0;
 void loop() {
 
-  accel.getEvent();
-  data = String(accel.ax) +","+ String(accel.ay) +","+ String(accel.az);
-  Serial.println(data);
-  //count++;
-/*
-  if((millis()- start)>=10000){
-    Serial.print(count);
-    while(1){}
+  // Store 10.000 sensor data in the buffer
+  for(i=0; i < 10000; i++){
+    accel.getEvent();
+    ax_list[i] = accel.ax;
+    ay_list[i] = accel.ay;
+    az_list[i] = accel.az;
+
   }
 
-  */
+  // Send all buffer by serial communication
+  for( i=0; i < 10000; i++){
+    Serial.println(String(ax_list[i]) +","+ String(ay_list[i]) +","+ String(az_list[i]));
 
-  //wifi.HttpPostAccel(String(accel.a.acceleration.x), String(accel.a.acceleration.y), String(accel.a.acceleration.z));
-  //delay(1000);
-
-
+  }
+  
+  // Lock the ESP32 in an infinite loop to stop its execution
+  while(1){}
   
 }
