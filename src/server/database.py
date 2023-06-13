@@ -1,11 +1,9 @@
 import sqlite3
-import tempfile
 import os
-from flask import Response
+from fastapi.responses import JSONResponse
 
-tmpdir = tempfile.gettempdir()
-path_db = os.path.join(tmpdir, 'tables.db')
-print(path_db)
+current_dir = os.getcwd()
+path_db = os.path.join(current_dir, 'tables.db')
 
 
 def create_db():
@@ -45,7 +43,7 @@ def create_db():
             )""")
             conn.commit()
     except Exception as e:
-        return Response(status=500, response=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
           
 # Function to insert data into device table
 def insert_data_device(data):
@@ -54,9 +52,9 @@ def insert_data_device(data):
             c = conn.cursor()
             c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
             conn.commit()
-            return Response(status=200, response="Dados inserido com sucesso!")
+            return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
-        return Response(status=500, response=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
         
 # Function to insert data into sac_dm table
 def insert_data_sac_dm(data):
@@ -66,9 +64,9 @@ def insert_data_sac_dm(data):
             c.execute("INSERT INTO sac_dm (value, device_code, date_time) VALUES (?, ?, ?)", data)
             print("Dados inserido com sucesso")
             conn.commit()
-            return Response(status=200, response="Dados inseridos com sucesso!")
+            return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
-        return Response(status=500, response=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
 
 # Function to insert data into accelerometer_register table
 def insert_data_accelerometer_register(data):
@@ -78,9 +76,9 @@ def insert_data_accelerometer_register(data):
             c.execute("INSERT INTO accelerometer_register (device_code, date_time, ACx, ACy, ACz) VALUES (?, ?, ?, ?, ?)", data)
             print("Dados inserido com sucesso")
             conn.commit()
-            return Response(status=200, response="Dados inseridos com sucesso!")
+            return JSONResponse(status_code=200, content="Successfully entered data!")
     except Exception as e:
-        return Response(status=500, response=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
 
 # Function to get all data from device table
 def get_all_data():
@@ -91,7 +89,7 @@ def get_all_data():
             data = c.fetchall()
             return data
     except Exception as e:
-        return Response(status=500, response=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
 
 # Function to get all data from accelerometer_data table
 def get_all_accelerometer_data():
@@ -102,4 +100,4 @@ def get_all_accelerometer_data():
             data = c.fetchall()
             return data
     except Exception as e:
-        return Response(status=500, response=str(e))
+        raise JSONResponse(status_code=500, content=str(e))
