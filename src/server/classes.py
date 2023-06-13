@@ -11,7 +11,7 @@ class Devices(BaseModel):
 class Sac_dm_data(BaseModel):
     device_code: str
     time_stamp: Optional[str]
-    value: Optional[int]
+    value: Optional[float]
 
 
 # New class for the accelerometer data
