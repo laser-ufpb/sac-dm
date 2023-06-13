@@ -32,7 +32,9 @@ def show_devices():
 @app.post("/device")
 def new_device(device: Devices):
     device.time_stamp = datetime.datetime.now()
-    return insert_data_device((device.device_code, device.time_stamp))
+    if (str(device.device_code).strip()):
+        return insert_data_device((device.device_code, device.time_stamp))
+    return Response(status=500, response="Invalid data!")
 
 
 # Route to insert a new data into the sac_dm table
@@ -41,6 +43,7 @@ def new_sacdm(sac_dm_data: Sac_dm_data):
     sac_dm_data.time_stamp = datetime.datetime.now()
     if (str(sac_dm_data.value).strip()):
         return insert_data_sac_dm((sac_dm_data.value, sac_dm_data.device_code, sac_dm_data.time_stamp))
+    return Response(status=500, response="Invalid data!")
 
 
 # Route to insert a new data into the accelerometer_register table
