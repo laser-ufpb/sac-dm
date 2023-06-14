@@ -10,6 +10,7 @@ from threading import Lock
 
 ############################ SEND HTTP ################################# 
 
+conn = aiohttp.TCPConnector(limit=200)
 
 def check_connection(host='https://google.com/'):	
 	try:
@@ -24,7 +25,8 @@ async def make_readings(sensor_buffer):
 		
 async def send_http(sbuffer):
 	url = 'https://enmpf6xid68v.x.pipedream.net/'
-	async with aiohttp.ClientSession() as session:
+	print("preparing to post data")
+	async with aiohttp.ClientSession(connector=conn) as session:
 		post_task=[]
 		async for reading in make_readings(sbuffer):
 			post_task.append(send_post(session, url, reading))
@@ -32,7 +34,6 @@ async def send_http(sbuffer):
 
 async def send_post(session, url, reading):
 	reading_split = reading.split(",")
-	#print(reading_split)
 	async with session.post(url, data={
 					"device_code":"01",
 					"ACx": reading_split[0],
@@ -45,8 +46,10 @@ async def send_post(session, url, reading):
 	
 ########################### GLOBAL VAR #################################
 
+
+
 url = 'https://enmpf6xid68v.x.pipedream.net/'
-#url = 'http://192.168.0.108:8000/accelerometer/'
+#url = 'http://150.164.167.12:8100/accelerometer/'
 
 online = True
 
@@ -54,28 +57,35 @@ ser = serial.Serial("/dev/ttyS0", 115200)
 ser.reset_input_buffer()
 sensor_buffer = []
 
+
 ############################ MAIN CODE #################################
 
 esp_serial = str(ser.readline())
-while True:
 	
+while True:
+		
 	esp_serial = str(ser.readline())
 	sensor_buffer.append(esp_serial[2:][:-5] + ','+ str(time.time()))
-	
-	if len(sensor_buffer) == 9999:
-		break;
 		
-print(len(sensor_buffer))
-print(sensor_buffer[0])
+	if len(sensor_buffer) == 20000:
+		print(len(sensor_buffer))
+		print(sensor_buffer[0])
 
-if(online):
-	asyncio.run(send_http(sensor_buffer))
+		if(online):
+			loop = asyncio.get_event_loop()
+			try:
+				loop.run_until_complete(send_http(sensor_buffer))
+			finally:
+				loop.close()
+			print("all data posted")
+			#asyncio.run(send_http(sensor_buffer))
+					
+		else:
+		
+			log = open("log.txt", "a")
+			for data in sensor_buffer:
+				log.write(data)
+				log.write("\n")
 				
-else:
-	
-	log = open("log.txt", "a")
-	for data in sensor_buffer:
-		log.write(data)
-		log.write("\n")
-			
-				
+
+
