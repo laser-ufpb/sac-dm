@@ -33,7 +33,7 @@ async def send_http(sbuffer):
 		await asyncio.gather(*post_task)
 
 async def send_post(session, url, reading):
-	reading_split = reading.split(",")
+	reading_split = reading.split(";")
 	async with session.post(url, data={
 					"device_code":"01",
 					"ACx": reading_split[0],
@@ -51,11 +51,13 @@ async def send_post(session, url, reading):
 url = 'https://enmpf6xid68v.x.pipedream.net/'
 #url = 'http://150.164.167.12:8100/accelerometer/'
 
-online = True
+online = False
 
 ser = serial.Serial("/dev/ttyS0", 115200)
 ser.reset_input_buffer()
 sensor_buffer = []
+
+log = open("log.txt", "a")
 
 
 ############################ MAIN CODE #################################
@@ -65,9 +67,13 @@ esp_serial = str(ser.readline())
 while True:
 		
 	esp_serial = str(ser.readline())
-	sensor_buffer.append(esp_serial[2:][:-5] + ','+ str(time.time()))
+	sensor_buffer.append(esp_serial[2:][:-5] + ';'+ str(time.time()))
+	
+	if len(sensor_buffer) %10000 == 0:
+		print(sensor_buffer[-1])
+		print(len(sensor_buffer))
 		
-	if len(sensor_buffer) == 20000:
+	if len(sensor_buffer) >= 50000:
 		print(len(sensor_buffer))
 		print(sensor_buffer[0])
 
@@ -78,14 +84,18 @@ while True:
 			finally:
 				loop.close()
 			print("all data posted")
+			sensor_buffer.clear()
 			#asyncio.run(send_http(sensor_buffer))
 					
 		else:
-		
-			log = open("log.txt", "a")
+			print("saving in file")
+			
 			for data in sensor_buffer:
 				log.write(data)
 				log.write("\n")
+			print("saved")
+			sensor_buffer.clear()
+		break;
 				
 
 
