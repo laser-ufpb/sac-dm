@@ -10,6 +10,7 @@ from threading import Lock
 
 ############################ SEND HTTP ################################# 
 
+conn = aiohttp.TCPConnector(limit=200)
 
 def check_connection(host='https://google.com/'):	
 	try:
@@ -18,96 +19,73 @@ def check_connection(host='https://google.com/'):
 	except:
 		return False
 		
-#async def make_readings(sensor_buffer):
-#    for r in sensor_buffer:
-#        yield r		
+async def make_readings(sensor_buffer):
+    for r in sensor_buffer:
+        yield r		
 		
-#async def send_http(sbuffer):
-#	url = 'https://enmpf6xid68v.x.pipedream.net/'
-#	async with aiohttp.ClientSession() as session:
-#		post_task=[]
-#		#async for reading in sbuffer:
-#		async for reading in make_readings(sbuffer):
-#			post_task.append(send_post(session, url, reading))
-#		await asyncio.gather(*post_task)
+async def send_http(sbuffer):
+	url = 'https://enmpf6xid68v.x.pipedream.net/'
+	print("preparing to post data")
+	async with aiohttp.ClientSession(connector=conn) as session:
+		post_task=[]
+		async for reading in make_readings(sbuffer):
+			post_task.append(send_post(session, url, reading))
+		await asyncio.gather(*post_task)
 
-#async def send_post(session, url, reading):
-#	reading_split = reading.split(",")
-#	#print(reading_split)
-#	async with session.post(url, data={
-#					"device_code":"01",
-#					"ACx": reading_split[0],
-#					"ACy": reading_split[1],
-#					"ACz": reading_split[2],
-#					"timestamp": reading_split[3]
-#					}) as response:
-#						data = await response.text()
+async def send_post(session, url, reading):
+	reading_split = reading.split(",")
+	async with session.post(url, data={
+					"device_code":"01",
+					"ACx": reading_split[0],
+					"ACy": reading_split[1],
+					"ACz": reading_split[2],
+					"timestamp": reading_split[3]
+					}) as response:
+						data = await response.text()
+
+	
+########################### GLOBAL VAR #################################
+
+
 
 url = 'https://enmpf6xid68v.x.pipedream.net/'
-def send_http(data,lock):
-	buffer_split = reading.split(",")
-	x = requests.post(url, json={'device_code': '01',
-								"ACx": buffer_split[0],
-								"ACy": buffer_split[1],
-								"ACz": buffer_split[2], 
-								"time": buffer_split[3]})
-		
-############################ TEXT FILES ################################
-		
-def write_log(log, data, lock):
-	for reading in data:
-		with lock:
-			log.write(reading)
-			log.write("\n")
+#url = 'http://150.164.167.12:8100/accelerometer/'
 
-		
-def write_temp(temp, data, lock):
-	for reading in data:
-		with lock:
-			temp.write(reading)
-			temp.write("\n")
-	
-#def read_temp_send():
-
-		
-############################ MAIN CODE #################################
-
-log_lock = Lock()
-temp_lock = Lock()
+online = True
 
 ser = serial.Serial("/dev/ttyS0", 115200)
 ser.reset_input_buffer()
-
 sensor_buffer = []
 
-log = open("log.txt","a")
-temp = open("temp.txt","a")
 
-start = time.time()
+############################ MAIN CODE #################################
+
 esp_serial = str(ser.readline())
-
-while True:
 	
+while True:
+		
 	esp_serial = str(ser.readline())
 	sensor_buffer.append(esp_serial[2:][:-5] + ','+ str(time.time()))
-	
-	if len(sensor_buffer) >= 1000:
-	
-		t_log = Thread(target=write_log, args=(log, sensor_buffer, log_lock,))
-		t_log.start()
-		if(check_connection()):
-			x=0
+		
+	if len(sensor_buffer) == 20000:
+		print(len(sensor_buffer))
+		print(sensor_buffer[0])
+
+		if(online):
+			loop = asyncio.get_event_loop()
+			try:
+				loop.run_until_complete(send_http(sensor_buffer))
+			finally:
+				loop.close()
+			print("all data posted")
 			#asyncio.run(send_http(sensor_buffer))
-			#t_http = Thread(target=send_http, args=(sensor_buffer))
-			sensor_buffer.clear()
-				
+					
 		else:
-			t_temp = Thread(target=write_temp, args=(temp, sensor_buffer, temp_lock))
-			t_temp.start()
-			sensor_buffer.clear()
-			
-	if ((time.time() - start) > 100):
-		print("finishing\n")
-		print(time.time() - start)
-		break
+		
+			log = open("log.txt", "a")
+			for data in sensor_buffer:
+				log.write(data)
+				log.write("\n")
 				
+
+
