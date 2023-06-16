@@ -21,3 +21,7 @@ class Accelerometer_data(BaseModel):
     ACx: Optional[float]
     ACy: Optional[float]
     ACz: Optional[float]
+
+class Login_request(BaseModel):
+    username: str
+    password: str

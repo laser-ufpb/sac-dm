@@ -2,8 +2,8 @@ import sqlite3
 import datetime
 import json
 import random
-from classes import Devices, Sac_dm_data, Accelerometer_data
-from fastapi import FastAPI, Response
+from classes import Devices, Sac_dm_data, Accelerometer_data, Login_request
+from fastapi import FastAPI, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from typing import List, Optional
@@ -13,7 +13,7 @@ from database import insert_data_device, insert_data_sac_dm, insert_data_acceler
 app = FastAPI()
 create_db()
 
-origins = ['*']
+origins = ['*','http://localhost:8000']
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -61,3 +61,11 @@ def get_devices():
 def get_accelerometter_data():
     registers: List[Accelerometer_data] = get_all_accelerometer_data()
     return registers
+
+@app.post("/login")
+def login(login_request: Login_request):
+    print("Back login")
+    if login_request.username == "admin" and login_request.password == "admin":
+        return {"success": True, "message": "Login realizado com sucesso"}
+    else:
+        raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
