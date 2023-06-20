@@ -9,7 +9,7 @@ path_db = os.path.join(current_dir, 'tables.db')
 def create_db():
     try:
         with sqlite3.connect(path_db) as conn:
-            c = conn.cursor() #create cursor
+            c = conn.cursor()  # create cursor
 
             c.execute("PRAGMA foreign_keys = ON;")
 
@@ -30,7 +30,7 @@ def create_db():
 
             )""")
 
-            #id_device INTEGER NOT NULL Chave estrangeira da tabela DEVICE,
+            # id_device INTEGER NOT NULL Chave estrangeira da tabela DEVICE,
             # Create table accelerometer_register
             c.execute("""CREATE TABLE IF NOT EXISTS accelerometer_register (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,43 +44,65 @@ def create_db():
             conn.commit()
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
-          
+
 # Function to insert data into device table
+
+
 def insert_data_device(data):
     try:
         with sqlite3.connect(path_db) as conn:
             c = conn.cursor()
-            c.execute("INSERT INTO device (device_code, date_time) VALUES (?, ?)", data)
+            c.execute(
+                "INSERT INTO device (device_code, date_time) VALUES (?, ?)",
+                data)
             conn.commit()
-            return JSONResponse(status_code=200, content="Successfully entered data!")
+            return JSONResponse(
+                status_code=200,
+                content="Successfully entered data!")
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
-        
+
 # Function to insert data into sac_dm table
+
+
 def insert_data_sac_dm(data):
     try:
         with sqlite3.connect(path_db) as conn:
             c = conn.cursor()
-            c.execute("INSERT INTO sac_dm (value, device_code, date_time) VALUES (?, ?, ?)", data)
+            c.execute(
+                "INSERT INTO sac_dm (value, device_code, date_time) \
+                    VALUES (?, ?, ?)",
+                data)
             print("Dados inserido com sucesso")
             conn.commit()
-            return JSONResponse(status_code=200, content="Successfully entered data!")
+            return JSONResponse(
+                status_code=200,
+                content="Successfully entered data!")
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
 
 # Function to insert data into accelerometer_register table
+
+
 def insert_data_accelerometer_register(data):
     try:
         with sqlite3.connect(path_db) as conn:
             c = conn.cursor()
-            c.execute("INSERT INTO accelerometer_register (device_code, date_time, ACx, ACy, ACz) VALUES (?, ?, ?, ?, ?)", data)
+            c.execute(
+                "INSERT INTO accelerometer_register (device_code, date_time, ACx, ACy, ACz) \
+                    VALUES (?, ?, ?, ?, ?)",
+                data)
             print("Dados inserido com sucesso")
             conn.commit()
-            return JSONResponse(status_code=200, content="Successfully entered data!")
+            return JSONResponse(
+                status_code=200,
+                content="Successfully entered data!")
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
 
 # Function to get all data from device table
+
+
 def get_all_data():
     try:
         with sqlite3.connect(path_db) as conn:
@@ -92,6 +114,8 @@ def get_all_data():
         raise JSONResponse(status_code=500, content=str(e))
 
 # Function to get all data from accelerometer_data table
+
+
 def get_all_accelerometer_data():
     try:
         with sqlite3.connect(path_db) as conn:

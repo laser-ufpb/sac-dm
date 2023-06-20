@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { LoginService } from '../../services/login_service';
+import { DashboardPage } from '../dashboard/dashboard.page';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +13,7 @@ export class LoginPage implements OnInit {
   password: string = '';
   loginError: string | null = null;
 
-  constructor(private loginService: LoginService) { }
+  constructor(private loginService: LoginService, public navCtrl: NavController) { }
 
   ngOnInit() {
   }
@@ -19,12 +21,13 @@ export class LoginPage implements OnInit {
   login()
   {
     this.loginService.login(this.username, this.password).subscribe(
-      (response) => {
-        console.log(response);
+      (response: any) => {
+        this.loginError = null;
+        this.navCtrl.navigateRoot('dashboard');
       },
-      (error) => {
-        this.loginError = error.message;
-        console.log(error);
+      (error: any) => {
+        this.loginError = error.error;
+        console.log("erro: ", error);
       }
     )
   }
