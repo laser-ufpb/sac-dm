@@ -18,7 +18,6 @@ def create_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 device_code text NOT NULL UNIQUE,
                 date_time text NOT NULL
-
             )""")
 
             # Create table sac_dm
@@ -27,7 +26,6 @@ def create_db():
                 value real NOT NULL,
                 device_code text NOT NULL,
                 date_time text NOT NULL
-
             )""")
 
             # id_device INTEGER NOT NULL Chave estrangeira da tabela DEVICE,
@@ -39,13 +37,10 @@ def create_db():
                 ACx float NOT NULL,
                 ACy float NOT NULL,
                 ACz float NOT NULL
-
             )""")
             conn.commit()
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
-
-# Function to insert data into device table
 
 
 def insert_data_device(data):
@@ -62,8 +57,6 @@ def insert_data_device(data):
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
 
-# Function to insert data into sac_dm table
-
 
 def insert_data_sac_dm(data):
     try:
@@ -71,8 +64,7 @@ def insert_data_sac_dm(data):
             c = conn.cursor()
             c.execute(
                 "INSERT INTO sac_dm (value, device_code, date_time) \
-                    VALUES (?, ?, ?)",
-                data)
+                    VALUES (?, ?, ?)", data)
             print("Dados inserido com sucesso")
             conn.commit()
             return JSONResponse(
@@ -80,8 +72,6 @@ def insert_data_sac_dm(data):
                 content="Successfully entered data!")
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
-
-# Function to insert data into accelerometer_register table
 
 
 def insert_data_accelerometer_register(data):
@@ -90,8 +80,7 @@ def insert_data_accelerometer_register(data):
             c = conn.cursor()
             c.execute(
                 "INSERT INTO accelerometer_register (device_code, date_time, ACx, ACy, ACz) \
-                    VALUES (?, ?, ?, ?, ?)",
-                data)
+                    VALUES (?, ?, ?, ?, ?)", data)
             print("Dados inserido com sucesso")
             conn.commit()
             return JSONResponse(
@@ -100,9 +89,8 @@ def insert_data_accelerometer_register(data):
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
 
+
 # Function to get all data from device table
-
-
 def get_all_data():
     try:
         with sqlite3.connect(path_db) as conn:
@@ -113,9 +101,8 @@ def get_all_data():
     except Exception as e:
         raise JSONResponse(status_code=500, content=str(e))
 
+
 # Function to get all data from accelerometer_data table
-
-
 def get_all_accelerometer_data():
     try:
         with sqlite3.connect(path_db) as conn:
