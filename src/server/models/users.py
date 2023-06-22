@@ -6,10 +6,18 @@ from typing_extensions import Annotated
 from fastapi import Depends
 from models.token import TokenData, create_access_token
 from jose import JWTError
+from database import Base, engine
+from sqlalchemy import Column, Integer, String, Boolean
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+# user = UserAlchemy(username="teste", email="test@gmail.com")
+# from database import Session
+# session = Session()
+
+# session.add(user)
+# session.commit()
 
 class User(BaseModel):
     username: str
@@ -44,6 +52,7 @@ def authenticate_user(username: str, password: str):
         return False
     return user
 
+#ainda nao esta em uso, adicionando para servir como base para avancarmos
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
