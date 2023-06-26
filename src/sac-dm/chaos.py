@@ -18,8 +18,8 @@ def lyapunov_e(data, N):
 	j = N
 	coef = []
 	while j < len(data):
-		# coef.append(nolds.lyap_e(data[i:j]))
-		print('Coeficientes ja calculados: ', i, len(coef))
+		coef.append(nolds.lyap_e(data[i:j]))
+		#print('Coeficientes ja calculados: ', i, len(coef))
 		i = j
 		j = j+N
 

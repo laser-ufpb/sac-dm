@@ -19,17 +19,12 @@ import autocorrelation as auto
 import chaos
 import util
 
-import os
-import os.path as path
-
-
-# def get_data_from_wav(filename):
-# 	Fs, data = read(filename)
-# 	data = data[:,0]
-# 	return data, Fs
+def get_data_from_wav(filename):
+	Fs, data = read(filename)
+	data = data[:,0]
+	return data, Fs
 
 # Calcula SAC-DM medio total utilizando a funcao find_peaks do Python
-
 def sac_dm_avg(data):
 	peaks, _ = find_peaks(data)
 	
@@ -168,26 +163,9 @@ def test(file1, file2):
 	#mat2 = scipy.io.loadmat(file2)
 	#data = mat['y1']
 	#data2 = mat2['y1']
-	
 
-	# d = pd.read_csv(filename)
-	# d2 = pd.read_csv(filename2)
-
-	#criando caminho ate a pasta drone_signals
-	aux_path = path.abspath(path.join("../.."))
-	path_to_drone_signals = aux_path + "/files/drone_signals/"
-	
-	#concatenando o nome dos arquivos ao caminho criado
-	path_file1 = path_to_drone_signals + filename
-	path_file2 = path_to_drone_signals + filename2
-	
-	#convertendo o caminho criado, de str para path
-	os.path.normpath(path_file1)
-	os.path.normpath(path_file2)
-	
-	
-	d = np.genfromtxt( path_file1, delimiter=';', names=['x','y','z','s','t'])
-	d2 = np.genfromtxt( path_file2, delimiter=';', names=['x','y','z','s','t'])
+	d = np.genfromtxt( filename, delimiter=';', names=['x','y','z','s','t'])
+	d2 = np.genfromtxt( filename2, delimiter=';', names=['x','y','z','s','t'])
 
 
 	data = d['z'].reshape(-1)
@@ -223,25 +201,25 @@ def test(file1, file2):
 
 #************************************
 
-	# corr = auto.autocorrelation(data, N)
-	# corr2 = auto.autocorrelation(data2, N)
+	corr = auto.autocorrelation(data, N)
+	corr2 = auto.autocorrelation(data2, N)
 
-	# util.show([corr, corr2], "Autocorrelation")
+	util.show([corr, corr2], "Autocorrelation")
 
-	# #le = lyapunov_e(data[0:10000], 1000)
-	# lr = chaos.lyapunov_e(data, N)
-	# lr2 = chaos.lyapunov_e(data2, N)
+	#le = lyapunov_e(data[0:10000], 1000)
+	lr = chaos.lyapunov_e(data, N)
+	lr2 = chaos.lyapunov_e(data2, N)
 
-	# #print (le.shape)
-	# print (lr.shape)
+	#print (le.shape)
+	print (lr.shape)
 
-	# util.show([lr, lr2], 'lyapunov coef')
+	util.show([lr, lr2], 'lyapunov coef')
 
-	# l = max(lr)
-	# l2 = max(lr2)
+	l = max(lr)
+	l2 = max(lr2)
 
-	# print ('lyapunov max coef: ', l)
-	# print ('lyapunov max coef: ', l2)
+	print ('lyapunov max coef: ', l)
+	print ('lyapunov max coef: ', l2)
 
 	plt.show()
 
@@ -254,11 +232,6 @@ filename2 = sys.argv[2]
 
 test(filename, filename2)
 
-
-#comando para execucao
-#                  arquivo1        arquivo2         pontos por pico
-# python3 sacdm.py accel_80_F0.csv accel_80_F14.csv 10000
-	
 
 
 
