@@ -63,12 +63,19 @@ def get_sacdm(db: Session=Depends(get_db)):
 
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")
-def new_sacdm(sac_dm_data: SACDMSchema, db: Session=Depends(get_db)):
-    if (str(sac_dm_data.device_id).strip()):
-        return create_sacdm(sac_dm_data, db)
-    return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content="Invalid data!")
+def new_sacdm(sac_dm_datas: List[SACDMSchema], db: Session=Depends(get_db)):
+    results = []
+    for data in sac_dm_datas:
+        if (str(data.device_id).strip()):
+            try:
+                result = create_sacdm(data, db)
+                results.append(result)
+            except Exception as e:
+                db.rollback()
+                results.append(f"Error: {str(e)}")
+        else:
+            results.append("Invalid data!")        
+    return results
 
 
 # Route to get all data from accelerometer table
@@ -80,12 +87,20 @@ def get_accelerometter_data(db: Session=Depends(get_db)):
 
 # Route to insert a new data into the accelerometer table
 @app.post("/accelerometer")
-def new_accelerometer_record(accelerometer_data: AccelerometerSchema, db: Session=Depends(get_db)):
-    if (str(accelerometer_data.device_id).strip()):
-        return create_accelerometer_record(accelerometer_data, db)
-    return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content="Invalid data!")
+def new_accelerometer_record(accelerometer_data: List[AccelerometerSchema], db: Session=Depends(get_db)):
+    results = []
+    for data in accelerometer_data:
+        if (str(data.device_id).strip()):
+            try:
+                result = create_accelerometer_record(data, db)
+                results.append(result)
+            except Exception as e:
+                db.rollback()
+                results.append(f"Error: {str(e)}")
+        else:
+            results.append("Invalid data!")
+    
+    return results
 
 
 @app.post("/login")
