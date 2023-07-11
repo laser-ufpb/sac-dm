@@ -8,6 +8,7 @@ from models.token import create_access_token
 from schemas.device import DeviceSchema
 from schemas.sacdm import SACDMSchema
 from schemas.accelerometer import AccelerometerSchema
+from schemas.filter import Filter
 from fastapi import Depends, FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -16,8 +17,8 @@ from typing import List, Optional
 from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.device import create_device, get_all_devices
-from controllers.sac_dm import create_sacdm, get_all_sacdm
-from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records
+from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_with_filter
+from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_by_id
 from database import (get_db, Session)
 
 
@@ -61,6 +62,13 @@ def get_sacdm(db: Session=Depends(get_db)):
     return banco_dados
 
 
+# Route to get data from sac_dm table with a filter
+@app.get("/sac_dm_with_filter")
+def get_sacdm_filtered(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[SACDM] = get_sacdm_with_filter(data, db)
+    return banco_dados
+
+
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")
 def new_sacdm(sac_dm_datas: List[SACDMSchema], db: Session=Depends(get_db)):
@@ -83,6 +91,13 @@ def new_sacdm(sac_dm_datas: List[SACDMSchema], db: Session=Depends(get_db)):
 def get_accelerometter_data(db: Session=Depends(get_db)):
     registers: List[AccelerometerAcquisition] = get_all_accelerometer_records(db)
     return registers
+
+
+# Route to get data from sac_dm table with a specifit device_id
+@app.get("/accelerometer_by_device_id")
+def get_accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_id(data.device_id, db)
+    return banco_dados
 
 
 # Route to insert a new data into the accelerometer table

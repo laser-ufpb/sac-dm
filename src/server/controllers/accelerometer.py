@@ -17,3 +17,7 @@ def create_accelerometer_record(accelerometer_schema: AccelerometerSchema, db: S
 
 def get_all_accelerometer_records(db: Session):
     return db.query(AccelerometerAcquisition).all()
+
+def get_accelerometer_record_by_id(device_id: str, db: Session):
+    return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == device_id).all()
+

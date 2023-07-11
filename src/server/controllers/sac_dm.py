@@ -1,6 +1,7 @@
 import datetime
 from models.models import SACDM
 from schemas.sacdm import SACDMSchema
+from schemas.filter import Filter
 from sqlalchemy.orm import Session
 from fastapi import status
 from fastapi.responses import JSONResponse
@@ -17,3 +18,11 @@ def create_sacdm(sac_dm_schema: SACDMSchema, db: Session):
 
 def get_all_sacdm(db: Session):
     return db.query(SACDM).all()
+
+def get_sacdm_with_filter(data: Filter, db: Session):
+    if data.datetime and data.device_id:
+        return db.query(SACDM).filter(SACDM.timestamp > data.datetime).filter(SACDM.device_id == data.device_id).all()
+    elif data.device_id and not data.datetime:
+        return db.query(SACDM).filter(SACDM.device_id == data.device_id).all()
+    elif data.datetime and not data.device_id:
+        return db.query(SACDM).filter(SACDM.timestamp > data.datetime).all()
