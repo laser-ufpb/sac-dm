@@ -18,7 +18,7 @@ from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.device import create_device, get_all_devices
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_with_filter
-from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_by_id
+from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_with_filter
 from database import (get_db, Session)
 
 
@@ -94,9 +94,9 @@ def get_accelerometter_data(db: Session=Depends(get_db)):
 
 
 # Route to get data from sac_dm table with a specifit device_id
-@app.get("/accelerometer_by_device_id")
-def get_accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_id(data.device_id, db)
+@app.get("/accelerometer_with_filter")
+def get_accelerometer_filterted(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_with_filter(data, db)
     return banco_dados
 
 
