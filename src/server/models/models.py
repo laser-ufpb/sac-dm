@@ -18,7 +18,7 @@ class SACDM(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     device_id = Column(Integer, ForeignKey('device.id'), nullable=False)
     value = Column(Float, nullable=False)
-    timestamp = Column(String, nullable=True)
+    timestamp = Column(String, nullable=False)
 
 
 class AccelerometerAcquisition(Base):

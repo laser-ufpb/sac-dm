@@ -3,6 +3,7 @@ from models.models import SACDM
 from schemas.sacdm import SACDMSchema
 from schemas.filter import Filter
 from sqlalchemy.orm import Session
+from typing import List
 from fastapi import status
 from fastapi.responses import JSONResponse
 
@@ -11,6 +12,15 @@ def create_sacdm(sac_dm_schema: SACDMSchema, db: Session):
     sac_dm_data = SACDM(**sac_dm_schema.dict())
     sac_dm_data.timestamp = datetime.datetime.now()
     db.add(sac_dm_data)
+    db.commit()
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content="Successfully entered data!")
+
+
+def create_sacdm_teste(sac_dm_schema: List[SACDMSchema], db: Session):
+    sac_dm_data = [SACDM(**sac_dm.dict()) for sac_dm in sac_dm_schema]
+    db.add_all(sac_dm_data)
     db.commit()
     return JSONResponse(
         status_code=status.HTTP_200_OK,

@@ -17,7 +17,7 @@ from typing import List, Optional
 from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.device import create_device, get_all_devices
-from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_with_filter
+from controllers.sac_dm import create_sacdm, create_sacdm_teste, get_all_sacdm, get_sacdm_with_filter
 from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_with_filter
 from database import (get_db, Session)
 
@@ -84,6 +84,11 @@ def new_sacdm(sac_dm_datas: List[SACDMSchema], db: Session=Depends(get_db)):
         else:
             results.append("Invalid data!")        
     return results
+
+# Route to insert a new data into the sac_dm table
+@app.post("/sac_dm_teste")
+def new_sacdm(sac_dm_data: List[SACDMSchema], db: Session=Depends(get_db)):
+    return create_sacdm_teste(sac_dm_data, db)
 
 
 # Route to get all data from accelerometer table
