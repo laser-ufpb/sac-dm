@@ -809,21 +809,22 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 		complete_file.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media_completo[i] - desvio_completo[i], 4)) + " | " + "Limite superior - " + str(round(media_completo[i] + desvio_completo[i], 4)) +"\n\n"))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range(len(dataset[i])): # array com n pontos
+		teste_dataset = amostragem_sac(dataset[i], (round((len(dataset[i])/2))), (len(dataset[i])))
+		for j in range(round((len(dataset[i])/2))): # array com n pontos
 			
-			if (dataset[i][j] >= media_metade[0] - desvio_metade[0] and dataset[i][j] <= media_metade[0] + desvio_metade[0]):
+			if (teste_dataset[j] >= media_metade[0] - desvio_metade[0] and teste_dataset[j] <= media_metade[0] + desvio_metade[0]):
 				matrix_metade[i][0] += 1
 				continue
 
-			elif(dataset[i][j] >= media_metade[1] - desvio_metade[1] and dataset[i][j] <= media_metade[1] + desvio_metade[1]):
+			elif(teste_dataset[j] >= media_metade[1] - desvio_metade[1] and teste_dataset[j] <= media_metade[1] + desvio_metade[1]):
 				matrix_metade[i][1] += 1
 				continue
 
-			elif(dataset[i][j] >= media_metade[2] - desvio_metade[2] and dataset[i][j] <= media_metade[2] + desvio_metade[2]):
+			elif(teste_dataset[j] >= media_metade[2] - desvio_metade[2] and teste_dataset[j] <= media_metade[2] + desvio_metade[2]):
 				matrix_metade[i][2] += 1
 				continue
 
-			elif(dataset[i][j] >= media_metade[3] - desvio_metade[3] and dataset[i][j] <= media_metade[3] + desvio_metade[3]):
+			elif(teste_dataset[j] >= media_metade[3] - desvio_metade[3] and teste_dataset[j] <= media_metade[3] + desvio_metade[3]):
 				matrix_metade[i][3] += 1
 				continue
 			
