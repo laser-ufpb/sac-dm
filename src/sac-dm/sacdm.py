@@ -573,8 +573,12 @@ def plot_SAC_AM_DM_motor_signals():
 	# util.windowsPlot([sac_dm_C0_y, sac_dm_C2_y, sac_dm_C4_y, sac_dm_C10_y, sac_dm_C20_y], ["C0", "C2", "C4", "C10", "C20"], "SAC-DM: Eixo Y", int(sys.argv[4]), N)
 	# util.windowsPlot([sac_dm_C0_z, sac_dm_C2_z, sac_dm_C4_z, sac_dm_C10_z, sac_dm_C20_z], ["C0", "C2", "C4", "C10", "C20"], "SAC-DM: Eixo Z", int(sys.argv[4]), N)
 
-	
-	util.taxa_de_amostragem(C0_t)
+	# #									Taxa de aquisição das amostras por segundo com plotagem
+	util.taxa_de_amostragem(C0_t, "C0")
+	util.taxa_de_amostragem(C2_t, "C2")
+	util.taxa_de_amostragem(C4_t, "C4")
+	util.taxa_de_amostragem(C10_t, "C10")
+	util.taxa_de_amostragem(C20_t, "C20")
 
 	plt.show()
 	return 0

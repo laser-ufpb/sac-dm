@@ -914,7 +914,7 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 		ax[j][1].legend(wedges, non_zero_labels_full[:len(non_zero_values_full)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
 
-def taxa_de_amostragem(dataset):
+def taxa_de_amostragem(dataset, arquivo):
 	timestamp_seg = np.zeros(len(dataset))
 	for i in range(len(dataset)):
 		aux = time.localtime(dataset[i])
@@ -926,10 +926,27 @@ def taxa_de_amostragem(dataset):
 	amostras = {}
 
 	for valor, contagem in zip(valores_unicos, contagens):
-		amostras[f"Amostras no seg: {valor}"] = np.full(contagem, valor)
+		amostras[valor] = np.full(contagem, valor)
 
 	taxa_aquisicao = round((len(dataset) / len(amostras)),2)
-	print(f"Taxa de aquisição: {taxa_aquisicao} amostras por segundo")
+	print(f"Taxa de aquisição do arquivo {arquivo}: {taxa_aquisicao} amostras por segundo")
 
 	# for chave, array_separado in amostras.items():
 	# 	print(f"{chave}: {len(array_separado)}")
+
+	chaves = (list(amostras.keys()))
+	chaves_int = [int(chave) for chave in chaves]
+
+	amostras_plot = []
+	for i in range(chaves_int[0], chaves_int[-1]):
+		if(i in chaves_int):
+			amostras_plot.append(len(amostras[i]))
+		else:
+			amostras_plot.append(0)
+
+	fig, ax = plt.subplots()
+
+	ax.set_xlim(-5, len(amostras_plot))
+	ax.set_xticks(range(0, len(amostras_plot), 30))
+	ax.set(ylabel = "Amostras", xlabel = "Segundos", title = (f"Taxa de amostragem: Arquivo {arquivo} "))
+	ax.plot(amostras_plot)
