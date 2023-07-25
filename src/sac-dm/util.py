@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import scipy.io
 import numpy as np
 import matplotlib.colors as mcolors
+import time
 
 def moving_average(a, n=3) :
 	ret = np.cumsum(a, dtype=float)
@@ -911,3 +912,24 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 		wedges, texts, autotexts = ax[j][1].pie(non_zero_values_full, labels=non_zero_labels_full[:len(non_zero_values_full)], autopct='%1.1f%%', shadow=True, startangle=90)
 		ax[j][1].set_title(f"Confusion matrix Full Training - {arquivos[j]}")
 		ax[j][1].legend(wedges, non_zero_labels_full[:len(non_zero_values_full)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
+
+
+def taxa_de_amostragem(dataset):
+	timestamp_seg = np.zeros(len(dataset))
+	for i in range(len(dataset)):
+		aux = time.localtime(dataset[i])
+		seg = (aux.tm_hour * 3600) + (aux.tm_min * 60) + aux.tm_sec
+		timestamp_seg[i] = seg
+
+	valores_unicos, contagens = np.unique(timestamp_seg, return_counts=True)
+
+	amostras = {}
+
+	for valor, contagem in zip(valores_unicos, contagens):
+		amostras[f"Amostras no seg: {valor}"] = np.full(contagem, valor)
+
+	taxa_aquisicao = round((len(dataset) / len(amostras)),2)
+	print(f"Taxa de aquisição: {taxa_aquisicao} amostras por segundo")
+
+	# for chave, array_separado in amostras.items():
+	# 	print(f"{chave}: {len(array_separado)}")
