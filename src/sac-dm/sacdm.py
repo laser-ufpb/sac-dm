@@ -340,8 +340,8 @@ def plot_SAC_AM_DM_drone_signals():
 
 
 	# # Plotando em uma unica figura, todos os graficos com treino
-	util.showSAC_figUnicoComTreino([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
-							[sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]], "SAC-AM")
+	# util.showSAC_figUnicoComTreino([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
+	# 						[sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]], "SAC-AM")
 
 	# util.showSAC_figUnicoComTreino([[sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], [sac_dm_F6_x, sac_dm_F6_y, sac_dm_F6_z], [sac_dm_F14_x, sac_dm_F14_y, sac_dm_F14_z],
 	# 						[sac_dm_F22_x, sac_dm_F22_y, sac_dm_F22_z]], "SAC-DM")
@@ -585,8 +585,8 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-# plot_SAC_AM_DM_drone_signals()
-plot_SAC_AM_DM_motor_signals()
+plot_SAC_AM_DM_drone_signals()
+# plot_SAC_AM_DM_motor_signals()
 # test(filename, filename2)
 
 

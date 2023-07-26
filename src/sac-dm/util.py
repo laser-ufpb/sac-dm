@@ -46,16 +46,17 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 	plt.ylabel(title) 
 	plt.xlabel('Time (ms)')
 	
+	half_dataset = amostragem_sac(dataset, 0, round(len(dataset)/2))
 	colors = list(mcolors.CSS4_COLORS) 
 
-	media_dataset = media_sac(dataset, 0, round(len(dataset)/2))
-	desv_dataset = desvio_sac(dataset, 0, round(len(dataset)/2))
+	media_dataset = media_sac(half_dataset, 0, len(half_dataset))
+	desv_dataset = desvio_sac(half_dataset, 0, len(half_dataset))
 
 	aux_desv = np.zeros(len(dataset))
-	aux_desv[round((len(dataset))/2)] = desv_dataset
+	aux_desv[round(len(half_dataset)/2)] = desv_dataset
 
-	x = np.arange(len(dataset))
-	y = np.zeros(len(dataset))
+	x = np.arange(len(half_dataset))
+	y = np.zeros(len(half_dataset))
 	y = np.full_like(y, media_dataset)
 
 	ax.plot(x,y,color=colors[10], label = (f"Média da primeira metade do SAC {file_tag}"))
@@ -178,21 +179,21 @@ def showSAC_figUnicoComTreino(dataset, title):
 	treinamentoMetade(dataset[0][0], auxT, fig, ax1_X, "F0")
 	dataset_teste = amostragem_sac(dataset[0][0], round(len(dataset[0][0])/2), len(dataset[0][0]) )
 	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax1_X, 16)
-	ax1_X.set_xlim(-1, round(len(dataset[0][0])/2))
+	# ax1_X.set_xlim(-1, round(len(dataset[0][0])/2))
 
 	auxT = title + ": Eixo Y"
 	ax2_Y.set_title('Eixo Y')
 	treinamentoMetade(dataset[0][1], auxT, fig, ax2_Y, "F0")
 	dataset_teste = amostragem_sac(dataset[0][1], round(len(dataset[0][1])/2), len(dataset[0][1]) )
 	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax2_Y, 16)
-	ax2_Y.set_xlim(-1, round(len(dataset[0][1])/2))
+	# ax2_Y.set_xlim(-1, round(len(dataset[0][1])/2))
 
 	auxT = title + ": Eixo Z"
 	ax3_Z.set_title('Eixo Z')
 	treinamentoMetade(dataset[0][2], auxT, fig, ax3_Z, "F0")
 	dataset_teste = amostragem_sac(dataset[0][2], round(len(dataset[0][2])/2), len(dataset[0][2]) )
 	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax3_Z, 16)
-	ax3_Z.set_xlim(-1, round(len(dataset[0][2])/2))
+	# ax3_Z.set_xlim(-1, round(len(dataset[0][2])/2))
 
 	fig.suptitle(title)
 
