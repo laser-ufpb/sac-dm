@@ -917,7 +917,7 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 		ax[j][1].legend(wedges, non_zero_labels_full[:len(non_zero_values_full)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
 
-def taxa_de_amostragem(dataset, arquivo):
+def taxa_de_aquisicao(dataset, arquivo):
 	timestamp_seg = np.zeros(len(dataset))
 	for i in range(len(dataset)):
 		aux = time.localtime(dataset[i])
@@ -931,9 +931,6 @@ def taxa_de_amostragem(dataset, arquivo):
 	for valor, contagem in zip(valores_unicos, contagens):
 		amostras[valor] = np.full(contagem, valor)
 
-	taxa_aquisicao = round((len(dataset) / len(amostras)),2)
-	print(f"Taxa de aquisição do arquivo {arquivo}: {taxa_aquisicao} amostras por segundo")
-
 	# for chave, array_separado in amostras.items():
 	# 	print(f"{chave}: {len(array_separado)}")
 
@@ -941,15 +938,20 @@ def taxa_de_amostragem(dataset, arquivo):
 	chaves_int = [int(chave) for chave in chaves]
 
 	amostras_plot = []
+	amostras_media = []
 	for i in range(chaves_int[0], chaves_int[-1]):
 		if(i in chaves_int):
 			amostras_plot.append(len(amostras[i]))
+			amostras_media.append(len(amostras[i]))
 		else:
 			amostras_plot.append(0)
+
+	taxa_aquisicao = ( sum(amostras_media) / len(amostras_media) )
+	print(f"Taxa de aquisição do arquivo {arquivo}: {round(taxa_aquisicao, 2)} amostras por segundo")
 
 	fig, ax = plt.subplots()
 
 	ax.set_xlim(-5, len(amostras_plot))
 	ax.set_xticks(range(0, len(amostras_plot), 30))
-	ax.set(ylabel = "Amostras", xlabel = "Segundos", title = (f"Taxa de amostragem: Arquivo {arquivo} "))
+	ax.set(ylabel = "Amostras", xlabel = "Segundos", title = (f"Taxa de aquisição: Arquivo {arquivo} "))
 	ax.plot(amostras_plot)
