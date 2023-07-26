@@ -178,18 +178,21 @@ def showSAC_figUnicoComTreino(dataset, title):
 	treinamentoMetade(dataset[0][0], auxT, fig, ax1_X, "F0")
 	dataset_teste = amostragem_sac(dataset[0][0], round(len(dataset[0][0])/2), len(dataset[0][0]) )
 	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax1_X, 16)
+	ax1_X.set_xlim(-1, round(len(dataset[0][0])/2))
 
 	auxT = title + ": Eixo Y"
 	ax2_Y.set_title('Eixo Y')
 	treinamentoMetade(dataset[0][1], auxT, fig, ax2_Y, "F0")
 	dataset_teste = amostragem_sac(dataset[0][1], round(len(dataset[0][1])/2), len(dataset[0][1]) )
 	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax2_Y, 16)
+	ax2_Y.set_xlim(-1, round(len(dataset[0][1])/2))
 
 	auxT = title + ": Eixo Z"
 	ax3_Z.set_title('Eixo Z')
 	treinamentoMetade(dataset[0][2], auxT, fig, ax3_Z, "F0")
 	dataset_teste = amostragem_sac(dataset[0][2], round(len(dataset[0][2])/2), len(dataset[0][2]) )
 	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax3_Z, 16)
+	ax3_Z.set_xlim(-1, round(len(dataset[0][2])/2))
 
 	fig.suptitle(title)
 
