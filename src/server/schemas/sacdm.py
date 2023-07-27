@@ -4,4 +4,4 @@ from pydantic import BaseModel
 class SACDMSchema(BaseModel):
     device_id: int
     value: float
-    datetime: str
+    timestamp: str

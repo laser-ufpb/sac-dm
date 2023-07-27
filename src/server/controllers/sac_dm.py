@@ -8,17 +8,7 @@ from fastapi import status
 from fastapi.responses import JSONResponse
 
 
-def create_sacdm(sac_dm_schema: SACDMSchema, db: Session):
-    sac_dm_data = SACDM(**sac_dm_schema.dict())
-    sac_dm_data.timestamp = datetime.datetime.now()
-    db.add(sac_dm_data)
-    db.commit()
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content="Successfully entered data!")
-
-
-def create_sacdm_teste(sac_dm_schema: List[SACDMSchema], db: Session):
+def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
     sac_dm_data = [SACDM(**sac_dm.dict()) for sac_dm in sac_dm_schema]
     db.add_all(sac_dm_data)
     db.commit()
@@ -26,13 +16,25 @@ def create_sacdm_teste(sac_dm_schema: List[SACDMSchema], db: Session):
         status_code=status.HTTP_200_OK,
         content="Successfully entered data!")
 
+
 def get_all_sacdm(db: Session):
     return db.query(SACDM).all()
 
-def get_sacdm_with_filter(data: Filter, db: Session):
-    if data.datetime and data.device_id:
-        return db.query(SACDM).filter(SACDM.timestamp > data.datetime).filter(SACDM.device_id == data.device_id).all()
-    elif data.device_id and not data.datetime:
-        return db.query(SACDM).filter(SACDM.device_id == data.device_id).all()
-    elif data.datetime and not data.device_id:
+    
+def get_sacdm_by_device_id(data: Filter, db: Session):
+    return db.query(SACDM).filter(SACDM.device_id == data.device_id).all()
+
+
+def get_sacdm_by_datetime(data: Filter, db: Session):
+    if data.datetime and not data.datetime_final:
         return db.query(SACDM).filter(SACDM.timestamp > data.datetime).all()
+    else:
+        return db.query(SACDM).filter(SACDM.timestamp > data.datetime, SACDM.timestamp < data.datetime_final ).all()
+    
+    
+def get_sacdm_by_device_id_and_datetime(data: Filter, db: Session):
+    if data.datetime and not data.datetime_final:
+        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp > data.datetime).all()
+    else:
+        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp > data.datetime, SACDM.timestamp < data.datetime_final ).all()
+    

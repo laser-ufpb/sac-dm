@@ -5,3 +5,4 @@ from pydantic import BaseModel
 class Filter(BaseModel):
     device_id: Optional[str]
     datetime: Optional[str]
+    datetime_final: Optional[str]

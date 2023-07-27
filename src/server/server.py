@@ -17,7 +17,7 @@ from typing import List, Optional
 from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.device import create_device, get_all_devices
-from controllers.sac_dm import create_sacdm, create_sacdm_teste, get_all_sacdm, get_sacdm_with_filter
+from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
 from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_with_filter
 from database import (get_db, Session)
 
@@ -63,32 +63,30 @@ def get_sacdm(db: Session=Depends(get_db)):
 
 
 # Route to get data from sac_dm table with a filter
-@app.get("/sac_dm_with_filter")
-def get_sacdm_filtered(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[SACDM] = get_sacdm_with_filter(data, db)
+@app.get("/sac_dm_by_device_id")
+def sacdm_by_device_id(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[SACDM] = get_sacdm_by_device_id(data, db)
+    return banco_dados
+
+
+# Route to get data from sac_dm table with a filter
+@app.get("/sac_dm_by_datetime")
+def sacdm_by_datetime(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[SACDM] = get_sacdm_by_datetime(data, db)
+    return banco_dados
+
+
+# Route to get data from sac_dm table with a filter
+@app.get("/sac_dm_by_device_id_and_datetime")
+def sacdm_by_device_id_and_datetime(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[SACDM] = get_sacdm_by_device_id_and_datetime(data, db)
     return banco_dados
 
 
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")
-def new_sacdm(sac_dm_datas: List[SACDMSchema], db: Session=Depends(get_db)):
-    results = []
-    for data in sac_dm_datas:
-        if (str(data.device_id).strip()):
-            try:
-                result = create_sacdm(data, db)
-                results.append(result)
-            except Exception as e:
-                db.rollback()
-                results.append(f"Error: {str(e)}")
-        else:
-            results.append("Invalid data!")        
-    return results
-
-# Route to insert a new data into the sac_dm table
-@app.post("/sac_dm_teste")
 def new_sacdm(sac_dm_data: List[SACDMSchema], db: Session=Depends(get_db)):
-    return create_sacdm_teste(sac_dm_data, db)
+    return create_sacdm(sac_dm_data, db)
 
 
 # Route to get all data from accelerometer table
