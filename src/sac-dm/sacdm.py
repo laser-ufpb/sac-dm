@@ -585,8 +585,8 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-plot_SAC_AM_DM_drone_signals()
-# plot_SAC_AM_DM_motor_signals()
+# plot_SAC_AM_DM_drone_signals()
+plot_SAC_AM_DM_motor_signals()
 # test(filename, filename2)
 
 

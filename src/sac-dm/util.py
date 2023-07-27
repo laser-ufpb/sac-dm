@@ -943,7 +943,8 @@ def taxa_de_aquisicao(dataset, arquivo):
 	for i in range(chaves_int[0], chaves_int[-1]):
 		if(i in chaves_int):
 			amostras_plot.append(len(amostras[i]))
-			amostras_media.append(len(amostras[i]))
+			if(len(amostras[i]) > 600):
+				amostras_media.append(len(amostras[i]))
 		else:
 			amostras_plot.append(0)
 
