@@ -18,7 +18,7 @@ from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.device import create_device, get_all_devices
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
-from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_with_filter
+from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_by_device_id, get_accelerometer_record_by_datetime, get_accelerometer_record_by_device_id_and_datetime
 from database import (get_db, Session)
 
 
@@ -62,21 +62,21 @@ def get_sacdm(db: Session=Depends(get_db)):
     return banco_dados
 
 
-# Route to get data from sac_dm table with a filter
+# Route to get data from sac_dm table filtered by id
 @app.get("/sac_dm_by_device_id")
 def sacdm_by_device_id(data: Filter, db: Session=Depends(get_db)):
     banco_dados: List[SACDM] = get_sacdm_by_device_id(data, db)
     return banco_dados
 
 
-# Route to get data from sac_dm table with a filter
+# Route to get data from sac_dm table filter by datetime
 @app.get("/sac_dm_by_datetime")
 def sacdm_by_datetime(data: Filter, db: Session=Depends(get_db)):
     banco_dados: List[SACDM] = get_sacdm_by_datetime(data, db)
     return banco_dados
 
 
-# Route to get data from sac_dm table with a filter
+# Route to get data from sac_dm table filtered by device id and datetime
 @app.get("/sac_dm_by_device_id_and_datetime")
 def sacdm_by_device_id_and_datetime(data: Filter, db: Session=Depends(get_db)):
     banco_dados: List[SACDM] = get_sacdm_by_device_id_and_datetime(data, db)
@@ -96,29 +96,31 @@ def get_accelerometter_data(db: Session=Depends(get_db)):
     return registers
 
 
-# Route to get data from sac_dm table with a specifit device_id
-@app.get("/accelerometer_with_filter")
-def get_accelerometer_filterted(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_with_filter(data, db)
+# Route to get data from accelerometer table filtered by device id
+@app.get("/accelerometer_by_device_id")
+def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_device_id(data, db)
     return banco_dados
 
 
-# Route to insert a new data into the accelerometer table
+# Route to get data from accelerometer table filtered by datetime
+@app.get("/accelerometer_by_datetime")
+def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_datetime(data, db)
+    return banco_dados
+
+
+# Route to get data from accelerometer table filtered by device id and datetime
+@app.get("/accelerometer_by_device_id_and_datetime")
+def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_device_id_and_datetime(data, db)
+    return banco_dados
+
+
+# Route to insert data into accelerometer table
 @app.post("/accelerometer")
 def new_accelerometer_record(accelerometer_data: List[AccelerometerSchema], db: Session=Depends(get_db)):
-    results = []
-    for data in accelerometer_data:
-        if (str(data.device_id).strip()):
-            try:
-                result = create_accelerometer_record(data, db)
-                results.append(result)
-            except Exception as e:
-                db.rollback()
-                results.append(f"Error: {str(e)}")
-        else:
-            results.append("Invalid data!")
-    
-    return results
+    return create_accelerometer_record(accelerometer_data, db)
 
 
 @app.post("/login")

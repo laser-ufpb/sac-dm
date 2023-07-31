@@ -6,3 +6,4 @@ class AccelerometerSchema(BaseModel):
     ACx: float
     ACy: float
     ACz: float
+    timestamp: str

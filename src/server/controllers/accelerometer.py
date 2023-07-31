@@ -3,14 +3,14 @@ from models.models import AccelerometerAcquisition
 from schemas.accelerometer import AccelerometerSchema
 from schemas.filter import Filter
 from sqlalchemy.orm import Session
+from typing import List
 from fastapi import status
 from fastapi.responses import JSONResponse
 
 
-def create_accelerometer_record(accelerometer_schema: AccelerometerSchema, db: Session):
-    record = AccelerometerAcquisition(**accelerometer_schema.dict())
-    record.timestamp = datetime.datetime.now()
-    db.add(record)
+def create_accelerometer_record(accelerometer_schema: List[AccelerometerSchema], db: Session):
+    records = [AccelerometerAcquisition(**accelerometer_record.dict()) for accelerometer_record in accelerometer_schema]
+    db.add_all(records)
     db.commit()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -19,10 +19,21 @@ def create_accelerometer_record(accelerometer_schema: AccelerometerSchema, db: S
 def get_all_accelerometer_records(db: Session):
     return db.query(AccelerometerAcquisition).all()
 
-def get_accelerometer_record_with_filter(data: Filter, db: Session):
-    if data.datetime and data.device_id:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp > data.datetime).filter(AccelerometerAcquisition.device_id == data.device_id).all()
-    elif data.device_id and not data.datetime:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id).all()
-    elif data.datetime and not data.device_id:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp > data.datetime).all()
+    
+def get_accelerometer_record_by_device_id(data: Filter, db: Session):
+    return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id).all()
+
+
+def get_accelerometer_record_by_datetime(data: Filter, db: Session):
+    if data.datetime_initial and not data.datetime_final:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp > data.datetime_initial).all()
+    else:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp > data.datetime_initial, AccelerometerAcquisition.timestamp < data.datetime_final).all()
+    
+
+def get_accelerometer_record_by_device_id_and_datetime(data: Filter, db: Session):
+    if data.datetime_initial and not data.datetime_final:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp > data.datetime_initial).all()
+    else:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp > data.datetime_initial, AccelerometerAcquisition.timestamp < data.datetime_final).all()
+ 
