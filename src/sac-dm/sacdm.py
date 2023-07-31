@@ -14,7 +14,6 @@ import scipy.io
 
 import sys
 import time
-from datetime import datetime
 
 import autocorrelation as auto
 import chaos
@@ -157,74 +156,74 @@ def sac_dm_old(data, N, threshold):
 
 
 
-def test(file1, file2):
-	N = int(sys.argv[1])
+# def test(file1, file2):
+# 	N = int(sys.argv[1])
 	
-	#mat = scipy.io.loadmat(file1)
-	#mat2 = scipy.io.loadmat(file2)
-	#data = mat['y1']
-	#data2 = mat2['y1']
+# 	#mat = scipy.io.loadmat(file1)
+# 	#mat2 = scipy.io.loadmat(file2)
+# 	#data = mat['y1']
+# 	#data2 = mat2['y1']
 
-	d = np.genfromtxt( filename, delimiter=';', names=['x','y','z','s','t'])
-	d2 = np.genfromtxt( filename2, delimiter=';', names=['x','y','z','s','t'])
-
-
-	data = d['z'].reshape(-1)
-	data2 = d2['z'].reshape(-1)
+# 	d = np.genfromtxt( filename, delimiter=';', names=['x','y','z','s','t'])
+# 	d2 = np.genfromtxt( filename2, delimiter=';', names=['x','y','z','s','t'])
 
 
-	data = data.flatten()
-	data2 = data2.flatten()
-
-	#data = np.genfromtxt(file1name, delimiter='	')
-	#data2 = np.genfromtxt(file2, delimiter='	')
+# 	data = d['z'].reshape(-1)
+# 	data2 = d2['z'].reshape(-1)
 
 
-	sac = sac_dm(data, N)
-	am = sac_am(data, N)
-	#pm = sac_pm(data, N)
-	#wm = sac_wm(data, N)
+# 	data = data.flatten()
+# 	data2 = data2.flatten()
+
+# 	#data = np.genfromtxt(file1name, delimiter='	')
+# 	#data2 = np.genfromtxt(file2, delimiter='	')
+
+
+# 	sac = sac_dm(data, N)
+# 	am = sac_am(data, N)
+# 	#pm = sac_pm(data, N)
+# 	#wm = sac_wm(data, N)
 	
-	sac2 = sac_dm(data2, N)
-	am2 = sac_am(data2, N)
-	#pm2 = sac_pm(data2, N)
-	#wm2 = sac_wm(data2, N)
-	
-
-	util.show([sac, sac2], "SAC-DM")
-	util.show([am, am2], "SAC-AM")
-	#util.show(pm, pm2, "SAC-PM")
-	#util.show(wm, wm2, "SAC-WM")
-
-	
+# 	sac2 = sac_dm(data2, N)
+# 	am2 = sac_am(data2, N)
+# 	#pm2 = sac_pm(data2, N)
+# 	#wm2 = sac_wm(data2, N)
 	
 
+# 	util.show([sac, sac2], "SAC-DM")
+# 	util.show([am, am2], "SAC-AM")
+# 	#util.show(pm, pm2, "SAC-PM")
+# 	#util.show(wm, wm2, "SAC-WM")
 
-#************************************
+	
+	
 
-	corr = auto.autocorrelation(data, N)
-	corr2 = auto.autocorrelation(data2, N)
 
-	util.show([corr, corr2], "Autocorrelation")
+# 	#************************************
 
-	#le = lyapunov_e(data[0:10000], 1000)
-	lr = chaos.lyapunov_e(data, N)
-	lr2 = chaos.lyapunov_e(data2, N)
+# 	corr = auto.autocorrelation(data, N)
+# 	corr2 = auto.autocorrelation(data2, N)
 
-	#print (le.shape)
-	print (lr.shape)
+# 	util.show([corr, corr2], "Autocorrelation")
 
-	util.show([lr, lr2], 'lyapunov coef')
+# 	#le = lyapunov_e(data[0:10000], 1000)
+# 	lr = chaos.lyapunov_e(data, N)
+# 	lr2 = chaos.lyapunov_e(data2, N)
 
-	l = max(lr)
-	l2 = max(lr2)
+# 	#print (le.shape)
+# 	print (lr.shape)
 
-	print ('lyapunov max coef: ', l)
-	print ('lyapunov max coef: ', l2)
+# 	util.show([lr, lr2], 'lyapunov coef')
 
-	plt.show()
+# 	l = max(lr)
+# 	l2 = max(lr2)
 
-	return 0
+# 	print ('lyapunov max coef: ', l)
+# 	print ('lyapunov max coef: ', l2)
+
+# 	plt.show()
+
+# 	return 0
 
 
 def plot_SAC_AM_DM_drone_signals():
@@ -585,8 +584,8 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-plot_SAC_AM_DM_drone_signals()
-# plot_SAC_AM_DM_motor_signals()
+# plot_SAC_AM_DM_drone_signals()
+plot_SAC_AM_DM_motor_signals()
 # test(filename, filename2)
 
 
