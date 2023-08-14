@@ -52,7 +52,7 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 	media_dataset = media_sac(half_dataset, 0, len(half_dataset))
 	desv_dataset = desvio_sac(half_dataset, 0, len(half_dataset))
 
-	aux_desv = np.zeros(len(dataset))
+	aux_desv = np.zeros(len(half_dataset))
 	aux_desv[round(len(half_dataset)/2)] = desv_dataset
 
 	x = np.arange(len(half_dataset))
@@ -61,7 +61,7 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 
 	ax.plot(x,y,color=colors[10], label = (f"Média da primeira metade do SAC {file_tag}"))
 
-	for j in range(len(dataset)):
+	for j in range(len(half_dataset)):
 
 		if(aux_desv[j] != 0):			
 			ax.errorbar(j,media_dataset,yerr = aux_desv[j], color = colors[20],marker='s', capsize=2, markersize=4, linewidth=1, linestyle='--')
@@ -104,7 +104,7 @@ def testagem(dataset, title, fig, ax, color):
 	colors = list(mcolors.CSS4_COLORS) 
 	ax.plot(dataset,color=colors[color], label = title)
 	
-def showTreinamento(dataset, title, fig, ax):
+def showTreinamento(dataset, title, fig, ax,file_tag):
 
 	fig.suptitle('Treinamento')
 
@@ -112,62 +112,48 @@ def showTreinamento(dataset, title, fig, ax):
 	auxT = title + ": Eixo X"
 	ax[0].set_title(auxT)
 	ax[0].set(ylabel = title)
-	treinamentoMetade(dataset[0], title, fig, ax[0],"F0")
+	treinamentoMetade(dataset[0], title, fig, ax[0],file_tag)
 	dataset_teste = amostragem_sac(dataset[0], round(len(dataset[0])/2), len(dataset[0]) )
-	testagem(dataset_teste, "Segunda metade do arquivo F0", fig, ax[0], 11)
+	testagem(dataset_teste, f("Segunda metade do arquivo {file_tag}"), fig, ax[0], 11)
 	ax[0].legend(loc = 'lower left')
 
 	#				Eixo Y
 	auxT = title + ": Eixo Y"
 	ax[1].set_title(auxT)
 	ax[1].set(ylabel = title)
-	treinamentoMetade(dataset[1], title, fig, ax[1],"F0")
+	treinamentoMetade(dataset[1], title, fig, ax[1],file_tag)
 	dataset_teste = amostragem_sac(dataset[1], round(len(dataset[1])/2), len(dataset[1]) )
-	testagem(dataset_teste, "Segunda metade do arquivo F0", fig, ax[1], 12)
+	testagem(dataset_teste, f("Segunda metade do arquivo {file_tag}"), fig, ax[1], 12)
 	ax[1].legend(loc = 'upper right')
 
 	#				Eixo Z
 	auxT = title + ": Eixo Z"
 	ax[2].set_title(auxT)
 	ax[2].set(ylabel = title)
-	treinamentoMetade(dataset[2], title, fig, ax[2],"F0")
+	treinamentoMetade(dataset[2], title, fig, ax[2],file_tag)
 	dataset_teste = amostragem_sac(dataset[2], round(len(dataset[2])/2), len(dataset[2]) )
-	testagem(dataset_teste, "Segunda metade do arquivo F0", fig, ax[2], 13)
+	testagem(dataset_teste, f("Segunda metade do arquivo {file_tag}"), fig, ax[2], 13)
 	ax[2].legend(loc = 'upper right')
 
-def showSAC_figUnico(dataset, title):
-
+def showSAC_figUnico(dataset, title, file_tag):
+ 
 	# # Criando graficos base ( Treinamento )
-	fig, (ax1_X, ax2_Y, ax3_Z) = plt.subplots(3)
-	treinamentoCompleto(dataset[0][0], "Eixo X", fig, ax1_X, "F0")
-	treinamentoCompleto(dataset[0][1], "Eixo Y", fig, ax2_Y, "F0")
-	treinamentoCompleto(dataset[0][2], "Eixo Z", fig, ax3_Z, "F0")
+	fig, axs = plt.subplots(3)
+	treinamentoCompleto(dataset[0][0], "", fig, axs[0], file_tag[0])
+	treinamentoCompleto(dataset[0][1], "", fig, axs[1], file_tag[0])
+	treinamentoCompleto(dataset[0][2], "", fig, axs[2], file_tag[0])
 
 	fig.suptitle(title)
-
-	ax1_X.set(ylabel = title)
-	ax2_Y.set(ylabel = title)
-	ax3_Z.set(ylabel = title)
+	aux = title.split(':',1)
+	axs[0].set(ylabel = (aux[0] + ": Eixo X"))
+	axs[1].set(ylabel = (aux[0] + ": Eixo Y"))
+	axs[2].set(ylabel = (aux[0] + ": Eixo Z"))
 
 	# # Plotar os eixos nos gráficos base ( Teste )
-	# #						Eixo X
-
-	testagem(dataset[1][0], 'Arquivo F6', fig, ax1_X, 11)
-	testagem(dataset[2][0], 'Arquivo F14', fig, ax1_X, 12)
-	testagem(dataset[3][0], 'Arquivo F22', fig, ax1_X, 13)
-	ax1_X.legend(loc='lower right')
-
-	# # 					Eixo Y
-	testagem(dataset[1][1], 'Arquivo F6', fig, ax2_Y, 11)
-	testagem(dataset[2][1], 'Arquivo F14', fig, ax2_Y, 12)
-	testagem(dataset[3][1], 'Arquivo F22', fig, ax2_Y, 13)
-	ax2_Y.legend(loc='lower right')
-
-	# # 					Eixo Z
-	testagem(dataset[1][2], 'Arquivo F6', fig, ax3_Z, 11)
-	testagem(dataset[2][2], 'Arquivo F14', fig, ax3_Z, 12)
-	testagem(dataset[3][2], 'Arquivo F22', fig, ax3_Z, 13)
-	ax3_Z.legend(loc='lower right')
+	for i in range(len(dataset[0])):#	eixos 
+		axs[i].set_xlim(-1, round(len(dataset[0][0])))
+		for j in range(1 ,len(dataset)):# arquivos
+			testagem(dataset[j][i], (f"Arquivo: {file_tag[j]}"), fig, axs[i], (10+j))
 
 def showSAC_figUnicoComTreino(dataset, title):
 
