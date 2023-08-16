@@ -19,7 +19,6 @@ import autocorrelation as auto
 import chaos
 import util
 
-
 # Calcula SAC-DM utilizando a funcao find_peaks do Python
 def sac_dm(data, N):
 	
