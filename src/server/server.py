@@ -2,13 +2,14 @@ import sqlite3
 import datetime
 import json
 import random
-from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest
+from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User
 from models.users import authenticate_user, get_current_user
 from models.token import create_access_token
 from schemas.device import DeviceSchema
 from schemas.sacdm import SACDMSchema
 from schemas.accelerometer import AccelerometerSchema
 from schemas.filter import Filter
+from schemas.user import UserSchema
 from fastapi import Depends, FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -20,6 +21,7 @@ from controllers.device import create_device, get_all_devices
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
 from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_by_device_id, get_accelerometer_record_by_datetime, get_accelerometer_record_by_device_id_and_datetime
 from database import (get_db, Session)
+from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
 
 
 app = FastAPI()
@@ -81,6 +83,28 @@ def sacdm_by_datetime(data: Filter, db: Session=Depends(get_db)):
 def sacdm_by_device_id_and_datetime(data: Filter, db: Session=Depends(get_db)):
     banco_dados: List[SACDM] = get_sacdm_by_device_id_and_datetime(data, db)
     return banco_dados
+
+# Route to insert a new data into users table
+@app.post("/user")
+def new_user(user: UserSchema, db: Session = Depends(get_db)):
+    return create_user(user, db)
+
+@app.get("/user")
+def list_users(db: Session = Depends(get_db)):
+    return get_all_users(db)
+
+@app.get("/user/{username}")
+def get_user_by_username_route(username: str, db: Session = Depends(get_db)):
+    user = get_user_by_username(username, db)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@app.delete("/user/delete/{user_id}")
+def remove_user(user_id: int, db: Session = Depends(get_db)):
+    return delete_user(user_id, db)
+
 
 
 # Route to insert a new data into the sac_dm table

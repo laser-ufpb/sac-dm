@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, Union
 from database import Base, engine
-from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Boolean, UniqueConstraint
 
 
 class Device(Base):
@@ -31,6 +31,15 @@ class AccelerometerAcquisition(Base):
     ACz = Column(Float, nullable=False)
     timestamp = Column(String, nullable=True)
 
+class User(Base):
+    __tablename__= "user"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, nullable=False, unique=True)
+    email = Column(String, nullable=False, unique=True)
+    full_name = Column(String, nullable=True)
+    disabled = Column(Boolean, nullable=True)
+    hashed_password = Column(String, nullable=False)
 
 class LoginRequest(BaseModel):
     username: str
