@@ -107,7 +107,7 @@ def testagem(dataset, title, fig, ax, color):
 def showTreinamentoM(dataset, title, file_tag):	
 	
 	fig, axs = plt.subplots(3)
-	fig.suptitle("TreinamentoM: " + title)
+	fig.suptitle(title)
 
 	#				Criando os titulos dos subgrafos
 	auxT = [("Eixo X"), ("Eixo Y"), ("Eixo Z")]
@@ -123,7 +123,7 @@ def showTreinamentoM(dataset, title, file_tag):
 def showTreinamentoC(dataset, title, file_tag):	
 	
 	fig, axs = plt.subplots(3)
-	fig.suptitle("TreinamentoC: " + title)
+	fig.suptitle(title)
 
 	#				Criando os titulos dos subgrafos
 	auxT = [("Eixo X"), ("Eixo Y"), ("Eixo Z")]
@@ -134,7 +134,6 @@ def showTreinamentoC(dataset, title, file_tag):
 		testagem(dataset[i], (f"Segunda metade do arquivo {file_tag}"), fig, axs[i], (11+i))
 		axs[i].set(ylabel = auxT[i])
 		# axs[i].legend(loc = 'upper right')
-
 
 
 
@@ -184,19 +183,16 @@ def showSAC_figUnicaComTreinoM(dataset, title, file_tag):
 	axs[2].set(ylabel = (aux[0] + ": Eixo Z"))
 	
 
-def showSAC(dataset, title, file_tag):
+def showSacUnicoEixo(dataset, title, file_tag):
 
 	# # Criando graficos base ( Treinamento )
 	fig, ax = plt.subplots()
-
-	treinamentoCompleto(dataset[0],title, fig, ax, file_tag[0])
+	ax.set_title(title)
 
 	# # Plotar os eixos nos gráficos base ( Teste )
-	for i in range(1 ,len(dataset)):
+	for i in range(len(dataset)):
 		testagem(dataset[i], (f"Arquivo: {file_tag[i]}"), fig, ax, (10+i))
-
 	ax.legend(loc='lower right')
-
 
 
 def media_sac(dataset,inicio,fim):
