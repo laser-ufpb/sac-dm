@@ -319,51 +319,51 @@ def plot_SAC_AM_DM_drone_signals():
 	sac_am_F22_y.pop()
 	sac_am_F22_z.pop()
 
-	# # Criando e plotando graficos para o treinamento de SAC-AM
+	# #					Plotando teste e treino do mesmo arquivo
+	# # Treino e teste com metade do arquivo
 
-	# fig_SAC_AM_T, (ax1_SAC_AM_X_T, ax2_SAC_AM_Y_T, ax3_SAC_AM_Z_T) = plt.subplots(3)
-	# util.showTreinamento([sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], "SAC-AM", fig_SAC_AM_T, [ax1_SAC_AM_X_T, ax2_SAC_AM_Y_T, ax3_SAC_AM_Z_T])
+	# util.showTreinamentoM([sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], "SAC-AM: F0", "F0")
+	# util.showTreinamentoM([sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], "SAC-DM: F0", "F0")
 
-	# # Criando e plotando graficos para o treinamento de SAC-DM
+	# # Treino e teste com o arquivo completo
 
-	# fig_SAC_DM_T, (ax1_SAC_DM_X_T, ax2_SAC_DM_Y_T, ax3_SAC_DM_Z_T) = plt.subplots(3)
-	# util.showTreinamento([sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], "SAC-DM", fig_SAC_DM_T, [ax1_SAC_DM_X_T, ax2_SAC_DM_Y_T, ax3_SAC_DM_Z_T])
+	# util.showTreinamentoC([sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], "SAC-AM: F0", "F0")
+	# util.showTreinamentoC([sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], "SAC-DM: F0", "F0")
+
+	# # Plotando na mesma figura 3 graficos( 1 para cada eixo ), contendo o treinamento e o teste feitos em arquivos diferentes
+	# #								SAC-AM: Treinamento com arquivo base completo e metade
+
+	# util.showSAC_figUnicaComTreinoC( ([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
+	#  								   [sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]]), (f"SAC-AM: Treinamento Completo - N{N}"), ["F0","F6","F14","F22"])
+	
+	# util.showSAC_figUnicaComTreinoM( ([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
+	#  								   [sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]]), (f"SAC-AM: Treinamento Metade - N{N}"), ["F0","F6","F14","F22"])
+
+	# #								SAC-DM: Treinamento com arquivo base completo e metade
+	# util.showSAC_figUnicaComTreinoC( ([[sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], [sac_dm_F6_x, sac_dm_F6_y, sac_dm_F6_z], [sac_dm_F14_x, sac_dm_F14_y, sac_dm_F14_z],
+	#  								   [sac_dm_F22_x, sac_dm_F22_y, sac_dm_F22_z]]), (f"SAC-DM: Treinamento Completo - N{N}"), ["F0","F6","F14","F22"])
+	
+	# util.showSAC_figUnicaComTreinoM( ([[sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], [sac_dm_F6_x, sac_dm_F6_y, sac_dm_F6_z], [sac_dm_F14_x, sac_dm_F14_y, sac_dm_F14_z],
+	#  								   [sac_dm_F22_x, sac_dm_F22_y, sac_dm_F22_z]]), (f"SAC-DM: Treinamento Metade - N{N}"), ["F0","F6","F14","F22"])
 
 
-	# # Plotando em uma unica figura, todos os graficos
+	# # Plotando graficos de forma individual
 
-	# util.showSAC_figUnico([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
-	# 						[sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]], "SAC-AM")
-	# util.showSAC_figUnico([[sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], [sac_dm_F6_x, sac_dm_F6_y, sac_dm_F6_z], [sac_dm_F14_x, sac_dm_F14_y, sac_dm_F14_z],
-	# 						[sac_dm_F22_x, sac_dm_F22_y, sac_dm_F22_z]], "SAC-DM")
+	# #								SAC-AM
+	# util.showSacUnicoEixo([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], "SAC-AM: Eixo X", ["F0","F6","F14","F22"])
+	# util.showSacUnicoEixo([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], "SAC-AM: Eixo Y", ["F0","F6","F14","F22"])
+	# util.showSacUnicoEixo([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], "SAC-AM: Eixo Z", ["F0","F6","F14","F22"])
 
-
-	# # Plotando em uma unica figura, todos os graficos com treino
-	# util.showSAC_figUnicoComTreino([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
-	# 						[sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]], "SAC-AM")
-
-	# util.showSAC_figUnicoComTreino([[sac_dm_F0_x, sac_dm_F0_y, sac_dm_F0_z], [sac_dm_F6_x, sac_dm_F6_y, sac_dm_F6_z], [sac_dm_F14_x, sac_dm_F14_y, sac_dm_F14_z],
-	# 						[sac_dm_F22_x, sac_dm_F22_y, sac_dm_F22_z]], "SAC-DM")
-
-
-
-	# Plotando graficos de forma individual
-
-	# 								SAC-AM
-	# util.showSAC([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], "SAC-AM: Eixo X")
-	# util.showSAC([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], "SAC-AM: Eixo Y")
-	# util.showSAC([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], "SAC-AM: Eixo Z")
-
-	# 								SAC-DM
-	# util.showSAC([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], "SAC-DM: Eixo X")
-	# util.showSAC([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], "SAC-DM: Eixo Y")
-	# util.showSAC([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], "SAC-DM: Eixo Z")
+	# #								SAC-DM
+	# util.showSacUnicoEixo([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], "SAC-DM: Eixo X", ["F0","F6","F14","F22"])
+	# util.showSacUnicoEixo([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], "SAC-DM: Eixo Y", ["F0","F6","F14","F22"])
+	# util.showSacUnicoEixo([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], "SAC-DM: Eixo Z", ["F0","F6","F14","F22"])
 
 
 	# # 								Matriz de confusao
-	util.confusionMatrix([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X")
-	util.confusionMatrix([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y")
-	util.confusionMatrix([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z")
+	# util.confusionMatrix([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X")
+	# util.confusionMatrix([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y")
+	# util.confusionMatrix([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z")
 
 	# util.confusionMatrix([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo X")
 	# util.confusionMatrix([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Y")
@@ -398,6 +398,7 @@ def plot_SAC_AM_DM_drone_signals():
 	# util.slidingWindowResumeInTxt([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo X", int(sys.argv[2]), N)
 	# util.slidingWindowResumeInTxt([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Y", int(sys.argv[2]), N)
 	# util.slidingWindowResumeInTxt([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Z", int(sys.argv[2]), N)
+	
 	plt.show()
 
 	return 0
@@ -526,32 +527,32 @@ def plot_SAC_AM_DM_motor_signals():
 	# Plotando graficos de forma individual
 
 	# #								SAC-AM
-	# utilLite.showSacIndividual([sac_am_C0_x, sac_am_C0_y, sac_am_C0_z], (f"SAC-AM: Arquivo C0 - N{N}"), "C0")
-	# utilLite.showSacIndividual([sac_am_C2_x, sac_am_C2_y, sac_am_C2_z], (f"SAC-AM: Arquivo C2 - N{N}"), "C2")
-	# utilLite.showSacIndividual([sac_am_C4_x, sac_am_C4_y, sac_am_C4_z], (f"SAC-AM: Arquivo C4 - N{N}"), "C4")
-	# utilLite.showSacIndividual([sac_am_C10_x, sac_am_C10_y, sac_am_C10_z], (f"SAC-AM: Arquivo C10 - N{N}"), "C10")
-	# utilLite.showSacIndividual([sac_am_C20_x, sac_am_C20_y, sac_am_C20_z], (f"SAC-AM: Arquivo C20 - N{N}"), "C20")
+	# util.showTreinamentoC([sac_am_C0_x, sac_am_C0_y, sac_am_C0_z], (f"SAC-AM: Arquivo C0 - N{N}"), "C0")
+	# util.showTreinamentoC([sac_am_C2_x, sac_am_C2_y, sac_am_C2_z], (f"SAC-AM: Arquivo C2 - N{N}"), "C2")
+	# util.showTreinamentoC([sac_am_C4_x, sac_am_C4_y, sac_am_C4_z], (f"SAC-AM: Arquivo C4 - N{N}"), "C4")
+	# util.showTreinamentoC([sac_am_C10_x, sac_am_C10_y, sac_am_C10_z], (f"SAC-AM: Arquivo C10 - N{N}"), "C10")
+	# util.showTreinamentoC([sac_am_C20_x, sac_am_C20_y, sac_am_C20_z], (f"SAC-AM: Arquivo C20 - N{int(N/4)}"), "C20")
 
 	# #								SAC-AM Metade
-	# utilLite.showSacIndividualTreino([sac_am_C0_x, sac_am_C0_y, sac_am_C0_z], (f"SAC-AM: Arquivo C0 - N{N}"), "C0")
-	# utilLite.showSacIndividualTreino([sac_am_C2_x, sac_am_C2_y, sac_am_C2_z], (f"SAC-AM: Arquivo C2 - N{N}"), "C2")
-	# utilLite.showSacIndividualTreino([sac_am_C4_x, sac_am_C4_y, sac_am_C4_z], (f"SAC-AM: Arquivo C4 - N{N}"), "C4")
-	# utilLite.showSacIndividualTreino([sac_am_C10_x, sac_am_C10_y, sac_am_C10_z], (f"SAC-AM: Arquivo C10 - N{N}"), "C10")
-	# utilLite.showSacIndividualTreino([sac_am_C20_x, sac_am_C20_y, sac_am_C20_z], (f"SAC-AM: Arquivo C20 - N{int(N/4)}"), "C20")
+	# util.showTreinamentoM([sac_am_C0_x, sac_am_C0_y, sac_am_C0_z], (f"SAC-AM: Arquivo C0 - N{N}"), "C0")
+	# util.showTreinamentoM([sac_am_C2_x, sac_am_C2_y, sac_am_C2_z], (f"SAC-AM: Arquivo C2 - N{N}"), "C2")
+	# util.showTreinamentoM([sac_am_C4_x, sac_am_C4_y, sac_am_C4_z], (f"SAC-AM: Arquivo C4 - N{N}"), "C4")
+	# util.showTreinamentoM([sac_am_C10_x, sac_am_C10_y, sac_am_C10_z], (f"SAC-AM: Arquivo C10 - N{N}"), "C10")
+	# util.showTreinamentoM([sac_am_C20_x, sac_am_C20_y, sac_am_C20_z], (f"SAC-AM: Arquivo C20 - N{int(N/4)}"), "C20")
 
 	# # 								SAC-DM
-	# utilLite.showSacIndividual([sac_dm_C0_x, sac_dm_C0_y, sac_dm_C0_z], (f"SAC-DM: Arquivo C0 - N{N}"), "C0")
-	# utilLite.showSacIndividual([sac_dm_C2_x, sac_dm_C2_y, sac_dm_C2_z], (f"SAC-DM: Arquivo C2 - N{N}"), "C2")
-	# utilLite.showSacIndividual([sac_dm_C4_x, sac_dm_C4_y, sac_dm_C4_z], (f"SAC-DM: Arquivo C4 - N{N}"), "C4")
-	# utilLite.showSacIndividual([sac_dm_C10_x, sac_dm_C10_y, sac_dm_C10_z], (f"SAC-DM: Arquivo C10 - N{N}"), "C10")
-	# utilLite.showSacIndividual([sac_dm_C20_x, sac_dm_C20_y, sac_dm_C20_z], (f"SAC-DM: Arquivo C20 - N{N}"), "C20")
+	# util.showTreinamentoC([sac_dm_C0_x, sac_dm_C0_y, sac_dm_C0_z], (f"SAC-DM: Arquivo C0 - N{N}"), "C0")
+	# util.showTreinamentoC([sac_dm_C2_x, sac_dm_C2_y, sac_dm_C2_z], (f"SAC-DM: Arquivo C2 - N{N}"), "C2")
+	# util.showTreinamentoC([sac_dm_C4_x, sac_dm_C4_y, sac_dm_C4_z], (f"SAC-DM: Arquivo C4 - N{N}"), "C4")
+	# util.showTreinamentoC([sac_dm_C10_x, sac_dm_C10_y, sac_dm_C10_z], (f"SAC-DM: Arquivo C10 - N{N}"), "C10")
+	# util.showTreinamentoC([sac_dm_C20_x, sac_dm_C20_y, sac_dm_C20_z], (f"SAC-DM: Arquivo C20 - N{int(N/4)}"), "C20")
 
 	# # 								SAC-DM Metade
-	# utilLite.showSacIndividualTreino([sac_dm_C0_x, sac_dm_C0_y, sac_dm_C0_z], (f"SAC-DM: Arquivo C0 - N{N}"), "C0")
-	# utilLite.showSacIndividualTreino([sac_dm_C2_x, sac_dm_C2_y, sac_dm_C2_z], (f"SAC-DM: Arquivo C2 - N{N}"), "C2")
-	# utilLite.showSacIndividualTreino([sac_dm_C4_x, sac_dm_C4_y, sac_dm_C4_z], (f"SAC-DM: Arquivo C4 - N{N}"), "C4")
-	# utilLite.showSacIndividualTreino([sac_dm_C10_x, sac_dm_C10_y, sac_dm_C10_z], (f"SAC-DM: Arquivo C10 - N{N}"), "C10")
-	# utilLite.showSacIndividualTreino([sac_dm_C20_x, sac_dm_C20_y, sac_dm_C20_z], (f"SAC-DM: Arquivo C20 - N{int(N/4)}"), "C20")
+	# util.showTreinamentoM([sac_dm_C0_x, sac_dm_C0_y, sac_dm_C0_z], (f"SAC-DM: Arquivo C0 - N{N}"), "C0")
+	# util.showTreinamentoM([sac_dm_C2_x, sac_dm_C2_y, sac_dm_C2_z], (f"SAC-DM: Arquivo C2 - N{N}"), "C2")
+	# util.showTreinamentoM([sac_dm_C4_x, sac_dm_C4_y, sac_dm_C4_z], (f"SAC-DM: Arquivo C4 - N{N}"), "C4")
+	# util.showTreinamentoM([sac_dm_C10_x, sac_dm_C10_y, sac_dm_C10_z], (f"SAC-DM: Arquivo C10 - N{N}"), "C10")
+	# util.showTreinamentoM([sac_dm_C20_x, sac_dm_C20_y, sac_dm_C20_z], (f"SAC-DM: Arquivo C20 - N{int(N/4)}"), "C20")
 
 	# # 								Matriz de confusao Completa vs Metade
 	# util.cleanTxtMatrix(N)
@@ -573,11 +574,11 @@ def plot_SAC_AM_DM_motor_signals():
 	# util.windowsPlot([sac_dm_C0_z, sac_dm_C2_z, sac_dm_C4_z, sac_dm_C10_z, sac_dm_C20_z], ["C0", "C2", "C4", "C10", "C20"], "SAC-DM: Eixo Z", int(sys.argv[2]), N)
 
 	# #									Taxa de aquisição das amostras por segundo com plotagem
-	util.taxa_de_aquisicao(C0_t, "C0")
-	util.taxa_de_aquisicao(C2_t, "C2")
-	util.taxa_de_aquisicao(C4_t, "C4")
-	util.taxa_de_aquisicao(C10_t, "C10")
-	util.taxa_de_aquisicao(C20_t, "C20")
+	# util.taxa_de_aquisicao(C0_t, "C0")
+	# util.taxa_de_aquisicao(C2_t, "C2")
+	# util.taxa_de_aquisicao(C4_t, "C4")
+	# util.taxa_de_aquisicao(C10_t, "C10")
+	# util.taxa_de_aquisicao(C20_t, "C20")
 
 	plt.show()
 	return 0
