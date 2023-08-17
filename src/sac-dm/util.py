@@ -4,43 +4,6 @@ import numpy as np
 import matplotlib.colors as mcolors
 import time
 
-def moving_average(a, n=3) :
-	ret = np.cumsum(a, dtype=float)
-	ret[n:] = ret[n:] - ret[:-n]
-	return ret[n - 1:] / n
-
-def compress(a, n=3):
-	i=0
-	j=n
-	k=0
-	ret = np.zeros(1)
-	for k in range(int(len(a)/n)):
-		ret = np.append(ret,np.average(a[i:j]))
-		i = j
-		j = j+n
-	return ret
-    
-
-def show(dataset, title):
-	print("dataset ", len(dataset))
-	fig, ax = plt.subplots()
-
-	plt.ylabel(title) 
-	plt.xlabel('Time (ms)')
-	
-	ax.set_title(title)  
-	colors = list(mcolors.CSS4_COLORS) 
-
-	for i in range(len(dataset)):
-		print("sub dataset ", len(dataset[i]))
-		ax.plot(dataset[i],color=colors[i+10], label=("Data" ,i))	
-		
-	plt.legend(loc='upper left')
-
-
-	#plt.show()
-	return 1
-
 def treinamentoMetade(dataset, title, fig, ax, file_tag):
 	
 	plt.ylabel(title) 
@@ -52,7 +15,7 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 	media_dataset = media_sac(half_dataset, 0, len(half_dataset))
 	desv_dataset = desvio_sac(half_dataset, 0, len(half_dataset))
 
-	aux_desv = np.zeros(len(dataset))
+	aux_desv = np.zeros(len(half_dataset))
 	aux_desv[round(len(half_dataset)/2)] = desv_dataset
 
 	x = np.arange(len(half_dataset))
@@ -61,7 +24,7 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 
 	ax.plot(x,y,color=colors[10], label = (f"Média da primeira metade do SAC {file_tag}"))
 
-	for j in range(len(dataset)):
+	for j in range(len(half_dataset)):
 
 		if(aux_desv[j] != 0):			
 			ax.errorbar(j,media_dataset,yerr = aux_desv[j], color = colors[20],marker='s', capsize=2, markersize=4, linewidth=1, linestyle='--')
@@ -104,148 +67,94 @@ def testagem(dataset, title, fig, ax, color):
 	colors = list(mcolors.CSS4_COLORS) 
 	ax.plot(dataset,color=colors[color], label = title)
 	
-def showTreinamento(dataset, title, fig, ax):
-
-	fig.suptitle('Treinamento')
-
-	#				Eixo X
-	auxT = title + ": Eixo X"
-	ax[0].set_title(auxT)
-	ax[0].set(ylabel = title)
-	treinamentoMetade(dataset[0], title, fig, ax[0],"F0")
-	dataset_teste = amostragem_sac(dataset[0], round(len(dataset[0])/2), len(dataset[0]) )
-	testagem(dataset_teste, "Segunda metade do arquivo F0", fig, ax[0], 11)
-	ax[0].legend(loc = 'lower left')
-
-	#				Eixo Y
-	auxT = title + ": Eixo Y"
-	ax[1].set_title(auxT)
-	ax[1].set(ylabel = title)
-	treinamentoMetade(dataset[1], title, fig, ax[1],"F0")
-	dataset_teste = amostragem_sac(dataset[1], round(len(dataset[1])/2), len(dataset[1]) )
-	testagem(dataset_teste, "Segunda metade do arquivo F0", fig, ax[1], 12)
-	ax[1].legend(loc = 'upper right')
-
-	#				Eixo Z
-	auxT = title + ": Eixo Z"
-	ax[2].set_title(auxT)
-	ax[2].set(ylabel = title)
-	treinamentoMetade(dataset[2], title, fig, ax[2],"F0")
-	dataset_teste = amostragem_sac(dataset[2], round(len(dataset[2])/2), len(dataset[2]) )
-	testagem(dataset_teste, "Segunda metade do arquivo F0", fig, ax[2], 13)
-	ax[2].legend(loc = 'upper right')
-
-def showSAC_figUnico(dataset, title):
-
-	# # Criando graficos base ( Treinamento )
-	fig, (ax1_X, ax2_Y, ax3_Z) = plt.subplots(3)
-	treinamentoCompleto(dataset[0][0], "Eixo X", fig, ax1_X, "F0")
-	treinamentoCompleto(dataset[0][1], "Eixo Y", fig, ax2_Y, "F0")
-	treinamentoCompleto(dataset[0][2], "Eixo Z", fig, ax3_Z, "F0")
-
+def showTreinamentoM(dataset, title, file_tag):	
+	
+	fig, axs = plt.subplots(3)
 	fig.suptitle(title)
 
-	ax1_X.set(ylabel = title)
-	ax2_Y.set(ylabel = title)
-	ax3_Z.set(ylabel = title)
+	#				Criando os titulos dos subgrafos
+	auxT = [("Eixo X"), ("Eixo Y"), ("Eixo Z")]
+	
+	for i in range(len(dataset)):
+		# axs[i].set_title(auxT[i])
+		treinamentoMetade(dataset[i], title, fig, axs[i],file_tag)
+		dataset_teste = amostragem_sac(dataset[i], round(len(dataset[i])/2), len(dataset[i]) )
+		testagem(dataset_teste, (f"Segunda metade do arquivo {file_tag}"), fig, axs[i], (11+i))
+		axs[i].set(ylabel = auxT[i])
+		# axs[i].legend(loc = 'upper right')
 
-	# # Plotar os eixos nos gráficos base ( Teste )
-	# #						Eixo X
-
-	testagem(dataset[1][0], 'Arquivo F6', fig, ax1_X, 11)
-	testagem(dataset[2][0], 'Arquivo F14', fig, ax1_X, 12)
-	testagem(dataset[3][0], 'Arquivo F22', fig, ax1_X, 13)
-	ax1_X.legend(loc='lower right')
-
-	# # 					Eixo Y
-	testagem(dataset[1][1], 'Arquivo F6', fig, ax2_Y, 11)
-	testagem(dataset[2][1], 'Arquivo F14', fig, ax2_Y, 12)
-	testagem(dataset[3][1], 'Arquivo F22', fig, ax2_Y, 13)
-	ax2_Y.legend(loc='lower right')
-
-	# # 					Eixo Z
-	testagem(dataset[1][2], 'Arquivo F6', fig, ax3_Z, 11)
-	testagem(dataset[2][2], 'Arquivo F14', fig, ax3_Z, 12)
-	testagem(dataset[3][2], 'Arquivo F22', fig, ax3_Z, 13)
-	ax3_Z.legend(loc='lower right')
-
-def showSAC_figUnicoComTreino(dataset, title):
-
-	# # Criando graficos base ( Treinamento )
-	fig, (ax1_X, ax2_Y, ax3_Z) = plt.subplots(3)
-
-	auxT = title + ": Eixo X"
-	ax1_X.set_title('Eixo X')
-	treinamentoMetade(dataset[0][0], auxT, fig, ax1_X, "F0")
-	dataset_teste = amostragem_sac(dataset[0][0], round(len(dataset[0][0])/2), len(dataset[0][0]) )
-	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax1_X, 16)
-	# ax1_X.set_xlim(-1, round(len(dataset[0][0])/2))
-
-	auxT = title + ": Eixo Y"
-	ax2_Y.set_title('Eixo Y')
-	treinamentoMetade(dataset[0][1], auxT, fig, ax2_Y, "F0")
-	dataset_teste = amostragem_sac(dataset[0][1], round(len(dataset[0][1])/2), len(dataset[0][1]) )
-	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax2_Y, 16)
-	# ax2_Y.set_xlim(-1, round(len(dataset[0][1])/2))
-
-	auxT = title + ": Eixo Z"
-	ax3_Z.set_title('Eixo Z')
-	treinamentoMetade(dataset[0][2], auxT, fig, ax3_Z, "F0")
-	dataset_teste = amostragem_sac(dataset[0][2], round(len(dataset[0][2])/2), len(dataset[0][2]) )
-	testagem(dataset_teste, "Segunda metade do Arquivo F0", fig, ax3_Z, 16)
-	# ax3_Z.set_xlim(-1, round(len(dataset[0][2])/2))
-
+def showTreinamentoC(dataset, title, file_tag):	
+	
+	fig, axs = plt.subplots(3)
 	fig.suptitle(title)
 
-	ax1_X.set(ylabel = title)
-	ax2_Y.set(ylabel = title)
-	ax3_Z.set(ylabel = title)
+	#				Criando os titulos dos subgrafos
+	auxT = [("Eixo X"), ("Eixo Y"), ("Eixo Z")]
+	
+	for i in range(len(dataset)):
+		# axs[i].set_title(auxT[i])
+		treinamentoCompleto(dataset[i], "", fig, axs[i],file_tag)
+		testagem(dataset[i], (f"Segunda metade do arquivo {file_tag}"), fig, axs[i], (11+i))
+		axs[i].set(ylabel = auxT[i])
+		# axs[i].legend(loc = 'upper right')
+
+
+
+def showSAC_figUnicaComTreinoC(dataset, title, file_tag):
+ 
+	# # Criando graficos base ( Treinamento )
+	fig, axs = plt.subplots(3)
+
+	fig.suptitle(title)
+	aux = title.split(':',1)
 
 	# # Plotar os eixos nos gráficos base ( Teste )
-	# #							Eixo X
-	dataset_teste = amostragem_sac(dataset[1][0], round(len(dataset[1][0])/2), len(dataset[1][0]) )
-	testagem(dataset_teste, 'Arquivo F6', fig, ax1_X, 11)
+	for i in range(len(dataset[0])):#	eixos 
+		treinamentoCompleto(dataset[0][i], "", fig, axs[i], file_tag[0])
 
-	dataset_teste = amostragem_sac(dataset[2][0], round(len(dataset[2][0])/2), len(dataset[2][0]) )
-	testagem(dataset_teste, 'Arquivo F14', fig, ax1_X, 12)
+		for j in range(len(dataset)):# arquivos
+			testagem(dataset[j][i], (f"Arquivo: {file_tag[j]}"), fig, axs[i], (11+j))
 
-	dataset_teste = amostragem_sac(dataset[3][0], round(len(dataset[3][0])/2), len(dataset[3][0]) )
-	testagem(dataset_teste, 'Arquivo F22', fig, ax1_X, 13)
-	ax1_X.legend(loc='lower right')
+		axs[i].set_xlim(-1, round(len(dataset[0][i])))
+		axs[i].legend(loc='lower right')
 
-	# # 						Eixo Y
-	dataset_teste = amostragem_sac(dataset[1][1], round(len(dataset[1][1])/2), len(dataset[1][1]) )
-	testagem(dataset_teste, 'Arquivo F6', fig, ax2_Y, 11)
+	axs[0].set(ylabel = (aux[0] + ": Eixo X"))
+	axs[1].set(ylabel = (aux[0] + ": Eixo Y"))
+	axs[2].set(ylabel = (aux[0] + ": Eixo Z"))
 
-	dataset_teste = amostragem_sac(dataset[2][1], round(len(dataset[2][1])/2), len(dataset[2][1]) )
-	testagem(dataset_teste, 'Arquivo F14', fig, ax2_Y, 12)
+def showSAC_figUnicaComTreinoM(dataset, title, file_tag):
 
-	dataset_teste = amostragem_sac(dataset[3][1], round(len(dataset[3][1])/2), len(dataset[3][1]) )
-	testagem(dataset_teste, 'Arquivo F22', fig, ax2_Y, 13)
-	ax2_Y.legend(loc='lower right')
+	# # Criando graficos base ( Treinamento )
+	fig, (axs) = plt.subplots(3)
 
-	# # 						Eixo Z
-	dataset_teste = amostragem_sac(dataset[1][2], round(len(dataset[1][2])/2), len(dataset[1][2]) )
-	testagem(dataset_teste, 'Arquivo F6', fig, ax3_Z, 11)
+	fig.suptitle(title)
+	aux = title.split(':',1)
 
-	dataset_teste = amostragem_sac(dataset[2][2], round(len(dataset[2][2])/2), len(dataset[2][2]) )
-	testagem(dataset_teste, 'Arquivo F14', fig, ax3_Z, 12)
+	# # Plotar os eixos nos gráficos base ( Teste )
+	for i in range(len(dataset[0])):#	eixos 
+		treinamentoMetade(dataset[0][i], "", fig, axs[i], file_tag[0])
+		
+		for j in range(0 ,len(dataset)):# arquivos
+			dataset_teste = amostragem_sac(dataset[j][i], round(len(dataset[j][i])/2), len(dataset[j][i]) )
+			testagem(dataset_teste, (f"Segunda metade do Arquivo: {file_tag[j]}"), fig, axs[i], (11+j))
+		
+		axs[i].set_xlim(-1, round(len(dataset[0][i])))
+		axs[i].legend(loc='lower right')
+		
+	axs[0].set(ylabel = (aux[0] + ": Eixo X"))
+	axs[1].set(ylabel = (aux[0] + ": Eixo Y"))
+	axs[2].set(ylabel = (aux[0] + ": Eixo Z"))
+	
 
-	dataset_teste = amostragem_sac(dataset[3][2], round(len(dataset[3][2])/2), len(dataset[3][2]) )
-	testagem(dataset_teste, 'Arquivo F22', fig, ax3_Z, 13)
-	ax3_Z.legend(loc='lower right')
-
-def showSAC(dataset, title):
+def showSacUnicoEixo(dataset, title, file_tag):
 
 	# # Criando graficos base ( Treinamento )
 	fig, ax = plt.subplots()
-
-	treinamentoCompleto(dataset[0],title, fig, ax, "F0")
+	ax.set_title(title)
 
 	# # Plotar os eixos nos gráficos base ( Teste )
-	testagem(dataset[1], 'Arquivo F6', fig, ax, 11)
-	testagem(dataset[2], 'Arquivo F14', fig, ax, 12)
-	testagem(dataset[3], 'Arquivo F22', fig, ax, 13)
+	for i in range(len(dataset)):
+		testagem(dataset[i], (f"Arquivo: {file_tag[i]}"), fig, ax, (10+i))
 	ax.legend(loc='lower right')
 
 
@@ -943,11 +852,12 @@ def taxa_de_aquisicao(dataset, arquivo):
 	for i in range(chaves_int[0], chaves_int[-1]):
 		if(i in chaves_int):
 			amostras_plot.append(len(amostras[i]))
-			if(len(amostras[i]) > 600):
+			if(len(amostras[i]) > 100):
 				amostras_media.append(len(amostras[i]))
 		else:
 			amostras_plot.append(0)
 
+	# print(f"Tamanho das amostras: {len(amostras_media)} Somatorio das amostras: {sum(amostras_media)}")
 	taxa_aquisicao = ( sum(amostras_media) / len(amostras_media) )
 	print(f"Taxa de aquisição do arquivo {arquivo}: {round(taxa_aquisicao, 2)} amostras por segundo")
 
