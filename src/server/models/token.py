@@ -12,7 +12,7 @@ load_dotenv()
 # Acessar o valor de SECRET_KEY
 secret_key = os.getenv("SECRET_KEY")
 algorithm = os.getenv("ALGORITHM")
-expire_minutes = str(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 class Token(BaseModel):
