@@ -212,6 +212,8 @@ def confusionMatrix(dataset, arquivos, title):
 			else:
 				matrix[i][4] += 1
 
+	for i in range(len(dataset)): 
+		matrix[i] = np.round((matrix[i] / len(dataset[i])) * 100, decimals=1)  #converte os valores da matriz para valores percentuais.
 
 	print(f"\n\t\t{title}\n")
 
@@ -222,7 +224,8 @@ def confusionMatrix(dataset, arquivos, title):
 	print(f"{'Inconclusivo':<10}")
 
 	for i in range(len(matrix)):
-		print(f"{arquivos[i]:<10}{matrix[i][0]:<10}{matrix[i][1]:<10}{matrix[i][2]:<10}{matrix[i][3]:<10}{matrix[i][4]:<10}")
+		values = [f"{matrix[i][j]}%" for j in range(len(matrix[i]))] #adiciona '%' nos valores da matriz.
+		print(f"{arquivos[1]:<10}{values[0]:<10}{values[1]:<10}{values[2]:<10}{values[3]:<10}{values[4]:<10}")
 
 def confusionMatrixInTxt(dataset, arquivos, title):
 
