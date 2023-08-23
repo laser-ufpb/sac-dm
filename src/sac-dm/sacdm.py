@@ -53,7 +53,7 @@ def sac_am(data, N):
 	for k in range(size):
 		peaks, _ = find_peaks(data[inicio:fim])
 		v = np.abs(data[peaks])
-		s = sum(v)
+		s = np.mean(v)
 		sacdm[k] = 1.0*s/N
 		inicio = fim
 		fim = fim + N
