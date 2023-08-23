@@ -31,37 +31,6 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 
 	ax.fill_between(x, media_dataset - desv_dataset, media_dataset + desv_dataset, alpha = 0.2, label = (f"Desvio Padrão da primeira metade do Arquivo {file_tag}"))
 
-def treinamentoCompleto(dataset, title, fig, ax, file_tag):
-	
-	aux = title.split(':',1)
-	plt.ylabel(aux[0]) 
-	plt.xlabel('Time (ms)')
-
-	ax.set_title(title)  
-	colors = list(mcolors.CSS4_COLORS) 
-
-	media_dataset = media_sac(dataset, 0, round(len(dataset)))
-	desv_dataset = desvio_sac(dataset, 0, round(len(dataset)))
-
-	aux_desv = np.zeros(len(dataset))
-	aux_desv[round((len(dataset))/2)] = desv_dataset
-
-	x = np.arange(len(dataset))
-	y = np.zeros(len(dataset))
-	y = np.full_like(y, media_dataset)
-
-	ax.plot(x,y,color=colors[10], label = (f"Média do Arquivo {file_tag}"))
-
-
-	plt.xlim(right = (len(dataset)))
-
-	for j in range(len(dataset)):
-
-		if(aux_desv[j] != 0):			
-			ax.errorbar(j,media_dataset,yerr = aux_desv[j], color = colors[20],marker='s', capsize=2, markersize=4, linewidth=1, linestyle='--')
-
-	ax.fill_between(x, media_dataset - desv_dataset, media_dataset + desv_dataset, alpha = 0.2, label = (f"Desvio Padrão do Arquivo {file_tag}"))
-
 def testagem(dataset, title, fig, ax, color):
 
 	colors = list(mcolors.CSS4_COLORS) 
@@ -83,44 +52,6 @@ def showTreinamentoM(dataset, title, file_tag):
 		axs[i].set(ylabel = auxT[i])
 		# axs[i].legend(loc = 'upper right')
 
-def showTreinamentoC(dataset, title, file_tag):	
-	
-	fig, axs = plt.subplots(3)
-	fig.suptitle(title)
-
-	#				Criando os titulos dos subgrafos
-	auxT = [("Eixo X"), ("Eixo Y"), ("Eixo Z")]
-	
-	for i in range(len(dataset)):
-		# axs[i].set_title(auxT[i])
-		treinamentoCompleto(dataset[i], "", fig, axs[i],file_tag)
-		testagem(dataset[i], (f"Segunda metade do arquivo {file_tag}"), fig, axs[i], (11+i))
-		axs[i].set(ylabel = auxT[i])
-		# axs[i].legend(loc = 'upper right')
-
-
-
-def showSAC_figUnicaComTreinoC(dataset, title, file_tag):
- 
-	# # Criando graficos base ( Treinamento )
-	fig, axs = plt.subplots(3)
-
-	fig.suptitle(title)
-	aux = title.split(':',1)
-
-	# # Plotar os eixos nos gráficos base ( Teste )
-	for i in range(len(dataset[0])):#	eixos 
-		treinamentoCompleto(dataset[0][i], "", fig, axs[i], file_tag[0])
-
-		for j in range(len(dataset)):# arquivos
-			testagem(dataset[j][i], (f"Arquivo: {file_tag[j]}"), fig, axs[i], (11+j))
-
-		axs[i].set_xlim(-1, round(len(dataset[0][i])))
-		axs[i].legend(loc='lower right')
-
-	axs[0].set(ylabel = (aux[0] + ": Eixo X"))
-	axs[1].set(ylabel = (aux[0] + ": Eixo Y"))
-	axs[2].set(ylabel = (aux[0] + ": Eixo Z"))
 
 def showSAC_figUnicaComTreinoM(dataset, title, file_tag):
 
@@ -182,30 +113,30 @@ def amostragem_sac(dataset, inicio, fim):
 
 def confusionMatrix(dataset, arquivos, title):
 
-	media = np.zeros((len(dataset)))
-	desvio = np.zeros((len(dataset)))
+	media = np.zeros(round(len(dataset[0])/2))
+	desvio = np.zeros((round(len(dataset[0])/2)))
 	matrix = np.zeros((len(dataset),len(dataset)+1))
 
 	for i in range(len(dataset)):
-		media[i] = media_sac(dataset[i], 0, len(dataset[i]))
-		desvio[i] = desvio_sac(dataset[i], 0, len(dataset[i]))
+		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
+		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range(len(dataset[i])): # array com n pontos
-			
-			if (dataset[i][j] >= media[0] - desvio[0] and dataset[i][j] <= media[0] + desvio[0]):
+		for j in range(round(len(dataset[i])/2),len(dataset[i])): # array com n pontos
+			testing_data = dataset[i][j]
+			if (testing_data >= media[0] - desvio[0] and testing_data <= media[0] + desvio[0]):
 				matrix[i][0] += 1
 				continue
 
-			elif(dataset[i][j] >= media[1] - desvio[1] and dataset[i][j] <= media[1] + desvio[1]):
+			elif(testing_data >= media[1] - desvio[1] and testing_data <= media[1] + desvio[1]):
 				matrix[i][1] += 1
 				continue
 
-			elif(dataset[i][j] >= media[2] - desvio[2] and dataset[i][j] <= media[2] + desvio[2]):
+			elif(testing_data >= media[2] - desvio[2] and testing_data <= media[2] + desvio[2]):
 				matrix[i][2] += 1
 				continue
 
-			elif(dataset[i][j] >= media[3] - desvio[3] and dataset[i][j] <= media[3] + desvio[3]):
+			elif(testing_data >= media[3] - desvio[3] and testing_data <= media[3] + desvio[3]):
 				matrix[i][3] += 1
 				continue
 			
@@ -230,41 +161,41 @@ def confusionMatrix(dataset, arquivos, title):
 def confusionMatrixInTxt(dataset, arquivos, title):
 
 	file1 = open('confusionMatrix.txt', 'a+')
-	media = np.zeros((len(dataset)))
-	desvio = np.zeros((len(dataset)))
+	media = np.zeros(round(len(dataset[0])/2))
+	desvio = np.zeros((round(len(dataset[0])/2)))
 	matrix = np.zeros((len(dataset),len(dataset)+1))
 	pontos_inconclusivos = np.zeros((len(dataset),len(dataset[0])))
 	pontos_inconclusivos_ordenados = np.zeros((len(dataset),len(dataset[0])))
 
 	file1.write((title + "\n\n"))
 	for i in range(len(dataset)):
-		media[i] = media_sac(dataset[i], 0, len(dataset[i]))
-		desvio[i] = desvio_sac(dataset[i], 0, len(dataset[i]))
+		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
+		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
 		file1.write((arquivos[i] + ":" + " Média - " + str(round(media[i], 4)) + "\n"))
 		file1.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio[i], 4)) + "\n"))
 		file1.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media[i] - desvio[i], 4)) + " | " + "Limite superior - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range(len(dataset[i])): # array com n pontos
-			
-			if (dataset[i][j] >= media[0] - desvio[0] and dataset[i][j] <= media[0] + desvio[0]):
+		for j in range(round(len(dataset[i])/2),len(dataset[i])): # array com n pontos
+			testing_data = dataset[i][j]
+			if (testing_data >= media[0] - desvio[0] and testing_data <= media[0] + desvio[0]):
 				matrix[i][0] += 1
 				continue
 
-			elif(dataset[i][j] >= media[1] - desvio[1] and dataset[i][j] <= media[1] + desvio[1]):
+			elif(testing_data >= media[1] - desvio[1] and testing_data <= media[1] + desvio[1]):
 				matrix[i][1] += 1
 				continue
 
-			elif(dataset[i][j] >= media[2] - desvio[2] and dataset[i][j] <= media[2] + desvio[2]):
+			elif(testing_data >= media[2] - desvio[2] and testing_data <= media[2] + desvio[2]):
 				matrix[i][2] += 1
 				continue
 
-			elif(dataset[i][j] >= media[3] - desvio[3] and dataset[i][j] <= media[3] + desvio[3]):
+			elif(testing_data >= media[3] - desvio[3] and testing_data <= media[3] + desvio[3]):
 				matrix[i][3] += 1
 				continue
 			
 			else:
-				pontos_inconclusivos[i][j] = dataset[i][j] 
+				pontos_inconclusivos[i][j] = testing_data 
 				matrix[i][4] += 1
 
 	qtd_max_pontos = 0
@@ -389,9 +320,6 @@ def cleanTxtMatrix(N):
 	filename = (f"confusionMatrixHalfTrainingN{N}.txt")
 	file1 = open(filename, 'a+')
 	file1.truncate(0)
-	filename = (f"confusionMatrixCompleteTrainingN{N}.txt")
-	file1 = open(filename, 'a+')
-	file1.truncate(0)
 	file1.close()
 
 def get_change_t(current, previous):
@@ -406,23 +334,23 @@ def slidingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
 
 	filename = (f"LiteSlidingWindowN{N}Size{window_size}.txt")
 	file1 = open(filename, 'a+')
-	media = np.zeros((len(dataset)))
-	desvio = np.zeros((len(dataset)))
+	media = np.zeros(round(len(dataset[0])/2))
+	desvio = np.zeros((round(len(dataset[0])/2)))
 	count_window = np.zeros((len(dataset)))
 	matrixSaida = np.zeros((len(dataset),len(dataset)+1))
 	matrix = np.zeros((len(dataset),len(dataset)+1))
 
 	file1.write((title + "\n\n"))
 	for i in range(len(dataset)):
-		media[i] = media_sac(dataset[i], 0, len(dataset[i]))
-		desvio[i] = desvio_sac(dataset[i], 0, len(dataset[i]))
+		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
+		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
 		file1.write((arquivos[i] + ":" + " Média - " + str(round(media[i], 4)) + "\n"))
 		file1.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio[i], 4)) + "\n"))
 		file1.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media[i] - desvio[i], 4)) + " | " + "Limite superior - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
 
-		for j in range( (len(dataset[i]) - window_size + 1) ): # array com n pontos
+		for j in range( round(len(dataset[i])/2), (len(dataset[i]) - window_size + 1) ): # array com n pontos
 			janela = dataset[i][j:j+window_size]
 			conclusion = np.zeros((len(arquivos) + 1))
 			
@@ -476,8 +404,8 @@ def jumpingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
 
 	filename = (f"LiteJumpingWindowN{N}Size{window_size}.txt")
 	file1 = open(filename, 'a+')
-	media = np.zeros((len(dataset)))
-	desvio = np.zeros((len(dataset)))
+	media = np.zeros(round(len(dataset[0])/2))
+	desvio = np.zeros((round(len(dataset[0])/2)))
 	count_points = np.zeros((len(dataset)))
 	matrixSaida = np.zeros((len(dataset),len(dataset)+1))
 	matrix = np.zeros((len(dataset),len(dataset)+1))
@@ -486,15 +414,15 @@ def jumpingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
 
 	file1.write((title + "\n\n"))
 	for i in range(len(dataset)):
-		media[i] = media_sac(dataset[i], 0, len(dataset[i]))
-		desvio[i] = desvio_sac(dataset[i], 0, len(dataset[i]))
+		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
+		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
 		file1.write((arquivos[i] + ":" + " Média - " + str(round(media[i], 4)) + "\n"))
 		file1.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio[i], 4)) + "\n"))
 		file1.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media[i] - desvio[i], 4)) + " | " + "Limite superior - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
 
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range( 0, (len(dataset[i])), window_size): # array com n pontos
+		for j in range( round(len(dataset[i])/2), (len(dataset[i])), window_size): # array com n pontos
 			conclusion = np.zeros((len(arquivos) + 1))
 			count_points[i] += 1
 			if (j + window_size <= len(dataset[i])):
@@ -567,8 +495,8 @@ def jumpingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
 
 def windowsPlot(dataset, arquivos, title, window_size, N):
 
-	media = np.zeros((len(dataset)))
-	desvio = np.zeros((len(dataset)))
+	media = np.zeros(round(len(dataset[0])/2))
+	desvio = np.zeros((round(len(dataset[0])/2)))
 	count_window_jumping = np.zeros((len(dataset)))
 	count_window_sliding = np.zeros((len(dataset)))
 	matrixJumping = np.zeros((len(dataset),len(dataset)+1))
@@ -577,11 +505,11 @@ def windowsPlot(dataset, arquivos, title, window_size, N):
 	matrixSlidingSaida = np.zeros((len(dataset),len(dataset)+1))
 
 	for i in range(len(dataset)):
-		media[i] = media_sac(dataset[i], 0, len(dataset[i]))
-		desvio[i] = desvio_sac(dataset[i], 0, len(dataset[i]))
+		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
+		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range( (len(dataset[i]) - window_size + 1) ): # array com n pontos
+		for j in range( round(len(dataset[i])/2), (len(dataset[i]) - window_size + 1) ): # array com n pontos
 			janela = dataset[i][j:j+window_size]
 			conclusion = np.zeros((len(arquivos) + 1))
 			
@@ -613,7 +541,7 @@ def windowsPlot(dataset, arquivos, title, window_size, N):
 				count_window_sliding[i] += 1
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range( 0, (len(dataset[i])), window_size): # array com n pontos
+		for j in range( round(len(dataset[0])/2), (len(dataset[i])), window_size): # array com n pontos
 			conclusion = np.zeros((len(arquivos) + 1))
 			count_window_jumping[i] += 1
 			if (j + window_size <= len(dataset[i])):
@@ -694,22 +622,17 @@ def windowsPlot(dataset, arquivos, title, window_size, N):
 		ax[j][1].legend(wedges, non_zero_labels_jumping[:len(non_zero_values_jumping)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
 
-def confusionMatrixComparation(dataset, arquivos, title, N):
+def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 
 	media_metade = np.zeros((len(dataset)))
 	desvio_metade = np.zeros((len(dataset)))
 	matrix_metade = np.zeros((len(dataset),len(dataset)+1))
-	media_completo = np.zeros((len(dataset)))
-	desvio_completo = np.zeros((len(dataset)))
-	matrix_completo = np.zeros((len(dataset),len(dataset)+1))
 
 	filename = (f"confusionMatrixHalfTrainingN{N}.txt")
 	half_file = open(filename, 'a+')
-	filename = (f"confusionMatrixCompleteTrainingN{N}.txt")
-	complete_file = open(filename, 'a+')
 
 	half_file.write(f"{title} - N{N}\n\n")
-	complete_file.write(f"{title} - N{N}\n\n")
+
 
 	for i in range(len(dataset)):
 		media_metade[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2) )
@@ -718,16 +641,10 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 		half_file.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio_metade[i], 4)) + "\n"))
 		half_file.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media_metade[i] - desvio_metade[i], 4)) + " | " + "Limite superior - " + str(round(media_metade[i] + desvio_metade[i], 4)) +"\n\n"))
 
-	for i in range(len(dataset)):
-		media_completo[i] = media_sac(dataset[i], 0, len(dataset[i]))
-		desvio_completo[i] = desvio_sac(dataset[i], 0, len(dataset[i]))
-		complete_file.write((arquivos[i] + ":" + " Média - " + str(round(media_completo[i], 4)) + "\n"))
-		complete_file.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio_completo[i], 4)) + "\n"))
-		complete_file.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media_completo[i] - desvio_completo[i], 4)) + " | " + "Limite superior - " + str(round(media_completo[i] + desvio_completo[i], 4)) +"\n\n"))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
 		teste_dataset = amostragem_sac(dataset[i], (round((len(dataset[i])/2))), (len(dataset[i])))
-		for j in range(round((len(dataset[i])/2))): # array com n pontos
+		for j in range(len(teste_dataset)): # array com n pontos
 			
 			if (teste_dataset[j] >= media_metade[0] - desvio_metade[0] and teste_dataset[j] <= media_metade[0] + desvio_metade[0]):
 				matrix_metade[i][0] += 1
@@ -748,29 +665,7 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 			else:
 				matrix_metade[i][4] += 1
 
-	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range(len(dataset[i])): # array com n pontos
-			
-			if (dataset[i][j] >= media_completo[0] - desvio_completo[0] and dataset[i][j] <= media_completo[0] + desvio_completo[0]):
-				matrix_completo[i][0] += 1
-				continue
 
-			elif(dataset[i][j] >= media_completo[1] - desvio_completo[1] and dataset[i][j] <= media_completo[1] + desvio_completo[1]):
-				matrix_completo[i][1] += 1
-				continue
-
-			elif(dataset[i][j] >= media_completo[2] - desvio_completo[2] and dataset[i][j] <= media_completo[2] + desvio_completo[2]):
-				matrix_completo[i][2] += 1
-				continue
-
-			elif(dataset[i][j] >= media_completo[3] - desvio_completo[3] and dataset[i][j] <= media_completo[3] + desvio_completo[3]):
-				matrix_completo[i][3] += 1
-				continue
-			
-			else:
-				matrix_completo[i][4] += 1
-
-	matrix_completo_saida = np.zeros((len(dataset),len(dataset)+1))
 	matrix_metade_saida = np.zeros((len(dataset),len(dataset)+1))
 
 	half_file.write(f"Matriz de confusao \n\n")
@@ -782,26 +677,11 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 	for i in range(len(matrix_metade)):
 		half_file.write(f"{arquivos[i]:<10}")
 		for j in range(len(matrix_metade[i])):
-			matrix_metade[i][j] = round(matrix_metade[i][j],2)
+			matrix_metade[i][j] = get_change_t(matrix_metade[i][j], len(dataset[i]))
 			half_file.write(f"{matrix_metade[i][j]:<10}")
 		half_file.write("\n\n")
 
 	half_file.close()
-
-	complete_file.write(f"Matriz de confusao \n\n")
-	complete_file.write((f"{'Arquivo':<10}"))
-	for i in range(len(arquivos)):
-		complete_file.write(f"{arquivos[i]:<10}")
-	complete_file.write(f"{'Inconclusivo':<10}\n")
-
-	for i in range(len(matrix_completo)):
-		complete_file.write(f"{arquivos[i]:<10}")
-		for j in range(len(matrix_completo[i])):
-			matrix_completo[i][j] = round(matrix_completo[i][j],2)
-			complete_file.write(f"{matrix_completo[i][j]:<10}")
-		complete_file.write("\n\n")
-
-	complete_file.close()
 
 	for i in range(len(dataset)):
 		for j in range(len(matrix_completo[0])):
@@ -821,13 +701,6 @@ def confusionMatrixComparation(dataset, arquivos, title, N):
 		wedges, texts, autotexts = ax[j][0].pie(non_zero_values_half, labels=non_zero_labels_half[:len(non_zero_values_half)], autopct='%1.1f%%', shadow=True, startangle=90)
 		ax[j][0].set_title(f"Confusion matrix Half Training - {arquivos[j]}")
 		ax[j][0].legend(wedges, non_zero_labels_half[:len(non_zero_values_half)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
-
-		# Gráfico de pizza para matriz de confusão completo
-		non_zero_values_full = [value for value in matrix_completo_saida[j] if value != 0]
-		non_zero_labels_full = [label for value, label in zip(matrix_completo_saida[j], labels) if value != 0]
-		wedges, texts, autotexts = ax[j][1].pie(non_zero_values_full, labels=non_zero_labels_full[:len(non_zero_values_full)], autopct='%1.1f%%', shadow=True, startangle=90)
-		ax[j][1].set_title(f"Confusion matrix Full Training - {arquivos[j]}")
-		ax[j][1].legend(wedges, non_zero_labels_full[:len(non_zero_values_full)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
 
 def taxa_de_aquisicao(dataset, arquivo):
