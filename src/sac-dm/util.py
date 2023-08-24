@@ -158,160 +158,15 @@ def confusionMatrix(dataset, arquivos, title):
 		values = [f"{matrix[i][j]}%" for j in range(len(matrix[i]))] #adiciona '%' nos valores da matriz.
 		print(f"{arquivos[1]:<10}{values[0]:<10}{values[1]:<10}{values[2]:<10}{values[3]:<10}{values[4]:<10}")
 
-def confusionMatrixInTxt(dataset, arquivos, title):
-
-	file1 = open('confusionMatrix.txt', 'a+')
-	media = np.zeros(round(len(dataset[0])/2))
-	desvio = np.zeros((round(len(dataset[0])/2)))
-	matrix = np.zeros((len(dataset),len(dataset)+1))
-	pontos_inconclusivos = np.zeros((len(dataset),len(dataset[0])))
-	pontos_inconclusivos_ordenados = np.zeros((len(dataset),len(dataset[0])))
-
-	file1.write((title + "\n\n"))
-	for i in range(len(dataset)):
-		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
-		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
-		file1.write((arquivos[i] + ":" + " Média - " + str(round(media[i], 4)) + "\n"))
-		file1.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio[i], 4)) + "\n"))
-		file1.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media[i] - desvio[i], 4)) + " | " + "Limite superior - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
-
-	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-		for j in range(round(len(dataset[i])/2),len(dataset[i])): # array com n pontos
-			testing_data = dataset[i][j]
-			if (testing_data >= media[0] - desvio[0] and testing_data <= media[0] + desvio[0]):
-				matrix[i][0] += 1
-				continue
-
-			elif(testing_data >= media[1] - desvio[1] and testing_data <= media[1] + desvio[1]):
-				matrix[i][1] += 1
-				continue
-
-			elif(testing_data >= media[2] - desvio[2] and testing_data <= media[2] + desvio[2]):
-				matrix[i][2] += 1
-				continue
-
-			elif(testing_data >= media[3] - desvio[3] and testing_data <= media[3] + desvio[3]):
-				matrix[i][3] += 1
-				continue
-			
-			else:
-				pontos_inconclusivos[i][j] = testing_data 
-				matrix[i][4] += 1
-
-	qtd_max_pontos = 0
-	for i in range(len(dataset)):
-		pontos_inconclusivos_ordenados[i] = np.sort(pontos_inconclusivos[i])
-		if(matrix[i][4] > qtd_max_pontos):
-			qtd_max_pontos = int(matrix[i][4])
-
-	pontos_inconclusivos_porcent_Menor = np.zeros((len(dataset),qtd_max_pontos))
-	pontos_inconclusivos_porcent_Maior = np.zeros((len(dataset),qtd_max_pontos))
-
-	file1.write("Matriz de confusao\n\n")
-	file1.write((f"{'Arquivo':<10}"))
-	for i in range(len(arquivos)):
-		file1.write(f"{arquivos[i]:<10}")
-	file1.write(f"{'Inconclusivo':<10}\n")
-
-	for i in range(len(matrix)):
-		file1.write(f"{arquivos[i]:<10}{matrix[i][0]:<10}{matrix[i][1]:<10}{matrix[i][2]:<10}{matrix[i][3]:<10}{matrix[i][4]:<10}\n\n")
-
-	pontos_str = ""
-	pontos_str += ("Pontos inconclusivos ordenados com porcentagens: \n\n")
-	for i in range(len(pontos_inconclusivos_ordenados)):
-		aux = 0
-		aux_porcent = 0
-		for j in range(len(pontos_inconclusivos_ordenados[i])):
-
-			if(pontos_inconclusivos_ordenados[i][j] != 0):
-
-				if(pontos_inconclusivos_ordenados[i][j] < (media[i] - desvio[i])):
-					indice = np.where(pontos_inconclusivos[i] == pontos_inconclusivos_ordenados[i][j])
-					percentagem = get_change_t(pontos_inconclusivos_ordenados[i][j], (media[i] - desvio[i]))
-					pontos_inconclusivos_porcent_Menor[i][aux_porcent] = percentagem
-					pontos_str += (f"{arquivos[i]}-{indice[0]}:[Menor: {round(percentagem,2)}%] {round(pontos_inconclusivos_ordenados[i][j], 3)}  ")
-					aux_porcent = aux_porcent + 1
-					aux = aux + 1
-
-				elif(pontos_inconclusivos_ordenados[i][j] > (media[i] + desvio[i])):
-					indice = np.where(pontos_inconclusivos[i] == pontos_inconclusivos_ordenados[i][j])
-					percentagem = get_change_t(pontos_inconclusivos_ordenados[i][j], (media[i] + desvio[i]))
-					pontos_inconclusivos_porcent_Maior[i][aux_porcent] = percentagem
-					pontos_str += (f"{arquivos[i]}-{indice[0]}:[Maior: {round(percentagem,2)}%] {round(pontos_inconclusivos_ordenados[i][j], 3)}  ")
-					aux_porcent = aux_porcent + 1
-					aux = aux + 1
-
-			if(aux % 5 == 0.0 and aux != 0):
-				pontos_str += ("\n")
-				aux = 0
-	
-		pontos_str += ("\n\n")
-	
-	
-	tabela_porcentagem_menor = np.zeros((len(dataset),11))
-	tabela_porcentagem_maior = np.zeros((len(dataset),11))
-
-
-	faixas_porcentagem = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-	for i in range(len(pontos_inconclusivos_porcent_Menor)):
-		for j in range(len(pontos_inconclusivos_porcent_Menor[i])):
-			valor = pontos_inconclusivos_porcent_Menor[i][j]
-			for k in range(len(faixas_porcentagem)-1):
-				if (valor != 0 and valor > faixas_porcentagem[k] and valor <= faixas_porcentagem[k+1]):
-					tabela_porcentagem_menor[i][k] += 1
-				if (valor != 0 and valor > faixas_porcentagem[10]):
-					tabela_porcentagem_menor[i][10] += 1
-
-	for i in range(len(pontos_inconclusivos_porcent_Maior)):
-		for j in range(len(pontos_inconclusivos_porcent_Maior[i])):
-			valor = pontos_inconclusivos_porcent_Maior[i][j]
-			for k in range(len(faixas_porcentagem)-1):
-				if (valor != 0 and valor > faixas_porcentagem[k] and valor <= faixas_porcentagem[k+1]):
-					tabela_porcentagem_maior[i][k] += 1
-				if (valor != 0 and valor > faixas_porcentagem[10]):
-					tabela_porcentagem_maior[i][10] += 1
-
-	file1.write("\nTabela das porcentagens menores que o limite inferior: \n\n")
-	file1.write((f"{'':<10}"))
-	file1.write((f"{'0-10%':<10}") + (f"{'10-20%':<10}") + (f"{'20-30%':<10}") + (f"{'30-40%':<10}") + (f"{'40-50%':<10}") + (f"{'50-60%':<10}") + (f"{'60-70%':<10}") + (f"{'70-80%':<10}") + (f"{'80-90%':<10}") + (f"{'90-100%':<10}") + (f"{'>100%':<10}\n"))
-	for i in range(len(tabela_porcentagem_menor)):
-		file1.write((f"{arquivos[i]:<10}"))
-		for j in range(len(tabela_porcentagem_menor[i])):
-			file1.write(f"{tabela_porcentagem_menor[i][j]:<10}")
-		file1.write("\n")
-	file1.write("\n\n")	
-	
-	file1.write("Tabela das porcentagem maiores que o limite superior: \n\n")
-	file1.write((f"{'':<10}"))
-	file1.write((f"{'0-10%':<10}") + (f"{'10-20%':<10}") + (f"{'20-30%':<10}") + (f"{'30-40%':<10}") + (f"{'40-50%':<10}") + (f"{'50-60%':<10}") + (f"{'60-70%':<10}") + (f"{'70-80%':<10}") + (f"{'80-90%':<10}") + (f"{'90-100%':<10}") + (f"{'>100%':<10}\n"))
-	for i in range(len(tabela_porcentagem_maior)):
-		file1.write((f"{arquivos[i]:<10}"))
-		for j in range(len(tabela_porcentagem_maior[i])):
-			file1.write(f"{tabela_porcentagem_maior[i][j]:<10}")
-		file1.write("\n")
-	
-	file1.write("\n\nPontos inconclusivos: \n\n")
-	for i in range(len(pontos_inconclusivos_ordenados)):
-		aux = 0
-		for j in range(len(pontos_inconclusivos[i])):
-
-			if(pontos_inconclusivos[i][j] != 0):
-
-				file1.write(f"{arquivos[i]}-{j}: {round(pontos_inconclusivos[i][j], 3)}  ")
-				aux = aux + 1
-
-			if(aux % 8 == 0.0 and aux != 0):
-				file1.write("\n")
-				aux = 0
-
-		file1.write("\n\n")
-
-	file1.write(pontos_str)
-	file1.write("\n\n\n")	
-	file1.close()
 
 def cleanTxtSliding(N, window_size):
-	filename = (f"LiteSlidingWindowN{N}Size{window_size}.txt")
+	filename = (f"SlidingWindowN{N}Size{window_size}.txt")
+	file1 = open(filename, 'a+')
+	file1.truncate(0)
+	file1.close()
+
+def cleanTxtJumping(N, window_size):
+	filename = (f"JumpingWindowN{N}Size{window_size}.txt")
 	file1 = open(filename, 'a+')
 	file1.truncate(0)
 	file1.close()
@@ -330,9 +185,9 @@ def get_change_t(current, previous):
     except ZeroDivisionError:
         return 0
 
-def slidingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
+def slidingWindowInTxt(dataset, arquivos, title, N, window_size):
 
-	filename = (f"LiteSlidingWindowN{N}Size{window_size}.txt")
+	filename = (f"SlidingWindowN{N}Size{window_size}.txt")
 	file1 = open(filename, 'a+')
 	media = np.zeros(round(len(dataset[0])/2))
 	desvio = np.zeros((round(len(dataset[0])/2)))
@@ -400,9 +255,9 @@ def slidingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
 
 	file1.close()
 
-def jumpingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
+def jumpingWindowInTxt(dataset, arquivos, title, N, window_size):
 
-	filename = (f"LiteJumpingWindowN{N}Size{window_size}.txt")
+	filename = (f"JumpingWindowN{N}Size{window_size}.txt")
 	file1 = open(filename, 'a+')
 	media = np.zeros(round(len(dataset[0])/2))
 	desvio = np.zeros((round(len(dataset[0])/2)))
@@ -476,7 +331,7 @@ def jumpingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
 				pontos_inconclusivos_int[i][j] = dataset[i][j]
 				
 
-	file1.write(f"Matriz de confusao - Janela Pulante[{window_size}] - N{N} - Qtd de janelas{count_points}\n\n")
+	file1.write(f"Matriz de confusao[%] - Janela Pulante[{window_size}] - N{N} - Qtd de janelas{count_points}\n\n")
 	file1.write((f"{'Arquivo':<10}"))
 	for i in range(len(arquivos)):
 		file1.write(f"{arquivos[i]:<10}")
@@ -485,8 +340,8 @@ def jumpingWindowDetailedInTxt(dataset, arquivos, title, window_size, N):
 	for i in range(len(matrix)):
 		file1.write(f"{arquivos[i]:<10}")
 		for j in range(len(matrix[i])):
-			# matrixSaida[i][j] = round(get_change_t(matrix[i][j],(count_points[i])),2 )		
-			matrixSaida[i][j] = round(matrix[i][j],2 )
+			matrixSaida[i][j] = round(get_change_t(matrix[i][j],(count_points[i])),2 )		
+			# matrixSaida[i][j] = round(matrix[i][j],2 )
 			file1.write(f"{matrixSaida[i][j]:<10}")
 		file1.write("\n\n")
 
@@ -684,11 +539,10 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 	half_file.close()
 
 	for i in range(len(dataset)):
-		for j in range(len(matrix_completo[0])):
-			matrix_completo_saida[i][j] = get_change_t(matrix_completo[i][j], len(dataset[i]))
+		for j in range(len(matrix_metade[0])):
 			matrix_metade_saida[i][j] = get_change_t(matrix_metade[i][j], len(dataset[i]))
 	
-	fig, ax = plt.subplots(len(dataset), 2)
+	fig, ax = plt.subplots(len(dataset))
 	fig.suptitle(f"{title} - N{N}")
 
 	labels = arquivos + ["Inconclusivo"]
@@ -698,9 +552,9 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 		# # Gráfico de pizza para matriz de confusão metade
 		non_zero_values_half = [value for value in matrix_metade_saida[j] if value != 0]
 		non_zero_labels_half = [label for value, label in zip(matrix_metade_saida[j], labels) if value != 0]
-		wedges, texts, autotexts = ax[j][0].pie(non_zero_values_half, labels=non_zero_labels_half[:len(non_zero_values_half)], autopct='%1.1f%%', shadow=True, startangle=90)
-		ax[j][0].set_title(f"Confusion matrix Half Training - {arquivos[j]}")
-		ax[j][0].legend(wedges, non_zero_labels_half[:len(non_zero_values_half)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
+		wedges, texts, autotexts = ax[j].pie(non_zero_values_half, labels=non_zero_labels_half[:len(non_zero_values_half)], autopct='%1.1f%%', shadow=True, startangle=90)
+		ax[j].set_title(f"Confusion matrix Half Training - {arquivos[j]}")
+		ax[j].legend(wedges, non_zero_labels_half[:len(non_zero_values_half)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
 
 def taxa_de_aquisicao(dataset, arquivo):
