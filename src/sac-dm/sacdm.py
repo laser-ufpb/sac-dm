@@ -195,7 +195,7 @@ def plot_SAC_AM_DM_drone_signals():
 	# util.confusionMatrix([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Z")
 
 	# # 								Matriz de confusao em um arquivo txt e Plot
-	# util.cleanTxt()
+	# util.cleanTxtMatrix(N)
 	# util.confusionMatrixPlotAndTxt([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X", N)
 	# util.confusionMatrixPlotAndTxt([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y", N)
 	# util.confusionMatrixPlotAndTxt([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z", N)
@@ -205,14 +205,14 @@ def plot_SAC_AM_DM_drone_signals():
 	# util.confusionMatrixPlotAndTxt([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Z", N)
 	
 	# # 								Janela Deslizante em um arquivo txt
-	util.cleanTxtSliding(int(sys.argv[2]), N)
-	util.slidingWindowInTxt([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X", int(sys.argv[2]), N)
-	util.slidingWindowInTxt([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y", int(sys.argv[2]), N)
-	util.slidingWindowInTxt([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z", int(sys.argv[2]), N)
+	# util.cleanTxtSliding(int(sys.argv[2]), N)
+	# util.slidingWindowInTxt([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X", int(sys.argv[2]), N)
+	# util.slidingWindowInTxt([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y", int(sys.argv[2]), N)
+	# util.slidingWindowInTxt([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z", int(sys.argv[2]), N)
 
-	util.slidingWindowInTxt([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo X", int(sys.argv[2]), N)
-	util.slidingWindowInTxt([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Y", int(sys.argv[2]), N)
-	util.slidingWindowInTxt([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Z", int(sys.argv[2]), N)
+	# util.slidingWindowInTxt([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo X", int(sys.argv[2]), N)
+	# util.slidingWindowInTxt([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Y", int(sys.argv[2]), N)
+	# util.slidingWindowInTxt([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Z", int(sys.argv[2]), N)
 
 	# # 								Janela Pulante em um arquivo txt
 	# util.cleanTxtJumping(int(sys.argv[2]), N)
@@ -223,6 +223,17 @@ def plot_SAC_AM_DM_drone_signals():
 	# util.jumpingWindowInTxt([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo X", int(sys.argv[2]), N)
 	# util.jumpingWindowInTxt([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Y", int(sys.argv[2]), N)
 	# util.jumpingWindowInTxt([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Z", int(sys.argv[2]), N)
+	
+	# # 								Comparação de janelas Slinding vs Jumping
+	# #													SAC-AM
+	# util.windowsPlot([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X", int(sys.argv[2]), N)
+	# util.windowsPlot([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y", int(sys.argv[2]), N)
+	# util.windowsPlot([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z", int(sys.argv[2]), N)
+	
+	# #													SAC-DM
+	# util.windowsPlot([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo X", int(sys.argv[2]), N)
+	# util.windowsPlot([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Y", int(sys.argv[2]), N)
+	# util.windowsPlot([sac_dm_F0_z, sac_dm_F6_z, sac_dm_F14_z, sac_dm_F22_z], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Z", int(sys.argv[2]), N)
 	
 	plt.show()
 

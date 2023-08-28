@@ -144,7 +144,7 @@ def confusionMatrix(dataset, arquivos, title):
 				matrix[i][4] += 1
 
 	for i in range(len(dataset)): 
-		matrix[i] = np.round((matrix[i] / len(dataset[i])) * 100, decimals=1)  #converte os valores da matriz para valores percentuais.
+		matrix[i] = np.round((matrix[i] / (len(dataset[i])/2)) * 100, decimals=1)  #converte os valores da matriz para valores percentuais.
 
 	print(f"\n\t\t{title}\n")
 
@@ -185,7 +185,7 @@ def get_change_t(current, previous):
     except ZeroDivisionError:
         return 0
 
-def slidingWindowInTxt(dataset, arquivos, title, N, window_size):
+def slidingWindowInTxt(dataset, arquivos, title, window_size, N):
 
 	filename = (f"SlidingWindowN{N}Size{window_size}.txt")
 	file1 = open(filename, 'a+')
@@ -204,7 +204,6 @@ def slidingWindowInTxt(dataset, arquivos, title, N, window_size):
 		file1.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media[i] - desvio[i], 4)) + " | " + "Limite superior - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
-
 		for j in range( round(len(dataset[i])/2), (len(dataset[i]) - window_size + 1) ): # array com n pontos
 			janela = dataset[i][j:j+window_size]
 			conclusion = np.zeros((len(arquivos) + 1))
@@ -247,15 +246,14 @@ def slidingWindowInTxt(dataset, arquivos, title, N, window_size):
 	for i in range(len(matrix)):
 		file1.write(f"{arquivos[i]:<10}")
 		for j in range(len(matrix[i])):
-			# matrixSaida[i][j] = round(get_change_t(matrix[i][j],count_window[i]),2)
-			matrixSaida[i][j] = round(matrix[i][j],2)
+			matrixSaida[i][j] = round(get_change_t(matrix[i][j],count_window[i]),2)
+			# matrixSaida[i][j] = round(matrix[i][j],2)
 			file1.write(f"{matrixSaida[i][j]:<10}")
 		file1.write("\n\n")
 
-
 	file1.close()
 
-def jumpingWindowInTxt(dataset, arquivos, title, N, window_size):
+def jumpingWindowInTxt(dataset, arquivos, title, window_size, N):
 
 	filename = (f"JumpingWindowN{N}Size{window_size}.txt")
 	file1 = open(filename, 'a+')
@@ -521,8 +519,6 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 				matrix_metade[i][4] += 1
 
 
-	matrix_metade_saida = np.zeros((len(dataset),len(dataset)+1))
-
 	half_file.write(f"Matriz de confusao \n\n")
 	half_file.write((f"{'Arquivo':<10}"))
 	for i in range(len(arquivos)):
@@ -532,15 +528,12 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 	for i in range(len(matrix_metade)):
 		half_file.write(f"{arquivos[i]:<10}")
 		for j in range(len(matrix_metade[i])):
-			matrix_metade[i][j] = get_change_t(matrix_metade[i][j], len(dataset[i]))
+			matrix_metade[i][j] = (round(get_change_t(matrix_metade[i][j], (len(dataset[i]))),1))*2
 			half_file.write(f"{matrix_metade[i][j]:<10}")
 		half_file.write("\n\n")
 
 	half_file.close()
 
-	for i in range(len(dataset)):
-		for j in range(len(matrix_metade[0])):
-			matrix_metade_saida[i][j] = get_change_t(matrix_metade[i][j], len(dataset[i]))
 	
 	fig, ax = plt.subplots(len(dataset))
 	fig.suptitle(f"{title} - N{N}")
@@ -550,8 +543,8 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 	for j in range(len(dataset)):
 
 		# # Gráfico de pizza para matriz de confusão metade
-		non_zero_values_half = [value for value in matrix_metade_saida[j] if value != 0]
-		non_zero_labels_half = [label for value, label in zip(matrix_metade_saida[j], labels) if value != 0]
+		non_zero_values_half = [value for value in matrix_metade[j] if value != 0]
+		non_zero_labels_half = [label for value, label in zip(matrix_metade[j], labels) if value != 0]
 		wedges, texts, autotexts = ax[j].pie(non_zero_values_half, labels=non_zero_labels_half[:len(non_zero_values_half)], autopct='%1.1f%%', shadow=True, startangle=90)
 		ax[j].set_title(f"Confusion matrix Half Training - {arquivos[j]}")
 		ax[j].legend(wedges, non_zero_labels_half[:len(non_zero_values_half)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
