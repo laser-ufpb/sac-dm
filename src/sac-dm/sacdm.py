@@ -62,96 +62,73 @@ def sac_am(data, N):
 	
 	return sacdm
 
-def plot_SAC_AM_DM(file_paths, file_columns, file_tags):
+def plot_trainning_test(sac_am_by_files, sac_dm_by_files, file_tags):
+	#Plotando teste e treino do mesmo arquivo
+	util.showTreinamentoM(sac_am_by_files[0], (f"SAC-AM: {file_tags[0]}"), file_tags[0])
+	util.showTreinamentoM(sac_dm_by_files[0], (f"SAC-DM: {file_tags[0]}"), file_tags[0])
 
-	N = int(sys.argv[1])
-	files = []
-	file_axes = []
-	sac_am_by_files = []
-	sac_dm_by_files = []
-	sac_am_by_axes = []
-	sac_dm_by_axes = []
+def plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N):
+	#Plotando na mesma figura 3 graficos( 1 para cada eixo ), contendo o treinamento e o teste feitos em arquivos diferentes
+	#SAC-AM
+	util.showSAC_figUnicaComTreinoM( sac_am_by_files, (f"SAC-AM: Treinamento Metade - N{N}"), file_tags)
+	#SAC-DM
+	util.showSAC_figUnicaComTreinoM( sac_dm_by_files, (f"SAC-AM: Treinamento Metade - N{N}"), file_tags)
+
+def plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags):
+	#Plotando graficos de forma individual
 	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	for i in range(3):
+		util.showSacUnicoEixo(sac_am_by_axes[i], (f"SAC-AM: {auxAxes[i]}"), file_tags)
+		util.showSacUnicoEixo(sac_dm_by_axes[i], (f"SAC-DM: {auxAxes[i]}"), file_tags)
+
+def plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
+	#Matriz de confusao em um arquivo txt e Plot
+	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	util.cleanTxtMatrix(N)
+	for i in range(3):
+		util.confusionMatrixPlotAndTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), N)
+		util.confusionMatrixPlotAndTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), N)
+
+def slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
+	#Janela Deslizante em um arquivo txt
+	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	util.cleanTxtSliding(N, int(sys.argv[2]))
+	for i in range(3):
+		util.slidingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
+		util.slidingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
+
+def jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
+	#Janela Pulante em um arquivo txt
+	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	util.cleanTxtJumping(N, int(sys.argv[2]))
+	for i in range(3):
+		util.jumpingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
+		util.jumpingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
+
+def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
+	#Comparação das janelas: Slinding vs Jumping
+	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	for i in range(3):
+		util.windowsPlot(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
+		util.windowsPlot(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
 	
-	for i in range(len(file_paths)): # Abrindo arquivos
-		files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
-		files.append(files_aux)
 
-	for i in range(len(file_paths)):
-		file_list = []
-		sac_am_list = []
-		sac_dm_list = []
-		for j in range(5):	# Extraindo eixos
-			file_axes_aux = files[i][file_columns[j]].reshape(-1)
-			file_list.append(file_axes_aux)
+def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N):
 
-			if( j < 3): # Obtendo SACs
-				sac_am_aux = sac_am(file_axes_aux, N)
-				sac_dm_aux = sac_dm(file_axes_aux, N)
-				sac_am_aux.pop()
-				sac_dm_aux.pop()
-				sac_am_list.append(sac_am_aux)
-				sac_dm_list.append(sac_dm_aux)
-		
-		file_axes.append(file_list)
-		sac_am_by_files.append(sac_am_list)
-		sac_dm_by_files.append(sac_dm_list)
+	print("chamou")
+	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
 
-	for i in range(3): # Qtd de eixos
-		sac_am_aux = []
-		sac_dm_aux = []
-		for j in range(len(file_paths)): # Qtd de arquivos
-			sac_am_aux.append(sac_am_by_files[j][i])
-			sac_dm_aux.append(sac_dm_by_files[j][i])
+	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
-		sac_am_by_axes.append(sac_am_aux)
-		sac_dm_by_axes.append(sac_dm_aux)
+	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
-	
-	# #					Plotando teste e treino do mesmo arquivo
+	plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	# util.showTreinamentoM(sac_am_by_files[0], (f"SAC-AM: {file_tags[0]}"), file_tags[0])
-	# util.showTreinamentoM(sac_dm_by_files[0], (f"SAC-DM: {file_tags[0]}"), file_tags[0])
+	# slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	# # Plotando na mesma figura 3 graficos( 1 para cada eixo ), contendo o treinamento e o teste feitos em arquivos diferentes
-	
-	# #								SAC-AM
-	# util.showSAC_figUnicaComTreinoM( sac_am_by_files, (f"SAC-AM: Treinamento Metade - N{N}"), file_tags)
+	# jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	# #								SAC-DM
-	# util.showSAC_figUnicaComTreinoM( sac_dm_by_files, (f"SAC-AM: Treinamento Metade - N{N}"), file_tags)
-	
-	# # Plotando graficos de forma individual
-
-	# for i in range(3):
-	# 	util.showSacUnicoEixo(sac_am_by_axes[i], (f"SAC-AM: {auxAxes[i]}"), file_tags)
-	# 	util.showSacUnicoEixo(sac_dm_by_axes[i], (f"SAC-DM: {auxAxes[i]}"), file_tags)
-
-	# # 								Matriz de confusao em um arquivo txt e Plot
-
-	# util.cleanTxtMatrix(N)
-	# for i in range(3):
-	# 	util.confusionMatrixPlotAndTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), N)
-	# 	util.confusionMatrixPlotAndTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), N)
-
-	# # 								Janela Deslizante em um arquivo txt
-	
-	# util.cleanTxtSliding(N, int(sys.argv[2]))
-	# for i in range(3):
-	# 	util.slidingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
-	# 	util.slidingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
-
-	# # 								Janela Pulante em um arquivo txt
-	# util.cleanTxtJumping(N, int(sys.argv[2]))
-	# for i in range(3):
-	# 	util.jumpingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
-	# 	util.jumpingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
-	
-	# # 								Comparação de janelas Slinding vs Jumping
-	
-	# for i in range(3):
-		# util.windowsPlot(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
-		# util.windowsPlot(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
+	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 	
 	plt.show()
 	return 0
@@ -323,16 +300,61 @@ def plot_SAC_AM_DM_motor_signals():
 	return 0
 
 #********* Main ********
-
+print("main")
 file_paths = [  "../../files/drone_signals/accel_80_F0.csv",
-				"../../files/drone_signals/accel_80_F6.csv",
-				"../../files/drone_signals/accel_80_F14.csv",
-				"../../files/drone_signals/accel_80_F22.csv" ]
+			"../../files/drone_signals/accel_80_F6.csv",
+			"../../files/drone_signals/accel_80_F14.csv",
+			"../../files/drone_signals/accel_80_F22.csv" ]
 
 file_columns = ['x','y','z','s','t']
 
 file_tags = [ "F0", "F6", "F14", "F22"]
 
-plot_SAC_AM_DM(file_paths, file_columns, file_tags)
+N = int(sys.argv[1])
+files = []
+file_axes = []
+sac_am_by_files = []
+sac_dm_by_files = []
+sac_am_by_axes = []
+sac_dm_by_axes = []
+
+# Abrindo arquivos
+for i in range(len(file_paths)):
+	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
+	files.append(files_aux)
+
+for i in range(len(file_paths)):
+	file_list = []
+	sac_am_list = []
+	sac_dm_list = []
+	# Extraindo eixos
+	for j in range(5):
+		file_axes_aux = files[i][file_columns[j]].reshape(-1)
+		file_list.append(file_axes_aux)
+
+		# Obtendo SACs
+		if( j < 3):
+			sac_am_aux = sac_am(file_axes_aux, N)
+			sac_dm_aux = sac_dm(file_axes_aux, N)
+			sac_am_aux.pop()
+			sac_dm_aux.pop()
+			sac_am_list.append(sac_am_aux)
+			sac_dm_list.append(sac_dm_aux)
+	
+	file_axes.append(file_list)
+	sac_am_by_files.append(sac_am_list)
+	sac_dm_by_files.append(sac_dm_list)
+
+for i in range(3): # Qtd de eixos
+	sac_am_aux = []
+	sac_dm_aux = []
+	for j in range(len(file_paths)): # Qtd de arquivos
+		sac_am_aux.append(sac_am_by_files[j][i])
+		sac_dm_aux.append(sac_dm_by_files[j][i])
+
+	sac_am_by_axes.append(sac_am_aux)
+	sac_dm_by_axes.append(sac_dm_aux)
+
+plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
 # plot_SAC_AM_DM_motor_signals()

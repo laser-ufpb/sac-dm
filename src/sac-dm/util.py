@@ -54,6 +54,8 @@ def showTreinamentoM(dataset, title, file_tag):
 		axs[i].set(ylabel = auxT[i])
 		# axs[i].legend(loc = 'upper right')
 
+	plt.show()
+
 
 def showSAC_figUnicaComTreinoM(dataset, title, file_tag):
 
