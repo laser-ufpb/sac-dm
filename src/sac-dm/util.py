@@ -35,6 +35,7 @@ def testagem(dataset, title, fig, ax, color):
 
 	colors = list(mcolors.CSS4_COLORS) 
 	ax.plot(dataset,color=colors[color], label = title)
+	ax.set_xlim(left= -1)
 	
 def showTreinamentoM(dataset, title, file_tag):	
 	
@@ -45,10 +46,11 @@ def showTreinamentoM(dataset, title, file_tag):
 	auxT = [("Eixo X"), ("Eixo Y"), ("Eixo Z")]
 	
 	for i in range(len(dataset)):
-		# axs[i].set_title(auxT[i])
+
 		treinamentoMetade(dataset[i], title, fig, axs[i],file_tag)
 		dataset_teste = amostragem_sac(dataset[i], round(len(dataset[i])/2), len(dataset[i]) )
 		testagem(dataset_teste, (f"Segunda metade do arquivo {file_tag}"), fig, axs[i], (11+i))
+		axs[i].set_xlim(left = -1)
 		axs[i].set(ylabel = auxT[i])
 		# axs[i].legend(loc = 'upper right')
 
@@ -69,7 +71,7 @@ def showSAC_figUnicaComTreinoM(dataset, title, file_tag):
 			dataset_teste = amostragem_sac(dataset[j][i], round(len(dataset[j][i])/2), len(dataset[j][i]) )
 			testagem(dataset_teste, (f"Segunda metade do Arquivo: {file_tag[j]}"), fig, axs[i], (11+j))
 		
-		axs[i].set_xlim(-1, round(len(dataset[0][i])))
+		axs[i].set_xlim(-1, round(len(dataset[0][i]) * 0.8))
 		axs[i].legend(loc='lower right')
 		
 	axs[0].set(ylabel = (aux[0] + ": Eixo X"))
