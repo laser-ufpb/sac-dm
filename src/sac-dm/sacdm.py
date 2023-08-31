@@ -70,44 +70,47 @@ def plot_trainning_test(sac_am_by_files, sac_dm_by_files, file_tags):
 def plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N):
 	#Plotando na mesma figura 3 graficos( 1 para cada eixo ), contendo o treinamento e o teste feitos em arquivos diferentes
 	#SAC-AM
-	util.showSAC_figUnicaComTreinoM( sac_am_by_files, (f"SAC-AM: Treinamento Metade - N{N}"), file_tags)
+	util.showSAC_figUnicaComTreinoM( sac_am_by_files, (f"SAC-AM: Half training/testing - N{N}"), file_tags)
 	#SAC-DM
-	util.showSAC_figUnicaComTreinoM( sac_dm_by_files, (f"SAC-AM: Treinamento Metade - N{N}"), file_tags)
+	util.showSAC_figUnicaComTreinoM( sac_dm_by_files, (f"SAC-DM: Half training/testing - N{N}"), file_tags)
 
 def plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags):
 	#Plotando graficos de forma individual
-	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	auxAxes = ["x-axis", "y-axis", "z-axis"]
 	for i in range(3):
 		util.showSacUnicoEixo(sac_am_by_axes[i], (f"SAC-AM: {auxAxes[i]}"), file_tags)
 		util.showSacUnicoEixo(sac_dm_by_axes[i], (f"SAC-DM: {auxAxes[i]}"), file_tags)
 
 def plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	#Matriz de confusao em um arquivo txt e Plot
-	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	auxAxes = ["x-axis", "y-axis", "z-axis"]
 	util.cleanTxtMatrix(N)
 	for i in range(3):
 		util.confusionMatrixPlotAndTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), N)
+	for i in range(3):
 		util.confusionMatrixPlotAndTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), N)
 
 def slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	#Janela Deslizante em um arquivo txt
-	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	auxAxes = ["x-axis", "y-axis", "z-axis"]
 	util.cleanTxtSliding(N, int(sys.argv[2]))
 	for i in range(3):
 		util.slidingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
+	for i in range(3):
 		util.slidingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
 
 def jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	#Janela Pulante em um arquivo txt
-	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	auxAxes = ["x-axis", "y-axis", "z-axis"]
 	util.cleanTxtJumping(N, int(sys.argv[2]))
 	for i in range(3):
 		util.jumpingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
+	for i in range(3):
 		util.jumpingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
 
 def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	#Comparação das janelas: Slinding vs Jumping
-	auxAxes = ["Eixo X", "Eixo Y", "Eixo Z"]
+	auxAxes = ["x-axis", "y-axis", "z-axis"]
 	for i in range(3):
 		util.windowsPlot(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
 		util.windowsPlot(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
@@ -115,14 +118,13 @@ def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 
 def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N):
 
-	print("chamou")
 	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
 
 	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
-	plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	# plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
 	# slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
@@ -300,7 +302,7 @@ def plot_SAC_AM_DM_motor_signals():
 	return 0
 
 #********* Main ********
-print("main")
+
 file_paths = [  "../../files/drone_signals/accel_80_F0.csv",
 			"../../files/drone_signals/accel_80_F6.csv",
 			"../../files/drone_signals/accel_80_F14.csv",

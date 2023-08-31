@@ -9,7 +9,7 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 	plt.ylabel(title) 
 	plt.xlabel('Time (ms)')
 	
-	half_dataset = amostragem_sac(dataset, 0, round(len(dataset)/2))
+	half_dataset = amostragem_sac(dataset, 0, round(len(dataset)/2) + 1)
 	colors = list(mcolors.CSS4_COLORS) 
 
 	media_dataset = media_sac(half_dataset, 0, len(half_dataset))
@@ -22,14 +22,14 @@ def treinamentoMetade(dataset, title, fig, ax, file_tag):
 	y = np.zeros(len(half_dataset))
 	y = np.full_like(y, media_dataset)
 
-	ax.plot(x,y,color=colors[10], label = (f"Média da primeira metade do SAC {file_tag}"))
+	ax.plot(x,y,color=colors[10], label = (f"Average of the first half of the SAC {file_tag}"))
 
 	for j in range(len(half_dataset)):
 
 		if(aux_desv[j] != 0):			
 			ax.errorbar(j,media_dataset,yerr = aux_desv[j], color = colors[20],marker='s', capsize=2, markersize=4, linewidth=1, linestyle='--')
 
-	ax.fill_between(x, media_dataset - desv_dataset, media_dataset + desv_dataset, alpha = 0.2, label = (f"Desvio Padrão da primeira metade do Arquivo {file_tag}"))
+	ax.fill_between(x, media_dataset - desv_dataset, media_dataset + desv_dataset, alpha = 0.2, label = (f"Standard Deviation of the first half of the File {file_tag}"))
 
 def testagem(dataset, title, fig, ax, color):
 
@@ -43,13 +43,13 @@ def showTreinamentoM(dataset, title, file_tag):
 	fig.suptitle(title)
 
 	#				Criando os titulos dos subgrafos
-	auxT = [("Eixo X"), ("Eixo Y"), ("Eixo Z")]
+	auxT = [("x-axis"), ("y-axis"), ("z-axis")]
 	
 	for i in range(len(dataset)):
 
 		treinamentoMetade(dataset[i], title, fig, axs[i],file_tag)
 		dataset_teste = amostragem_sac(dataset[i], round(len(dataset[i])/2), len(dataset[i]) )
-		testagem(dataset_teste, (f"Segunda metade do arquivo {file_tag}"), fig, axs[i], (11+i))
+		testagem(dataset_teste, (f"Second half of the file {file_tag}"), fig, axs[i], (11+i))
 		axs[i].set_xlim(left = -1)
 		axs[i].set(ylabel = auxT[i])
 		# axs[i].legend(loc = 'upper right')
@@ -71,14 +71,14 @@ def showSAC_figUnicaComTreinoM(dataset, title, file_tag):
 		
 		for j in range(0 ,len(dataset)):# arquivos
 			dataset_teste = amostragem_sac(dataset[j][i], round(len(dataset[j][i])/2), len(dataset[j][i]) )
-			testagem(dataset_teste, (f"Segunda metade do Arquivo: {file_tag[j]}"), fig, axs[i], (11+j))
+			testagem(dataset_teste, (f"Second half of the file: {file_tag[j]}"), fig, axs[i], (11+j))
 		
-		axs[i].set_xlim(-1, round(len(dataset[0][i]) * 0.8))
+		axs[i].set_xlim(-1, round(len(dataset[0][i]) * 0.69))
 		axs[i].legend(loc='lower right')
 		
-	axs[0].set(ylabel = (aux[0] + ": Eixo X"))
-	axs[1].set(ylabel = (aux[0] + ": Eixo Y"))
-	axs[2].set(ylabel = (aux[0] + ": Eixo Z"))
+	axs[0].set(ylabel = (aux[0] + ": x-axis"))
+	axs[1].set(ylabel = (aux[0] + ": y-axis"))
+	axs[2].set(ylabel = (aux[0] + ": z-axis"))
 	
 
 def showSacUnicoEixo(dataset, title, file_tag):
@@ -89,7 +89,7 @@ def showSacUnicoEixo(dataset, title, file_tag):
 
 	# # Plotar os eixos nos gráficos base ( Teste )
 	for i in range(len(dataset)):
-		testagem(dataset[i], (f"Arquivo: {file_tag[i]}"), fig, ax, (10+i))
+		testagem(dataset[i], (f"File: {file_tag[i]}"), fig, ax, (10+i))
 	ax.legend(loc='lower right')
 
 
@@ -152,15 +152,15 @@ def confusionMatrix(dataset, arquivos, title):
 
 	print(f"\n\t\t{title}\n")
 
-	print(f"{'Arquivo':<10}", end="")
+	print(f"{'File':<10}", end="")
 	for i in range(len(arquivos)):
 		print(f"{arquivos[i]:<10}", end="")
 
-	print(f"{'Inconclusivo':<10}")
+	print(f"{'Inconclusive':<10}")
 
 	for i in range(len(matrix)):
 		values = [f"{matrix[i][j]}%" for j in range(len(matrix[i]))] #adiciona '%' nos valores da matriz.
-		print(f"{arquivos[1]:<10}{values[0]:<10}{values[1]:<10}{values[2]:<10}{values[3]:<10}{values[4]:<10}")
+		print(f"{arquivos[i]:<10}{values[0]:<10}{values[1]:<10}{values[2]:<10}{values[3]:<10}{values[4]:<10}")
 
 
 def cleanTxtSliding(N, window_size):
@@ -203,9 +203,9 @@ def slidingWindowInTxt(dataset, arquivos, title, window_size, N):
 	for i in range(len(dataset)):
 		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
 		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
-		file1.write((arquivos[i] + ":" + " Média - " + str(round(media[i], 4)) + "\n"))
-		file1.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio[i], 4)) + "\n"))
-		file1.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media[i] - desvio[i], 4)) + " | " + "Limite superior - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
+		file1.write((arquivos[i] + ":" + " Average - " + str(round(media[i], 4)) + "\n"))
+		file1.write((arquivos[i] + ":" + " Standard deviation - " + str(round(desvio[i], 4)) + "\n"))
+		file1.write((arquivos[i] + ":" + " Lower limit - " + str(round(media[i] - desvio[i], 4)) + " | " + "Upper limit - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
 		for j in range( round(len(dataset[i])/2), (len(dataset[i]) - window_size + 1) ): # array com n pontos
@@ -241,18 +241,19 @@ def slidingWindowInTxt(dataset, arquivos, title, window_size, N):
 
 				
 
-	file1.write(f"Matriz de confusao - Janela Deslizante[{window_size}] - N{N} - Qtd de janelas{count_window}\n\n")
-	file1.write((f"{'Arquivo':<10}"))
+	file1.write(f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+	file1.write((f"{'File':<10}"))
 	for i in range(len(arquivos)):
 		file1.write(f"{arquivos[i]:<10}")
-	file1.write(f"{'Inconclusivo':<10}\n")
+	file1.write(f"{'Inconclusive':<10}\n")
 
 	for i in range(len(matrix)):
 		file1.write(f"{arquivos[i]:<10}")
 		for j in range(len(matrix[i])):
 			matrixSaida[i][j] = round(get_change_t(matrix[i][j],count_window[i]),2)
 			# matrixSaida[i][j] = round(matrix[i][j],2)
-			file1.write(f"{matrixSaida[i][j]:<10}")
+			aux = (f"{matrixSaida[i][j]}%")
+			file1.write(f"{aux:<10}")
 		file1.write("\n\n")
 
 	file1.close()
@@ -266,16 +267,17 @@ def jumpingWindowInTxt(dataset, arquivos, title, window_size, N):
 	count_points = np.zeros((len(dataset)))
 	matrixSaida = np.zeros((len(dataset),len(dataset)+1))
 	matrix = np.zeros((len(dataset),len(dataset)+1))
-	pontos_inconclusivos_int = np.zeros((len(dataset),len(dataset[0])))
+	pontos_Inconclusives_int = np.zeros((len(dataset),len(dataset[0])))
 
 
 	file1.write((title + "\n\n"))
 	for i in range(len(dataset)):
 		media[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2))
 		desvio[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2))
-		file1.write((arquivos[i] + ":" + " Média - " + str(round(media[i], 4)) + "\n"))
-		file1.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio[i], 4)) + "\n"))
-		file1.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media[i] - desvio[i], 4)) + " | " + "Limite superior - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
+		file1.write((arquivos[i] + ":" + " Average - " + str(round(media[i], 4)) + "\n"))
+		file1.write((arquivos[i] + ":" + " Standard deviation - " + str(round(desvio[i], 4)) + "\n"))
+		file1.write((arquivos[i] + ":" + " Lower limit - " + str(round(media[i] - desvio[i], 4)) + " | " + "Upper limit - " + str(round(media[i] + desvio[i], 4)) +"\n\n"))
+
 
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
@@ -330,21 +332,22 @@ def jumpingWindowInTxt(dataset, arquivos, title, window_size, N):
 			
 			matrix[i][np.argmax(conclusion)] += 1
 			if( np.argmax(conclusion) == 4):
-				pontos_inconclusivos_int[i][j] = dataset[i][j]
+				pontos_Inconclusives_int[i][j] = dataset[i][j]
 				
 
-	file1.write(f"Matriz de confusao[%] - Janela Pulante[{window_size}] - N{N} - Qtd de janelas{count_points}\n\n")
-	file1.write((f"{'Arquivo':<10}"))
+	file1.write(f"Confusion matrix[%] - Jumping window[{window_size}] - N{N} - Quantity of windows{count_points}\n\n")
+	file1.write((f"{'File':<10}"))
 	for i in range(len(arquivos)):
 		file1.write(f"{arquivos[i]:<10}")
-	file1.write(f"{'Inconclusivo':<10}\n")
+	file1.write(f"{'Inconclusive':<10}\n")
 
 	for i in range(len(matrix)):
 		file1.write(f"{arquivos[i]:<10}")
 		for j in range(len(matrix[i])):
 			matrixSaida[i][j] = round(get_change_t(matrix[i][j],(count_points[i])),2 )		
 			# matrixSaida[i][j] = round(matrix[i][j],2 )
-			file1.write(f"{matrixSaida[i][j]:<10}")
+			aux = (f"{matrixSaida[i][j]}%")
+			file1.write(f"{aux:<10}")
 		file1.write("\n\n")
 
 
@@ -460,7 +463,7 @@ def windowsPlot(dataset, arquivos, title, window_size, N):
 	fig, ax = plt.subplots(len(dataset), 2)
 	fig.suptitle(f"{title} - N{N}WindowSize{window_size}")
 
-	labels = arquivos + ["Inconclusivo"]
+	labels = arquivos + ["Inconclusive"]
 
 	for j in range(len(dataset)):
 
@@ -494,9 +497,9 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 	for i in range(len(dataset)):
 		media_metade[i] = media_sac(dataset[i], 0, round(len(dataset[i])/2) )
 		desvio_metade[i] = desvio_sac(dataset[i], 0, round(len(dataset[i])/2) )
-		half_file.write((arquivos[i] + ":" + " Média - " + str(round(media_metade[i], 4)) + "\n"))
-		half_file.write((arquivos[i] + ":" + " Desvio padrao - " + str(round(desvio_metade[i], 4)) + "\n"))
-		half_file.write((arquivos[i] + ":" + " Limite inferior - " + str(round(media_metade[i] - desvio_metade[i], 4)) + " | " + "Limite superior - " + str(round(media_metade[i] + desvio_metade[i], 4)) +"\n\n"))
+		half_file.write((arquivos[i] + ":" + " Average - " + str(round(media_metade[i], 4)) + "\n"))
+		half_file.write((arquivos[i] + ":" + " Standard deviation - " + str(round(desvio_metade[i], 4)) + "\n"))
+		half_file.write((arquivos[i] + ":" + " Lower limit - " + str(round(media_metade[i] - desvio_metade[i], 4)) + " | " + "Upper limit - " + str(round(media_metade[i] + desvio_metade[i], 4)) +"\n\n"))
 
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
@@ -523,17 +526,18 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 				matrix_metade[i][4] += 1
 
 
-	half_file.write(f"Matriz de confusao \n\n")
-	half_file.write((f"{'Arquivo':<10}"))
+	half_file.write(f"Confusion matrix[%] \n\n")
+	half_file.write((f"{'File':<10}"))
 	for i in range(len(arquivos)):
 		half_file.write(f"{arquivos[i]:<10}")
-	half_file.write(f"{'Inconclusivo':<10}\n")
+	half_file.write(f"{'Inconclusive':<10}\n")
 
 	for i in range(len(matrix_metade)):
 		half_file.write(f"{arquivos[i]:<10}")
 		for j in range(len(matrix_metade[i])):
 			matrix_metade[i][j] = (round(get_change_t(matrix_metade[i][j], (len(dataset[i]))),1))*2
-			half_file.write(f"{matrix_metade[i][j]:<10}")
+			aux = (f"{matrix_metade[i][j]}%")
+			half_file.write(f"{aux:<10}")
 		half_file.write("\n\n")
 
 	half_file.close()
@@ -542,7 +546,7 @@ def confusionMatrixPlotAndTxt(dataset, arquivos, title, N):
 	fig, ax = plt.subplots(len(dataset))
 	fig.suptitle(f"{title} - N{N}")
 
-	labels = arquivos + ["Inconclusivo"]
+	labels = arquivos + ["Inconclusive"]
 
 	for j in range(len(dataset)):
 
