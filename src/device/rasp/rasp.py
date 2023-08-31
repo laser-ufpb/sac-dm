@@ -23,7 +23,7 @@ def sendJSONhttp(data, lock):
 	json_obj_array = []
 	for r in data:
 		split = r.split(";")
-		item = {'device_code':'01',
+		item = {'device_id':'01',
 				'ACx': split[0],
 				'ACy': split[1],
 				'ACz': split[2],
@@ -48,8 +48,8 @@ def write_log(log, data, lock):
 
 
 
-url = 'https://enmpf6xid68v.x.pipedream.net/'
-#url = 'http://150.165.167.12:8100/accelerometer/'
+#url = 'https://enmpf6xid68v.x.pipedream.net/'
+url = 'http://150.165.167.12:8100/accelerometer/'
 
 ser = serial.Serial("/dev/ttyS0", 115200)
 ser.reset_input_buffer()
@@ -66,7 +66,9 @@ http_lock = Lock()
 esp_serial = str(ser.readline())
 	
 while True:
-		
+	
+	start=time.time()	
+	
 	esp_serial = str(ser.readline())
 	sensor_buffer.append(esp_serial[2:][:-5] + ';'+ str(time.time()))
 	
@@ -74,7 +76,10 @@ while True:
 		print(sensor_buffer[-1])
 		print(len(sensor_buffer))
 		
-	if len(sensor_buffer) >= 100:
+	if len(sensor_buffer) >= 10000:
+		
+		print(time.time()-start)
+		
 		print(len(sensor_buffer))
 		print(sensor_buffer[0])
 		
@@ -95,7 +100,7 @@ while True:
 			t_log.start()
 			sensor_buffer.clear()
 			
-		break;
+		#break;
 				
 
 
