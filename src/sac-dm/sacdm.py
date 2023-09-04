@@ -198,9 +198,9 @@ def plot_SAC_AM_DM_drone_signals():
 
 
 	# # 								Matriz de confusao
-	# util.confusionMatrix([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X")
-	# util.confusionMatrix([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y")
-	# util.confusionMatrix([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z")
+	util.confusionMatrix([sac_am_F0_x, sac_am_F6_x, sac_am_F14_x, sac_am_F22_x], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo X")
+	util.confusionMatrix([sac_am_F0_y, sac_am_F6_y, sac_am_F14_y, sac_am_F22_y], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Y")
+	util.confusionMatrix([sac_am_F0_z, sac_am_F6_z, sac_am_F14_z, sac_am_F22_z], ["F0", "F6", "F14", "F22"], "SAC-AM: Eixo Z")
 
 	# util.confusionMatrix([sac_dm_F0_x, sac_dm_F6_x, sac_dm_F14_x, sac_dm_F22_x], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo X")
 	# util.confusionMatrix([sac_dm_F0_y, sac_dm_F6_y, sac_dm_F14_y, sac_dm_F22_y], ["F0", "F6", "F14", "F22"], "SAC-DM: Eixo Y")
@@ -364,7 +364,7 @@ def plot_SAC_AM_DM_motor_signals():
 	# Plotando graficos de forma individual
 
 	# #								SAC-AM
-	util.showTreinamentoC([sac_am_C0_x, sac_am_C0_y, sac_am_C0_z], (f"SAC-AM: Arquivo C0 - N{N}"), "C0")
+	# util.showTreinamentoC([sac_am_C0_x, sac_am_C0_y, sac_am_C0_z], (f"SAC-AM: Arquivo C0 - N{N}"), "C0")
 	# util.showTreinamentoC([sac_am_C2_x, sac_am_C2_y, sac_am_C2_z], (f"SAC-AM: Arquivo C2 - N{N}"), "C2")
 	# util.showTreinamentoC([sac_am_C4_x, sac_am_C4_y, sac_am_C4_z], (f"SAC-AM: Arquivo C4 - N{N}"), "C4")
 	# util.showTreinamentoC([sac_am_C10_x, sac_am_C10_y, sac_am_C10_z], (f"SAC-AM: Arquivo C10 - N{N}"), "C10")
@@ -422,5 +422,5 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-# plot_SAC_AM_DM_drone_signals()
-plot_SAC_AM_DM_motor_signals()
+plot_SAC_AM_DM_drone_signals()
+# plot_SAC_AM_DM_motor_signals()
