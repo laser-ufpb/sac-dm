@@ -216,22 +216,19 @@ def confusionMatrix(dataset, file_tags, title, N, save):
 		saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 
 
-def slidingWindowInTxt(dataset, file_tags, title, window_size, N):
+def slidingWindow(dataset, file_tags, title, window_size, N, save):
 
-	filename = (f"SlidingWindowN{N}Size{window_size}.txt")
-	file1 = open(filename, 'a+')
+
 	average = np.zeros(round(len(dataset[0])/2))
 	deviation = np.zeros((round(len(dataset[0])/2)))
 	count_window = np.zeros((len(dataset)))
 	outputMatrix = np.zeros((len(dataset),len(dataset)+1))
 
-	file1.write((title + "\n\n"))
+	print((title + "\n\n"))
 	for i in range(len(dataset)):
 		average[i] = average_sac(dataset[i], 0, round(len(dataset[i])/2))
 		deviation[i] = deviation_sac(dataset[i], 0, round(len(dataset[i])/2))
-		file1.write((file_tags[i] + ":" + " Average - " + str(round(average[i], 4)) + "\n"))
-		file1.write((file_tags[i] + ":" + " Standard deviation - " + str(round(deviation[i], 4)) + "\n"))
-		file1.write((file_tags[i] + ":" + " Lower limit - " + str(round(average[i] - deviation[i], 4)) + " | " + "Upper limit - " + str(round(average[i] + deviation[i], 4)) +"\n\n"))
+		
 
 	#Files with the same axis
 	for i in range(len(dataset)):
@@ -267,45 +264,43 @@ def slidingWindowInTxt(dataset, file_tags, title, window_size, N):
 				outputMatrix[i][np.argmax(conclusion)] += 1
 				count_window[i] += 1
 
-	file1.write(f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
-	file1.write((f"{'File':<10}"))
+	print(f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+	print((f"{'File':<10}"), end="")
 	for i in range(len(file_tags)):
-		file1.write(f"{file_tags[i]:<10}")
-	file1.write(f"{'Inconclusive':<10}\n")
+		print(f"{file_tags[i]:<10}", end="")
+	print(f"{'Inconclusive':<10}")
 
 	for i in range(len(outputMatrix)):
-		file1.write(f"{file_tags[i]:<10}")
+		print(f"{file_tags[i]:<10}", end="")
 		for j in range(len(outputMatrix[i])):
 			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
 			aux = (f"{outputMatrix[i][j]}%")
-			file1.write(f"{aux:<10}")
-		file1.write("\n\n")
+			print(f"{aux:<10}", end="")
+		print("\n")
 
-	file1.close()
+	if(save == True):
+		filename = (f"SlidingWindowN{N}Size{window_size}.txt")
+		header = (f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+		saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 
-def jumpingWindowInTxt(dataset, file_tags, title, window_size, N):
-
-	filename = (f"JumpingWindowN{N}Size{window_size}.txt")
-	file1 = open(filename, 'a+')
+def jumpingWindow(dataset, file_tags, title, window_size, N, save):
 	average = np.zeros(round(len(dataset[0])/2))
 	deviation = np.zeros((round(len(dataset[0])/2)))
-	count_points = np.zeros((len(dataset)))
+	count_window = np.zeros((len(dataset)))
 	outputMatrix = np.zeros((len(dataset),len(dataset)+1))
 
-	file1.write((title + "\n\n"))
+	print((title + "\n\n"))
 	for i in range(len(dataset)):
 		average[i] = average_sac(dataset[i], 0, round(len(dataset[i])/2))
 		deviation[i] = deviation_sac(dataset[i], 0, round(len(dataset[i])/2))
-		file1.write((file_tags[i] + ":" + " Average - " + str(round(average[i], 4)) + "\n"))
-		file1.write((file_tags[i] + ":" + " Standard deviation - " + str(round(deviation[i], 4)) + "\n"))
-		file1.write((file_tags[i] + ":" + " Lower limit - " + str(round(average[i] - deviation[i], 4)) + " | " + "Upper limit - " + str(round(average[i] + deviation[i], 4)) +"\n\n"))
+
 
 	#Files with the same axis
 	for i in range(len(dataset)):
 		#Array of SACs
 		for j in range( round(len(dataset[i])/2), (len(dataset[i])), window_size):
 			conclusion = np.zeros((len(file_tags) + 1))
-			count_points[i] += 1
+			count_window[i] += 1
 			if (j + window_size <= len(dataset[i])):
 				window = dataset[i][j:j+window_size]
 
@@ -354,22 +349,24 @@ def jumpingWindowInTxt(dataset, file_tags, title, window_size, N):
 			
 			outputMatrix[i][np.argmax(conclusion)] += 1
 				
-	file1.write(f"Confusion matrix[%] - Jumping window[{window_size}] - N{N} - Quantity of windows{count_points}\n\n")
-	file1.write((f"{'File':<10}"))
+	print(f"Confusion matrix[%] - Jumping Window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+	print((f"{'File':<10}"), end="")
 	for i in range(len(file_tags)):
-		file1.write(f"{file_tags[i]:<10}")
-	file1.write(f"{'Inconclusive':<10}\n")
+		print(f"{file_tags[i]:<10}", end="")
+	print(f"{'Inconclusive':<10}")
 
 	for i in range(len(outputMatrix)):
-		file1.write(f"{file_tags[i]:<10}")
+		print(f"{file_tags[i]:<10}", end="")
 		for j in range(len(outputMatrix[i])):
-			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],(count_points[i])),2 )		
+			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
 			aux = (f"{outputMatrix[i][j]}%")
-			file1.write(f"{aux:<10}")
-		file1.write("\n\n")
-		
+			print(f"{aux:<10}", end="")
+		print("\n")
 
-	file1.close()
+	if(save == True):
+		filename = (f"JumpingWindowN{N}Size{window_size}.txt")
+		header = (f"Confusion matrix[%] - Jumping Window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+		saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 
 def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 

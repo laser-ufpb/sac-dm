@@ -98,23 +98,35 @@ def plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N,
 			util.confusionMatrix(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), N, save)
 
 
-def slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
+def slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=False):
 	#Sliding window in a txt file
 	auxAxes = ["x-axis", "y-axis", "z-axis"]
-	util.cleanTxtSliding(N, int(sys.argv[2]))
-	for i in range(3):
-		util.slidingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
-	for i in range(3):
-		util.slidingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
+	if( save == True):
+		util.cleanTxtSliding(N, int(sys.argv[2]))
+		for i in range(3):
+			util.slidingWindow(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
+		for i in range(3):
+			util.slidingWindow(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
+	else:
+		for i in range(3):
+			util.slidingWindow(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
+		for i in range(3):
+			util.slidingWindow(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
 
-def jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
+def jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=False):
 	#Jumping window in a txt file
 	auxAxes = ["x-axis", "y-axis", "z-axis"]
-	util.cleanTxtJumping(N, int(sys.argv[2]))
-	for i in range(3):
-		util.jumpingWindowInTxt(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N)
-	for i in range(3):
-		util.jumpingWindowInTxt(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
+	if(save == True):
+		util.cleanTxtJumping(N, int(sys.argv[2]))
+		for i in range(3):
+			util.jumpingWindow(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
+		for i in range(3):
+			util.jumpingWindow(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
+	else:
+		for i in range(3):
+			util.jumpingWindow(sac_am_by_axes[i], file_tags, (f"SAC-AM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
+		for i in range(3):
+			util.jumpingWindow(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N, save)
 
 def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	#Comparison of Windows: Sliding vs Jumping
@@ -135,11 +147,11 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	# slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	# jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 	
 	plt.show()
 	return 0
