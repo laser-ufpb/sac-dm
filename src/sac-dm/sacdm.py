@@ -51,9 +51,9 @@ def sac_am(data, N):
 	inicio = 0
 	fim = N
 	for k in range(size):
-		peaks, _ = find_peaks(data[inicio:fim])
-		v = np.abs(data[peaks])
-		s = np.mean(v)
+		# peaks, _ = find_peaks(data[inicio:fim])
+		# v = np.abs(data[peaks])
+		s = np.std(data[inicio:fim])
 		sacdm[k] = 1.0*s/N
 		inicio = fim
 		fim = fim + N
@@ -170,8 +170,8 @@ def plot_SAC_AM_DM_drone_signals():
 	# # Plotando na mesma figura 3 graficos( 1 para cada eixo ), contendo o treinamento e o teste feitos em arquivos diferentes
 	# #								SAC-AM: Treinamento com arquivo base completo e metade
 
-	# util.showSAC_figUnicaComTreinoC( ([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
-	#  								   [sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]]), (f"SAC-AM: Treinamento Completo - N{N}"), ["F0","F6","F14","F22"])
+	util.showSAC_figUnicaComTreinoC( ([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
+	 								   [sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]]), (f"SAC-AM: Treinamento Completo - N{N}"), ["F0","F6","F14","F22"])
 	
 	# util.showSAC_figUnicaComTreinoM( ([[sac_am_F0_x, sac_am_F0_y, sac_am_F0_z], [sac_am_F6_x, sac_am_F6_y, sac_am_F6_z], [sac_am_F14_x, sac_am_F14_y, sac_am_F14_z],
 	#  								   [sac_am_F22_x, sac_am_F22_y, sac_am_F22_z]]), (f"SAC-AM: Treinamento Metade - N{N}"), ["F0","F6","F14","F22"])
