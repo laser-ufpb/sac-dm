@@ -43,6 +43,9 @@ def treinamentoCompleto(dataset, title, fig, ax, file_tag):
 	media_dataset = media_sac(dataset, 0, round(len(dataset)))
 	desv_dataset = desvio_sac(dataset, 0, round(len(dataset)))
 
+	min_global = np.min(dataset)
+	max_global = np.max(dataset)
+
 	aux_desv = np.zeros(len(dataset))
 	aux_desv[round((len(dataset))/2)] = desv_dataset
 
@@ -60,7 +63,7 @@ def treinamentoCompleto(dataset, title, fig, ax, file_tag):
 		if(aux_desv[j] != 0):			
 			ax.errorbar(j,media_dataset,yerr = aux_desv[j], color = colors[20],marker='s', capsize=2, markersize=4, linewidth=1, linestyle='--')
 
-	ax.fill_between(x, media_dataset - desv_dataset, media_dataset + desv_dataset, alpha = 0.2, label = (f"Desvio Padrão do Arquivo {file_tag}"))
+	ax.fill_between(x, min_global, max_global, alpha = 0.2, label = (f"Desvio Padrão do Arquivo {file_tag}"))
 
 def testagem(dataset, title, fig, ax, color):
 
@@ -185,27 +188,34 @@ def confusionMatrix(dataset, arquivos, title):
 	media = np.zeros((len(dataset)))
 	desvio = np.zeros((len(dataset)))
 	matrix = np.zeros((len(dataset),len(dataset)+1))
+	min_global = np.zeros((len(dataset)))
+	max_global = np.zeros((len(dataset)))
 
 	for i in range(len(dataset)):
 		media[i] = media_sac(dataset[i], 0, len(dataset[i]))
 		desvio[i] = desvio_sac(dataset[i], 0, len(dataset[i]))
+		min_global[i] = np.min(dataset[i])
+		max_global[i] = np.max(dataset[i])
+
+	print(media)
+	print(desvio)
 
 	for i in range(len(dataset)): # Arquivos com os mesmos eixos
 		for j in range(len(dataset[i])): # array com n pontos
 			
-			if (dataset[i][j] >= media[0] - desvio[0] and dataset[i][j] <= media[0] + desvio[0]):
+			if (dataset[i][j] >= min_global[0] and dataset[i][j] <= max_global[0]):
 				matrix[i][0] += 1
 				continue
 
-			elif(dataset[i][j] >= media[1] - desvio[1] and dataset[i][j] <= media[1] + desvio[1]):
+			elif(dataset[i][j] >= min_global[1] and dataset[i][j] <= max_global[1]):
 				matrix[i][1] += 1
 				continue
 
-			elif(dataset[i][j] >= media[2] - desvio[2] and dataset[i][j] <= media[2] + desvio[2]):
+			elif(dataset[i][j] >= min_global[2] and dataset[i][j] <= max_global[2]):
 				matrix[i][2] += 1
 				continue
 
-			elif(dataset[i][j] >= media[3] - desvio[3] and dataset[i][j] <= media[3] + desvio[3]):
+			elif(dataset[i][j] >= min_global[3] and dataset[i][j] <= max_global[3]):
 				matrix[i][3] += 1
 				continue
 			
