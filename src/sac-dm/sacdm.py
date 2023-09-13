@@ -83,7 +83,7 @@ def plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags):
 		util.plotSACsAxis(sac_dm_by_axes[i], (f"SAC-DM: {auxAxes[i]}"), file_tags)
 
 def plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save):
-	#Matriz de confusao em um arquivo txt e Plot
+	#Confusion matrix in a txt file
 	auxAxes = ["x-axis", "y-axis", "z-axis"]
 	if(save == True):
 		util.cleanTxtMatrix(N)
@@ -149,9 +149,9 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	# jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
+	jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 	
 	plt.show()
 	return 0
