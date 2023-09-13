@@ -324,62 +324,70 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-file_paths = [  "../../files/drone_signals/accel_80_F0.csv",
-			"../../files/drone_signals/accel_80_F6.csv",
-			"../../files/drone_signals/accel_80_F14.csv",
-			"../../files/drone_signals/accel_80_F22.csv" ]
+file_path = "../../files/hexacopter_signals/nominal_flight/NFlt01.mat"
 
-file_columns = ['x','y','z','s','t']
+file = scipy.io.loadmat(file_path)
 
-file_tags = [ "F0", "F6", "F14", "F22"]
+print(file['n1'][0])
 
-N = int(sys.argv[1])
-files = []
-file_axes = []
-sac_am_by_files = []
-sac_dm_by_files = []
-sac_am_by_axes = []
-sac_dm_by_axes = []
+# file_paths = [  "../../files/drone_signals/accel_80_F0.csv",
+# 			"../../files/drone_signals/accel_80_F6.csv",
+# 			"../../files/drone_signals/accel_80_F14.csv",
+# 			"../../files/drone_signals/accel_80_F22.csv" ]
 
-#Opening files
-for i in range(len(file_paths)):
-	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
-	files.append(files_aux)
+# file_path = "../../files/hexacopter_signals/"
 
-for i in range(len(file_paths)):
-	file_list = []
-	sac_am_list = []
-	sac_dm_list = []
-	#Extracting axes
-	for j in range(5):
-		file_axes_aux = files[i][file_columns[j]].reshape(-1)
-		file_list.append(file_axes_aux)
+# file_columns = ['x','y','z','s','t']
 
-		#Getting SACs
-		if( j < 3):
-			sac_am_aux = sac_am(file_axes_aux, N)
-			sac_dm_aux = sac_dm(file_axes_aux, N)
-			sac_am_aux.pop()
-			sac_dm_aux.pop()
-			sac_am_list.append(sac_am_aux)
-			sac_dm_list.append(sac_dm_aux)
+# file_tags = [ "F0", "F6", "F14", "F22"]
+
+# N = int(sys.argv[1])
+# files = []
+# file_axes = []
+# sac_am_by_files = []
+# sac_dm_by_files = []
+# sac_am_by_axes = []
+# sac_dm_by_axes = []
+
+# #Opening files
+# for i in range(len(file_paths)):
+# 	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
+# 	files.append(files_aux)
+
+# for i in range(len(file_paths)):
+# 	file_list = []
+# 	sac_am_list = []
+# 	sac_dm_list = []
+# 	#Extracting axes
+# 	for j in range(5):
+# 		file_axes_aux = files[i][file_columns[j]].reshape(-1)
+# 		file_list.append(file_axes_aux)
+
+# 		#Getting SACs
+# 		if( j < 3):
+# 			sac_am_aux = sac_am(file_axes_aux, N)
+# 			sac_dm_aux = sac_dm(file_axes_aux, N)
+# 			sac_am_aux.pop()
+# 			sac_dm_aux.pop()
+# 			sac_am_list.append(sac_am_aux)
+# 			sac_dm_list.append(sac_dm_aux)
 	
-	file_axes.append(file_list)
-	sac_am_by_files.append(sac_am_list)
-	sac_dm_by_files.append(sac_dm_list)
+# 	file_axes.append(file_list)
+# 	sac_am_by_files.append(sac_am_list)
+# 	sac_dm_by_files.append(sac_dm_list)
 
-#Number of axes
-for i in range(3): 
-	sac_am_aux = []
-	sac_dm_aux = []
-	#Number of files
-	for j in range(len(file_paths)): 
-		sac_am_aux.append(sac_am_by_files[j][i])
-		sac_dm_aux.append(sac_dm_by_files[j][i])
+# #Number of axes
+# for i in range(3): 
+# 	sac_am_aux = []
+# 	sac_dm_aux = []
+# 	#Number of files
+# 	for j in range(len(file_paths)): 
+# 		sac_am_aux.append(sac_am_by_files[j][i])
+# 		sac_dm_aux.append(sac_dm_by_files[j][i])
 
-	sac_am_by_axes.append(sac_am_aux)
-	sac_dm_by_axes.append(sac_dm_aux)
+# 	sac_am_by_axes.append(sac_am_aux)
+# 	sac_dm_by_axes.append(sac_dm_aux)
 
-plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
+# plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
 # plot_SAC_AM_DM_motor_signals()
