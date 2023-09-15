@@ -54,6 +54,7 @@ def sac_am(data, N):
 		peaks, _ = find_peaks(data[inicio:fim])
 		v = np.abs(data[peaks])
 		s = sum(v)
+		# s = np.mean(v)
 		sacdm[k] = 1.0*s/N
 		inicio = fim
 		fim = fim + N
@@ -145,13 +146,13 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
-	plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
+	# plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
 	# slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
+	# jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 	
 	plt.show()
 	return 0
@@ -324,70 +325,63 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-file_path = "../../files/hexacopter_signals/nominal_flight/NFlt01.mat"
 
-file = scipy.io.loadmat(file_path)
+file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt05n1.csv",
+			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n1.csv",
+			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt05n1.csv" ]
 
-print(file['n1'][0])
 
-# file_paths = [  "../../files/drone_signals/accel_80_F0.csv",
-# 			"../../files/drone_signals/accel_80_F6.csv",
-# 			"../../files/drone_signals/accel_80_F14.csv",
-# 			"../../files/drone_signals/accel_80_F22.csv" ]
+file_columns = ['x','y','z','t']
 
-# file_path = "../../files/hexacopter_signals/"
+file_tags = [ "NFlt1n1", "FC2Flt05n1", "FC3Flt05n1"]
 
-# file_columns = ['x','y','z','s','t']
+N = int(sys.argv[1])
+files = []
+file_axes = []
+sac_am_by_files = []
+sac_dm_by_files = []
+sac_am_by_axes = []
+sac_dm_by_axes = []
 
-# file_tags = [ "F0", "F6", "F14", "F22"]
+#Opening files
+for i in range(len(file_paths)):
+	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
+	files.append(files_aux)
 
-# N = int(sys.argv[1])
-# files = []
-# file_axes = []
-# sac_am_by_files = []
-# sac_dm_by_files = []
-# sac_am_by_axes = []
-# sac_dm_by_axes = []
+for i in range(len(file_paths)):
+	file_list = []
+	sac_am_list = []
+	sac_dm_list = []
+	#Extracting axes
+	for j in range(len(file_columns)):
+		file_axes_aux = files[i][file_columns[j]].reshape(-1)
+		file_list.append(file_axes_aux)
 
-# #Opening files
-# for i in range(len(file_paths)):
-# 	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
-# 	files.append(files_aux)
-
-# for i in range(len(file_paths)):
-# 	file_list = []
-# 	sac_am_list = []
-# 	sac_dm_list = []
-# 	#Extracting axes
-# 	for j in range(5):
-# 		file_axes_aux = files[i][file_columns[j]].reshape(-1)
-# 		file_list.append(file_axes_aux)
-
-# 		#Getting SACs
-# 		if( j < 3):
-# 			sac_am_aux = sac_am(file_axes_aux, N)
-# 			sac_dm_aux = sac_dm(file_axes_aux, N)
-# 			sac_am_aux.pop()
-# 			sac_dm_aux.pop()
-# 			sac_am_list.append(sac_am_aux)
-# 			sac_dm_list.append(sac_dm_aux)
+		#Getting SACs
+		if( j < 3):
+			sac_am_aux = sac_am(file_axes_aux, N)
+			sac_dm_aux = sac_dm(file_axes_aux, N)
+			sac_am_aux.pop()
+			sac_dm_aux.pop()
+			sac_am_list.append(sac_am_aux)
+			sac_dm_list.append(sac_dm_aux)
 	
-# 	file_axes.append(file_list)
-# 	sac_am_by_files.append(sac_am_list)
-# 	sac_dm_by_files.append(sac_dm_list)
+	file_axes.append(file_list)
+	sac_am_by_files.append(sac_am_list)
+	sac_dm_by_files.append(sac_dm_list)
 
-# #Number of axes
-# for i in range(3): 
-# 	sac_am_aux = []
-# 	sac_dm_aux = []
-# 	#Number of files
-# 	for j in range(len(file_paths)): 
-# 		sac_am_aux.append(sac_am_by_files[j][i])
-# 		sac_dm_aux.append(sac_dm_by_files[j][i])
+#Number of axes
+for i in range(3): 
+	sac_am_aux = []
+	sac_dm_aux = []
+	#Number of files
+	for j in range(len(file_paths)): 
+		sac_am_aux.append(sac_am_by_files[j][i])
+		sac_dm_aux.append(sac_dm_by_files[j][i])
 
-# 	sac_am_by_axes.append(sac_am_aux)
-# 	sac_dm_by_axes.append(sac_dm_aux)
+	sac_am_by_axes.append(sac_am_aux)
+	sac_dm_by_axes.append(sac_dm_aux)
 
-# plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
+plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
 # plot_SAC_AM_DM_motor_signals()

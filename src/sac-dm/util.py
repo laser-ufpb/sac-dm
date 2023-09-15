@@ -401,12 +401,12 @@ def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 					conclusion[2] += 1
 					continue
 
-				elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
-					conclusion[3] += 1
-					continue
+				# elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
+				# 	conclusion[3] += 1
+				# 	continue
 				
 				else:
-					conclusion[4] += 1
+					conclusion[3] += 1
 			
 			if(j == (len(dataset[i]) - window_size)):
 				slidingMatrixOutput[i][np.argmax(conclusion)] += 1 * window_size
@@ -437,12 +437,12 @@ def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 						conclusion[2] += 1
 						continue
 
-					elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
-						conclusion[3] += 1
-						continue
+					# elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
+					# 	conclusion[3] += 1
+					# 	continue
 					
 					else:
-						conclusion[4] += 1
+						conclusion[3] += 1
 
 			else:
 				window = dataset[i][j:]
@@ -460,12 +460,12 @@ def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 						conclusion[2] += 1
 						continue
 
-					elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
-						conclusion[3] += 1
-						continue
+					# elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
+					# 	conclusion[3] += 1
+					# 	continue
 					
 					else:
-						conclusion[4] += 1
+						conclusion[3] += 1
 			
 			jumpingMatrixOutput[i][np.argmax(conclusion)] += 1
 
