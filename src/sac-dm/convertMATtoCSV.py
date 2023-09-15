@@ -1,9 +1,9 @@
 import scipy.io
 import numpy as np
 
-file_path = "../../files/hexacopter_signals/mat/nominal_flight/NFlt05.mat"
+file_path = "../../files/hexacopter_signals/mat/failure_condition_3/FC3Flt05.mat"
 
-file_name = "../../files/hexacopter_signals/csv/nominal_flight/NFlt05"
+file_name = "../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt05"
 file = scipy.io.loadmat(file_path)
 
 
@@ -29,13 +29,24 @@ for i in range(len(file['n2'][0][0][0])):
 
 file_csv.close()
 
-print(f"Tamanhos[n3] - Eixo X: {len(file['n3'][0][0][4][0])} Eixo Y: {len(file['n3'][0][0][5][0])} Eixo Z: {len(file['n3'][0][0][6][0])} Time: {len(file['n3'][0][0][2])}")
+print(f"Tamanhos[n3] - Eixo X: {len(file['n3'][0][0][1][0])} Eixo Y: {len(file['n3'][0][0][2][0])} Eixo Z: {len(file['n3'][0][0][3][0])} Time: {len(file['n3'][0][0][0])}")
 
 file_csv = open((file_name + "n3.csv"), "w")
 
-for i in range(len(file['n3'][0][0][4][0])):
-    file_csv.write(f"{file['n3'][0][0][4][0][i]} ; {file['n3'][0][0][5][0][i]} ; {file['n3'][0][0][6][0][i]} ; {file['n3'][0][0][2][i]}")
+for i in range(len(file['n3'][0][0][1][0])):
+    file_csv.write(f"{file['n3'][0][0][1][0][i]} ; {file['n3'][0][0][2][0][i]} ; {file['n3'][0][0][3][0][i]} ; {file['n3'][0][0][0][i][0]}")
     if(i < (len(file['n3'][0][0][0]) - 1)):
         file_csv.write("\n")
 
 file_csv.close()
+
+# print(f"Tamanhos[n3] - Eixo X: {len(file['n3'][0][0][4][0])} Eixo Y: {len(file['n3'][0][0][5][0])} Eixo Z: {len(file['n3'][0][0][6][0])} Time: {len(file['n3'][0][0][2])}")
+
+# file_csv = open((file_name + "n3.csv"), "w")
+
+# for i in range(len(file['n3'][0][0][4][0])):
+#     file_csv.write(f"{file['n3'][0][0][4][0][i]} ; {file['n3'][0][0][5][0][i]} ; {file['n3'][0][0][6][0][i]} ; {file['n3'][0][0][2][i]}")
+#     if(i < (len(file['n3'][0][0][0]) - 1)):
+#         file_csv.write("\n")
+
+# file_csv.close()
