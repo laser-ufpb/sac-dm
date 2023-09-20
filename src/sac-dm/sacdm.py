@@ -53,8 +53,8 @@ def sac_am(data, N):
 	for k in range(size):
 		peaks, _ = find_peaks(data[inicio:fim])
 		v = np.abs(data[peaks])
-		s = sum(v)
-		# s = np.mean(v)
+		# s = sum(v)
+		s = np.mean(v)
 		sacdm[k] = 1.0*s/N
 		inicio = fim
 		fim = fim + N
@@ -142,7 +142,7 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
 
-	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
@@ -152,7 +152,7 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 	
 	plt.show()
 	return 0
@@ -325,16 +325,19 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
+#Arquivos "normalizados"
+# file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt01n1.csv",
+# 			"../../files/hexacopter_signals/csv/failure_condition_1/FC1Flt01n1.csv",
+# 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt01n1.csv" ]
+# file_tags = [ "NFlt", "FC1", "FC2"]
 
+# Arquivos não "normalizados"
 file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt05n1.csv",
 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n1.csv",
 			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt05n1.csv" ]
-
+file_tags = [ "NFlt", "FC2", "FC3"]
 
 file_columns = ['x','y','z','t']
-
-file_tags = [ "NFlt1n1", "FC2Flt05n1", "FC3Flt05n1"]
-
 N = int(sys.argv[1])
 files = []
 file_axes = []
@@ -381,6 +384,13 @@ for i in range(3):
 
 	sac_am_by_axes.append(sac_am_aux)
 	sac_dm_by_axes.append(sac_dm_aux)
+
+
+# for i in range(len(file_tags)):
+# 	fig, ax = plt.subplots(3)
+# 	fig.suptitle(f"File: {file_tags[i]}")
+# 	for j in range(len(file_tags)):
+# 		ax[j].plot(file_axes[i][j])
 
 plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
