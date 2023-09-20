@@ -351,7 +351,7 @@ for i in range(len(file_paths)):
 	sac_am_list = []
 	sac_dm_list = []
 	#Extracting axes
-	for j in range(5):
+	for j in range(len(file_columns)):
 		file_axes_aux = files[i][file_columns[j]].reshape(-1)
 		file_list.append(file_axes_aux)
 
