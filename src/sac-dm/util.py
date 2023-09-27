@@ -46,6 +46,21 @@ def get_change_t(current, previous):
     except ZeroDivisionError:
         return 0
 
+def windowCompare( window, average, deviation, file_tags ):
+
+	conclusion = np.zeros((len(file_tags) + 1))
+	for i in range(len(window)):
+		wasFailure = False
+		for j in range(len(file_tags)):
+			if (window[i] >= average[j] - deviation[j] and window[i] <= average[j] + deviation[j]):
+				wasFailure = True
+				conclusion[j] += 1
+				break
+		if(wasFailure == False):
+			conclusion[len(file_tags)] += 1
+
+	return conclusion	
+
 def saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header):
 	
 	matrix_file = open(filename, 'a+')
@@ -498,6 +513,30 @@ def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 		ax[j][1].set_title(f"Jumping window - {file_tags[j]}")
 		ax[j][1].legend(wedges, non_zero_labels_jumping[:len(non_zero_values_jumping)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
+def plotWindowsComparationAllAxes(dataset, file_tags, title, window_size, N):
+	average = np.zeros(round(len(dataset[0])/2))
+	deviation = np.zeros((round(len(dataset[0])/2)))
+	count_window_jumping = np.zeros((len(dataset)))
+	count_window_sliding = np.zeros((len(dataset)))
+	jumpingMatrixOutput = np.zeros((len(dataset),len(dataset)+1))
+	slidingMatrixOutput = np.zeros((len(dataset),len(dataset)+1))
+
+	for i in range(len(dataset)):
+		average[i] = average_sac(dataset[i], 0, round(len(dataset[i])/2))
+		deviation[i] = deviation_sac(dataset[i], 0, round(len(dataset[i])/2))
+
+	#Array of SACs
+	for j in range( round(len(dataset[0])/2), (len(dataset[0]) - window_size + 1) ):
+		window = dataset[i][j:j+window_size]
+		conclusion = np.zeros((len(file_tags) + 1))
+		
+		
+		if(j == (len(dataset[i]) - window_size)):
+			slidingMatrixOutput[i][np.argmax(conclusion)] += 1 * window_size
+			count_window_sliding[i] += 1 * window_size
+		else:
+			slidingMatrixOutput[i][np.argmax(conclusion)] += 1
+			count_window_sliding[i] += 1
 
 def acquisition_Rate(dataset, file_tag):
 	timestamp_seconds = np.zeros(len(dataset))

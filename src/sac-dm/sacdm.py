@@ -73,7 +73,7 @@ def plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N):
 	#SAC-AM
 	util.plotSACsInOneFigureWithTraining( sac_am_by_files, (f"SAC-AM: Half training/testing - N{N}"), file_tags)
 	#SAC-DM
-	util.plotSACsInOneFigureWithTraining( sac_dm_by_files, (f"SAC-DM: Half training/testing - N{N}"), file_tags)
+	# util.plotSACsInOneFigureWithTraining( sac_dm_by_files, (f"SAC-DM: Half training/testing - N{N}"), file_tags)
 
 def plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags):
 	#Plotting graphs individually
@@ -326,16 +326,16 @@ def plot_SAC_AM_DM_motor_signals():
 #********* Main ********
 
 #Arquivos "normalizados"
-# file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt01n1.csv",
-# 			"../../files/hexacopter_signals/csv/failure_condition_1/FC1Flt01n1.csv",
-# 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt01n1.csv" ]
-# file_tags = [ "NFlt", "FC1", "FC2"]
+file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt02n2.csv",
+			"../../files/hexacopter_signals/csv/failure_condition_1/FC1Flt02n2.csv",
+			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt02n2.csv" ]
+file_tags = [ "NFlt", "FC1", "FC2"]
 
 # Arquivos não "normalizados"
-file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt05n1.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n1.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt05n1.csv" ]
-file_tags = [ "NFlt", "FC2", "FC3"]
+# file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n2.csv",
+# 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n2.csv",
+# 			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt03n2.csv" ]
+# file_tags = [ "NFlt", "FC2", "FC3"]
 
 file_columns = ['x','y','z','t']
 N = int(sys.argv[1])
