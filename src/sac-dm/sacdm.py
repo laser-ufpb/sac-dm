@@ -324,14 +324,14 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-file_paths = [  "../../files/drone_signals/accel_80_F0.csv",
-			"../../files/drone_signals/accel_80_F6.csv",
-			"../../files/drone_signals/accel_80_F14.csv",
-			"../../files/drone_signals/accel_80_F22.csv" ]
+file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt03n1.csv",
+			"../../files/hexacopter_signals/failure_condition_1/FC1Flt01n1.csv",
+			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n1.csv",
+			"../../files/hexacopter_signals/failure_condition_3/FC3Flt03n1.csv" ]
 
-file_columns = ['x','y','z','s','t']
+file_columns = ['x','y','z','t']
 
-file_tags = [ "F0", "F6", "F14", "F22"]
+file_tags = [ "N_Flt03", "FC1_Flt01", "FC2_Flt05", "FC3_Flt03"]
 
 N = int(sys.argv[1])
 files = []
