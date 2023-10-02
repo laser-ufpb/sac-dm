@@ -265,12 +265,12 @@ def slidingWindow(dataset, file_tags, title, window_size, N, save):
 					conclusion[2] += 1
 					continue
 
-				elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
-					conclusion[3] += 1
-					continue
+				# elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
+				# 	conclusion[3] += 1
+				# 	continue
 				
 				else:
-					conclusion[4] += 1
+					conclusion[3] += 1
 			
 			if(j == (len(dataset[i]) - window_size)):
 				outputMatrix[i][np.argmax(conclusion)] += 1 * window_size
@@ -513,30 +513,44 @@ def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 		ax[j][1].set_title(f"Jumping window - {file_tags[j]}")
 		ax[j][1].legend(wedges, non_zero_labels_jumping[:len(non_zero_values_jumping)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
-def plotWindowsComparationAllAxes(dataset, file_tags, title, window_size, N):
-	average = np.zeros(round(len(dataset[0])/2))
-	deviation = np.zeros((round(len(dataset[0])/2)))
-	count_window_jumping = np.zeros((len(dataset)))
-	count_window_sliding = np.zeros((len(dataset)))
-	jumpingMatrixOutput = np.zeros((len(dataset),len(dataset)+1))
-	slidingMatrixOutput = np.zeros((len(dataset),len(dataset)+1))
+def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
+	average = []
+	deviation = []
+	count_window_sliding = np.zeros((len(file_tags)))
+	slidingMatrixOutput = np.zeros((len(file_tags) ),len(file_tags)+1)
 
+	for i in range(3):
+		average_list = []
+		deviation_list = []
+		for j in range(len(file_tags)):
+			average_aux = average_sac(dataset[j][i], 0, round(len(dataset[j][i])/2))
+			deviation_aux = deviation_sac(dataset[j][i], 0, round(len(dataset[j][i])/2))
+			average_list.append(average_aux)
+			deviation_list.append(deviation_aux)
+		average.append(average_list)
+		deviation.append(deviation_list)
+
+
+	#Files
 	for i in range(len(dataset)):
-		average[i] = average_sac(dataset[i], 0, round(len(dataset[i])/2))
-		deviation[i] = deviation_sac(dataset[i], 0, round(len(dataset[i])/2))
+		#SAC'S
+		for j in range(round(len(dataset[i][0])/2), (len(dataset[i][0]) - window_size + 1)):
+			window = []
+			conclusion = []
+			#Axes comparation
+			for k in range(3):
+				window_aux = 
+				window.append(dataset[i][j:j+window_size])
+				conclusion.append(windowCompare(window[k], average[k], deviation[k], file_tags))
 
-	#Array of SACs
-	for j in range( round(len(dataset[0])/2), (len(dataset[0]) - window_size + 1) ):
-		window = dataset[i][j:j+window_size]
-		conclusion = np.zeros((len(file_tags) + 1))
-		
-		
-		if(j == (len(dataset[i]) - window_size)):
-			slidingMatrixOutput[i][np.argmax(conclusion)] += 1 * window_size
-			count_window_sliding[i] += 1 * window_size
-		else:
-			slidingMatrixOutput[i][np.argmax(conclusion)] += 1
-			count_window_sliding[i] += 1
+
+	for i in range(len(slidingMatrixOutput)):
+		for j in range(len(slidingMatrixOutput[i])):
+			slidingMatrixOutput[i][j] = round(get_change_t(slidingMatrixOutput[i][j],count_window_sliding[i]),2)
+
+	filename = (f"SlidingWindowN{N}Size{window_size}AllAxes.txt")
+	header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window_sliding}\n\n")
+	saveMatrixInTxt(slidingMatrixOutput, average, deviation, title, N, filename, file_tags, header)
 
 def acquisition_Rate(dataset, file_tag):
 	timestamp_seconds = np.zeros(len(dataset))

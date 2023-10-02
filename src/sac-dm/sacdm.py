@@ -137,12 +137,14 @@ def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	for i in range(3):
 		util.plotWindowsComparation(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
 	
+def plot_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N):
+	util.slidingWindowAllAxes(sac_am_by_files, file_tags, (f"SAC-AM: "), int(sys.argv[2]), N)
 
 def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N):
 
 	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
 
-	plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
@@ -153,6 +155,8 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 	# jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
 	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+
+	plot_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
 	
 	plt.show()
 	return 0
@@ -326,16 +330,16 @@ def plot_SAC_AM_DM_motor_signals():
 #********* Main ********
 
 #Arquivos "normalizados"
-file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt02n2.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_1/FC1Flt02n2.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt02n2.csv" ]
-file_tags = [ "NFlt", "FC1", "FC2"]
+# file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt02n2.csv",
+# 			"../../files/hexacopter_signals/csv/failure_condition_1/FC1Flt02n2.csv",
+# 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt02n2.csv" ]
+# file_tags = [ "NFlt", "FC1", "FC2"]
 
 # Arquivos não "normalizados"
-# file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n2.csv",
-# 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n2.csv",
-# 			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt03n2.csv" ]
-# file_tags = [ "NFlt", "FC2", "FC3"]
+file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n2.csv",
+			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n2.csv",
+			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt03n2.csv" ]
+file_tags = [ "NFlt", "FC2", "FC3"]
 
 file_columns = ['x','y','z','t']
 N = int(sys.argv[1])
