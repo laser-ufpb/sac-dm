@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Dashboard</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list [inset]="true">
+    <ion-item *ngFor="let dev of devices">
+      <ion-icon 
+        name="airplane" 
+        size="large" 
+        [class.blue]="dev.status === 'on'"
+        [class.grey]="dev.status === 'off'"
+        [class.orange]="dev.status === 'warning'"
+      ></ion-icon>
+      <ion-label>{{dev["device_code"]}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
