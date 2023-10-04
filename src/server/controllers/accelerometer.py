@@ -33,14 +33,14 @@ def get_accelerometer_record_by_device_id(data: Filter, db: Session):
 
 def get_accelerometer_record_by_datetime(data: Filter, db: Session):
     if data.datetime_initial and not data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp > data.datetime_initial).all()
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= data.datetime_initial).all()
     elif data.datetime_initial and data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp > data.datetime_initial, AccelerometerAcquisition.timestamp < data.datetime_final).all()
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= data.datetime_initial, AccelerometerAcquisition.timestamp <= data.datetime_final).all()
     
 
 def get_accelerometer_record_by_device_id_and_datetime(data: Filter, db: Session):
     if data.device_id and data.datetime_initial and not data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp > data.datetime_initial).all()
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp >= data.datetime_initial).all()
     elif data.device_id and data.datetime_initial and data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp > data.datetime_initial, AccelerometerAcquisition.timestamp < data.datetime_final).all()
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp >= data.datetime_initial, AccelerometerAcquisition.timestamp <= data.datetime_final).all()
  

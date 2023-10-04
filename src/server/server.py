@@ -9,6 +9,7 @@ from schemas.device import DeviceSchema
 from schemas.sacdm import SACDMSchema
 from schemas.accelerometer import AccelerometerSchema
 from schemas.filter import Filter
+from schemas.status import StatusSchema
 from schemas.user import UserSchema
 from fastapi import Depends, FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -55,6 +56,17 @@ def new_device(device: DeviceSchema, db: Session=Depends(get_db)):
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content="Invalid data!")
+
+
+# Route to insert a new data into the status table
+from models.models import Status
+@app.post("/status")
+def new_status(status: StatusSchema, db: Session=Depends(get_db)):
+    status_description = Status(**status.dict())
+    status_description.description = "online"
+    db.add(status_description)
+    db.commit()
+    return "OK"
 
 
 # Route to get all data from sac_dm table

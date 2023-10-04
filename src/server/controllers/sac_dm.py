@@ -34,14 +34,14 @@ def get_sacdm_by_device_id(data: Filter, db: Session):
 
 def get_sacdm_by_datetime(data: Filter, db: Session):
     if data.datetime_initial and not data.datetime_final:
-        return db.query(SACDM).filter(SACDM.timestamp > data.datetime_initial).all()
+        return db.query(SACDM).filter(SACDM.timestamp >= data.datetime_initial).all()
     elif data.datetime_initial and data.datetime_final:
-        return db.query(SACDM).filter(SACDM.timestamp > data.datetime_initial, SACDM.timestamp < data.datetime_final ).all()
+        return db.query(SACDM).filter(SACDM.timestamp >= data.datetime_initial, SACDM.timestamp <= data.datetime_final ).all()
     
     
 def get_sacdm_by_device_id_and_datetime(data: Filter, db: Session):
     if data.device_id and data.datetime_initial and not data.datetime_final:
-        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp > data.datetime_initial).all()
+        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp >= data.datetime_initial).all()
     elif data.device_id and data.datetime_initial and data.datetime_final:
-        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp > data.datetime_initial, SACDM.timestamp < data.datetime_final ).all()
+        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp >= data.datetime_initial, SACDM.timestamp <= data.datetime_final ).all()
     
