@@ -48,16 +48,35 @@ def get_change_t(current, previous):
 
 def windowCompare( window, average, deviation, file_tags ):
 
-	conclusion = np.zeros((len(file_tags) + 1))
+	conclusion = np.full(len(window[0]), -1)
+
+	#Axes
 	for i in range(len(window)):
-		wasFailure = False
+		#Files
 		for j in range(len(file_tags)):
-			if (window[i] >= average[j] - deviation[j] and window[i] <= average[j] + deviation[j]):
-				wasFailure = True
-				conclusion[j] += 1
+			#window
+			# np.logical_and()
+			#trocar logica - Se houver 2 sem falhas mas apenas 1 com falha - será classificado como a falha encontrada
+			for k in range(len(window[i])):
+				if not(window[i][k] >= average[k][0] - deviation[k][0] and window[i][k] <= average[k][0] + deviation[k][0]):
+					conclusion[i] = -1
+				else:
+					conclusion[i] = 0
+			if(conclusion[i] == 0):
 				break
-		if(wasFailure == False):
-			conclusion[len(file_tags)] += 1
+
+			#checks if the window on its 3 axes are classified with the same tag
+			for k in range(len(window[i])):
+				if not(window[i][k] >= average[k][j] - deviation[k][j] and window[i][k] <= average[k][j] + deviation[k][j]):
+					conclusion[i] = -1
+					break
+				else:
+					conclusion[i] = j
+			if(conclusion[i] == j):
+				break
+			
+
+		
 
 	return conclusion	
 
@@ -516,8 +535,8 @@ def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 	average = []
 	deviation = []
-	count_window_sliding = np.zeros((len(file_tags)))
-	slidingMatrixOutput = np.zeros((len(file_tags) ),len(file_tags)+1)
+	count_window = np.zeros((len(file_tags)))
+	outputMatrix = np.zeros((len(file_tags) ),len(file_tags)+1)
 
 	for i in range(3):
 		average_list = []
@@ -533,15 +552,24 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 
 	#Files
 	for i in range(len(dataset)):
-		#SAC'S
+		#Axes
 		for j in range(round(len(dataset[i][0])/2), (len(dataset[i][0]) - window_size + 1)):
 			window = []
-			conclusion = []
-			#Axes comparation
-			for k in range(3):
-				window_aux = 
-				window.append(dataset[i][j:j+window_size])
-				conclusion.append(windowCompare(window[k], average[k], deviation[k], file_tags))
+			#Getting all windows and comparing
+			for k in range(len(dataset[i])):
+				window = sampling_sac(dataset[i][k], round(len(dataset[i][k])/2) + j, round(len(dataset[i][k])/2) + j + window_size)
+				window.append(window_aux)
+
+			conclusion = windowCompare(window, average, deviation, file_tags)
+			
+			if(j == (len(dataset[i]) - window_size)):
+				outputMatrix[i][conclusion] += 1 * window_size
+				count_window[i] += 1 * window_size
+			else:
+				outputMatrix[i][conclusion] += 1
+				count_window[i] += 1
+			
+
 
 
 	for i in range(len(slidingMatrixOutput)):
