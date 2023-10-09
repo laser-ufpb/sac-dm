@@ -33,15 +33,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-# Function to get all data from device table
-def get_all_data():
-    try:
-        with sqlite3.connect(path_db) as conn:
-            c = conn.cursor()
-            c.execute("SELECT * FROM device")
-            data = c.fetchall()
-            return data
-    except Exception as e:
-        return JSONResponse(status_code=500, content=str(e))
