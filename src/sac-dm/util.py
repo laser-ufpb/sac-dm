@@ -48,37 +48,52 @@ def get_change_t(current, previous):
 
 def windowCompare( window, average, deviation, file_tags ):
 
-	conclusion = np.full(len(window[0]), -1)
+	conclusion = np.full((len(window)), -1)
 
 	#Axes
 	for i in range(len(window)):
 		#Files
 		for j in range(len(file_tags)):
-			#window
-			# np.logical_and()
-			#trocar logica - Se houver 2 sem falhas mas apenas 1 com falha - será classificado como a falha encontrada
-			for k in range(len(window[i])):
-				if not(window[i][k] >= average[k][0] - deviation[k][0] and window[i][k] <= average[k][0] + deviation[k][0]):
-					conclusion[i] = -1
-				else:
-					conclusion[i] = 0
-			if(conclusion[i] == 0):
-				break
 
-			#checks if the window on its 3 axes are classified with the same tag
-			for k in range(len(window[i])):
-				if not(window[i][k] >= average[k][j] - deviation[k][j] and window[i][k] <= average[k][j] + deviation[k][j]):
-					conclusion[i] = -1
-					break
-				else:
-					conclusion[i] = j
-			if(conclusion[i] == j):
+			result = np.logical_and(window[i] >= (average[i][j] - deviation[i][j]), window[i] <= (average[i][j] + deviation[i][j]))
+			# print(f"Result: {result} Window: {window[i]} LimitS: {(average[i][j] - deviation[i][j])} LimitI: { (average[i][j] + deviation[i][j])}")
+			auxConclusion = np.where(result == True)[0]
+
+			#checks if the entire window is classified with the same tag
+			if(len(auxConclusion) == len(file_tags)):
+				conclusion[i] = j
+				print(f"Iguais: {file_tags[j]}")
 				break
 			
+			#checks whether the majority of points contained in the window are classified with the same tag
+			if(len(auxConclusion) >= (len(window[i])- len(auxConclusion))):
+				conclusion[i] = j
+				print(f"Maioria: {file_tags[j]}")
+				break
+			
+			#checks if only one of the points contained in the window is classified as failure
+			if(len(auxConclusion) == 1 and auxConclusion[0] != 1):
+				conclusion[i] = j
+				print(f"Apenas 1 falha: {file_tags[j]}")
+				break
 
-		
+			conclusion[i] = (len(file_tags))
 
-	return conclusion	
+	#modificar retorno da função: trocar majoritaria
+	# identificação
+	# 	- Sem falha = Se os 3 eixos estão na condiçao normal
+	#	- Falha = Se pelo menos um eixo está fora da condição normal
+	#Classificação -> Verificar em qual faixa do erro que a janela está
+	#	- se eixos != de normal estão na mesma faixa:
+	# 		- Erro dessa faixa
+	# 	- se eixos != de normal estão em faixas de erros diferentes: 
+	#		- Inconclusivo 
+	#returns the majority tag on the 3 axes
+	unique, counts = np.unique(conclusion, return_counts=True)
+	index = np.argmax(counts)
+	if( unique[index] < len(file_tags)):
+		print(f"Conclusão da janela: {file_tags[unique[index]]}")
+	return unique[index] 
 
 def saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header):
 	
@@ -536,7 +551,7 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 	average = []
 	deviation = []
 	count_window = np.zeros((len(file_tags)))
-	outputMatrix = np.zeros((len(file_tags) ),len(file_tags)+1)
+	outputMatrix = np.zeros((len(file_tags),len(file_tags)+1))
 
 	for i in range(3):
 		average_list = []
@@ -550,35 +565,59 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 		deviation.append(deviation_list)
 
 
+	window = []
+	#Getting all windows
 	#Files
 	for i in range(len(dataset)):
 		#Axes
-		for j in range(round(len(dataset[i][0])/2), (len(dataset[i][0]) - window_size + 1)):
-			window = []
-			#Getting all windows and comparing
-			for k in range(len(dataset[i])):
-				window = sampling_sac(dataset[i][k], round(len(dataset[i][k])/2) + j, round(len(dataset[i][k])/2) + j + window_size)
-				window.append(window_aux)
+		window_files = []
+		auxSAC_x = dataset[i][0]
+		auxSAC_y = dataset[i][1]
+		auxSAC_z = dataset[i][2]
+		#windows SAC'S
+		for j in range( round(len(auxSAC_x)/2), (len(auxSAC_x) - window_size + 1) ):
+			window_aux_x = auxSAC_x[j:j+window_size]
+			window_aux_y = auxSAC_y[j:j+window_size]
+			window_aux_z = auxSAC_z[j:j+window_size]
+			window_files.append([window_aux_x,window_aux_y,window_aux_z])
+		
+		window.append(window_files)
 
-			conclusion = windowCompare(window, average, deviation, file_tags)
-			
-			if(j == (len(dataset[i]) - window_size)):
+	print(f"Qtd de arquivos: {len(window)} Janelas: {len(window[0])} Qtd de janelas: {len(window[0][0])}")
+	#files
+	for i in range(len(window)):
+		#windows
+		for j in range(len(window[i])):
+			conclusion = windowCompare(window[i][j], average, deviation, file_tags)
+			if(j == (len(window[i]) - 1)):
 				outputMatrix[i][conclusion] += 1 * window_size
 				count_window[i] += 1 * window_size
 			else:
 				outputMatrix[i][conclusion] += 1
 				count_window[i] += 1
-			
 
 
+	for i in range(len(outputMatrix)):
+		for j in range(len(outputMatrix[i])):
+			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
 
-	for i in range(len(slidingMatrixOutput)):
-		for j in range(len(slidingMatrixOutput[i])):
-			slidingMatrixOutput[i][j] = round(get_change_t(slidingMatrixOutput[i][j],count_window_sliding[i]),2)
+	print(f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+	print((f"{'File':<10}"), end="")
+	for i in range(len(file_tags)):
+		print(f"{file_tags[i]:<10}", end="")
+	print(f"{'Inconclusive':<10}")
 
-	filename = (f"SlidingWindowN{N}Size{window_size}AllAxes.txt")
-	header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window_sliding}\n\n")
-	saveMatrixInTxt(slidingMatrixOutput, average, deviation, title, N, filename, file_tags, header)
+	for i in range(len(outputMatrix)):
+		print(f"{file_tags[i]:<10}", end="")
+		for j in range(len(outputMatrix[i])):
+			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
+			aux = (f"{outputMatrix[i][j]}%")
+			print(f"{aux:<10}", end="")
+		print("\n")
+
+	# filename = (f"SlidingWindowN{N}Size{window_size}AllAxes.txt")
+	# header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window}\n\n")
+	# saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 
 def acquisition_Rate(dataset, file_tag):
 	timestamp_seconds = np.zeros(len(dataset))
