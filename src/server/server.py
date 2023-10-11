@@ -18,9 +18,10 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import List, Optional
 from typing_extensions import Annotated
 from uuid import uuid4
-from controllers.device import create_device, get_all_devices, delete_a_device
+from controllers.device import create_device, get_all_devices, delete_a_device, change_device_status
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
 from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_by_device_id, get_accelerometer_record_by_datetime, get_accelerometer_record_by_device_id_and_datetime
+from controllers.status import create_status
 from database import (get_db, Session)
 from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
 
@@ -52,6 +53,7 @@ def get_devices(db: Session=Depends(get_db)):
 @app.post("/device")
 def new_device(device: DeviceSchema, db: Session=Depends(get_db)):
     if (str(device.device_code).strip()):
+        print(device.device_code)
         return create_device(device, db)
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -61,18 +63,19 @@ def new_device(device: DeviceSchema, db: Session=Depends(get_db)):
 # Route to delete data from devices table
 @app.delete("/device")
 def delete_device(device: DeviceSchema, db: Session=Depends(get_db)):
-    return delete_a_device(device, db)        
+    return delete_a_device(device, db)
+
+
+# Route to update status_id from a device
+@app.put("/device")
+def update_device_status(device: DeviceSchema, db: Session=Depends(get_db)):
+    return change_device_status(device, db)
 
 
 # Route to insert a new data into the status table
-from models.models import Status
 @app.post("/status")
 def new_status(status: StatusSchema, db: Session=Depends(get_db)):
-    status_description = Status(**status.dict())
-    status_description.description = "online"
-    db.add(status_description)
-    db.commit()
-    return "OK"
+    return create_status(status, db)
 
 
 # Route to get all data from sac_dm table

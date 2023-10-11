@@ -18,7 +18,7 @@ class Device(Base):
 
 class Status(Base):
     __tablename__ = "status_description"
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     description = Column(String, nullable=False)
 
 
