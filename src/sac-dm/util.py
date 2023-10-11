@@ -62,19 +62,16 @@ def windowCompare( window, average, deviation, file_tags ):
 			#checks if the entire window is classified with the same tag
 			if(len(auxConclusion) == len(file_tags)):
 				conclusion[i] = j
-				print(f"Iguais: {file_tags[j]}")
 				break
 			
 			#checks whether the majority of points contained in the window are classified with the same tag
 			if(len(auxConclusion) >= (len(window[i])- len(auxConclusion))):
 				conclusion[i] = j
-				print(f"Maioria: {file_tags[j]}")
 				break
 			
 			#checks if only one of the points contained in the window is classified as failure
 			if(len(auxConclusion) == 1 and auxConclusion[0] != 1):
 				conclusion[i] = j
-				print(f"Apenas 1 falha: {file_tags[j]}")
 				break
 
 			conclusion[i] = (len(file_tags))
@@ -88,12 +85,30 @@ def windowCompare( window, average, deviation, file_tags ):
 	# 		- Erro dessa faixa
 	# 	- se eixos != de normal estão em faixas de erros diferentes: 
 	#		- Inconclusivo 
-	#returns the majority tag on the 3 axes
-	unique, counts = np.unique(conclusion, return_counts=True)
-	index = np.argmax(counts)
-	if( unique[index] < len(file_tags)):
-		print(f"Conclusão da janela: {file_tags[unique[index]]}")
-	return unique[index] 
+
+	#check if the 3 axes are in the same condition
+	for i in range(len(file_tags)):
+		auxConclusion = np.where(conclusion == i)[0]
+		if(len(auxConclusion) == len(conclusion)):
+			print(f"Eixos com mesma falha: conclusao: {conclusion}")
+			return i
+	
+	auxConclusion = np.where(conclusion > 0)[0]
+
+	#check if at least one axis is outside the normal condition
+	#only one axis outside the normal condition
+	if(len(auxConclusion) == 1):
+		print(f"Apenas um eixo com falha:  conclusao: {conclusion}")
+		return auxConclusion
+	
+	#more than one axis outside the normal condition but with the same fault condition
+	if(len(auxConclusion) == 2 and conclusion[auxConclusion[0]] == conclusion[auxConclusion[1]]):
+		print(f"Dois eixos com mesma falha e outro sem:  conclusao: {conclusion}")
+		return conclusion[auxConclusion[0]]
+	else:
+		#different failure conditions
+		print(f"Inconclusivo:  conclusao: {conclusion}")
+		return len(file_tags)
 
 def saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header):
 	
@@ -263,7 +278,6 @@ def confusionMatrix(dataset, file_tags, title, N, save):
 		filename = (f"confusionMatrixHalfTrainingN{N}.txt")
 		header = (f"Confusion matrix[%] \n\n")
 		saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
-
 
 def slidingWindow(dataset, file_tags, title, window_size, N, save):
 
@@ -547,7 +561,7 @@ def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 		ax[j][1].set_title(f"Jumping window - {file_tags[j]}")
 		ax[j][1].legend(wedges, non_zero_labels_jumping[:len(non_zero_values_jumping)], loc = "lower left", bbox_to_anchor=(1, 0, 0.5, 1))
 
-def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
+def jumpingWindowAllAxes(dataset, file_tags, title, window_size, N):
 	average = []
 	deviation = []
 	count_window = np.zeros((len(file_tags)))
@@ -564,6 +578,71 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 		average.append(average_list)
 		deviation.append(deviation_list)
 
+	window = []
+	#Getting all windows
+	#Files
+	for i in range(len(dataset)):
+		#Axes
+		window_files = []
+		auxSAC_x = dataset[i][0]
+		auxSAC_y = dataset[i][1]
+		auxSAC_z = dataset[i][2]
+		#windows SAC'S
+		for j in range( round(len(auxSAC_x)/2), (len(auxSAC_x)), window_size):
+			if (j + window_size <= len(dataset[i])):
+				window_aux_x = auxSAC_x[j:j+window_size]
+				window_aux_y = auxSAC_y[j:j+window_size]
+				window_aux_z = auxSAC_z[j:j+window_size]
+			else:
+				window_aux_x = auxSAC_x[j:]
+				window_aux_y = auxSAC_y[j:]
+				window_aux_z = auxSAC_z[j:]	
+			window_files.append([window_aux_x,window_aux_y,window_aux_z])
+		
+		window.append(window_files)
+
+	#files
+	for i in range(len(window)):
+		#windows
+		for j in range(len(window[i])):
+			conclusion = windowCompare(window[i][j], average, deviation, file_tags)
+			count_window[i] += 1
+			outputMatrix[i][conclusion] += 1
+
+	print(f"Confusion matrix[%] - Jumping window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+	print((f"{'File':<10}"), end="")
+	for i in range(len(file_tags)):
+		print(f"{file_tags[i]:<10}", end="")
+	print(f"{'Inconclusive':<10}")
+
+	for i in range(len(outputMatrix)):
+		print(f"{file_tags[i]:<10}", end="")
+		for j in range(len(outputMatrix[i])):
+			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
+			aux = (f"{outputMatrix[i][j]}")
+			print(f"{aux:<10}", end="")
+		print("\n")
+
+	# filename = (f"SlidingWindowN{N}Size{window_size}AllAxes.txt")
+	# header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window}\n\n")
+	# saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
+
+def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
+	average = []
+	deviation = []
+	count_window = np.zeros((len(file_tags)))
+	outputMatrix = np.zeros((len(file_tags),len(file_tags)+1))
+
+	for i in range(3):
+		average_list = []
+		deviation_list = []
+		for j in range(len(file_tags)):
+			average_aux = average_sac(dataset[j][i], 0, round(len(dataset[j][i])/2))
+			deviation_aux = deviation_sac(dataset[j][i], 0, round(len(dataset[j][i])/2))
+			average_list.append(average_aux)
+			deviation_list.append(deviation_aux)
+		average.append(average_list)
+		deviation.append(deviation_list)
 
 	window = []
 	#Getting all windows
@@ -596,11 +675,6 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 				outputMatrix[i][conclusion] += 1
 				count_window[i] += 1
 
-
-	for i in range(len(outputMatrix)):
-		for j in range(len(outputMatrix[i])):
-			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
-
 	print(f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
 	print((f"{'File':<10}"), end="")
 	for i in range(len(file_tags)):
@@ -611,7 +685,7 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 		print(f"{file_tags[i]:<10}", end="")
 		for j in range(len(outputMatrix[i])):
 			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
-			aux = (f"{outputMatrix[i][j]}%")
+			aux = (f"{outputMatrix[i][j]}")
 			print(f"{aux:<10}", end="")
 		print("\n")
 
