@@ -141,7 +141,8 @@ def plotSACsInOneFigureWithTraining(dataset, title, file_tag):
 			testing(testing_data, (f"Second half of the file: {file_tag[j]}"), fig, axs[i], (11+j))
 		
 		axs[i].set_xlim(-1, round(len(dataset[0][i]) * 0.69))
-		axs[i].legend(loc='lower right')
+		if (i == 0):
+			axs[i].legend(loc='lower right')
 		
 	axs[0].set(ylabel = (aux[0] + ": x-axis"))
 	axs[1].set(ylabel = (aux[0] + ": y-axis"))
