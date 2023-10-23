@@ -139,7 +139,8 @@ def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	
 def plot_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N):
 	# util.slidingWindowAllAxes(sac_am_by_files, file_tags, (f"SAC-AM: "), int(sys.argv[2]), N)
-	util.jumpingWindowAllAxes(sac_am_by_files, file_tags, (f"SAC-AM: "), int(sys.argv[2]), N)
+	# util.jumpingWindowAllAxes(sac_am_by_files, file_tags, (f"SAC-AM: "), int(sys.argv[2]), N)
+	util.plot_heat_windows(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
 
 def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N):
 
@@ -337,7 +338,7 @@ def plot_SAC_AM_DM_motor_signals():
 # file_tags = [ "NFlt", "FC1", "FC2"]
 
 # Arquivos não "normalizados"
-file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n2.csv",
+file_paths_n2 = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n2.csv",
 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n2.csv",
 			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt03n2.csv" ]
 file_paths_n1 = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n1.csv",
@@ -358,11 +359,11 @@ sac_am_by_axes = []
 sac_dm_by_axes = []
 
 #Opening files
-for i in range(len(file_paths)):
-	files_aux = np.genfromtxt( file_paths_n1[i], delimiter=';',names= file_columns)
+for i in range(len(file_paths_n1)):
+	files_aux = np.genfromtxt( file_paths_n3[i], delimiter=';',names= file_columns)
 	files.append(files_aux)
 
-for i in range(len(file_paths)):
+for i in range(len(file_paths_n1)):
 	file_list = []
 	sac_am_list = []
 	sac_dm_list = []
@@ -389,7 +390,7 @@ for i in range(3):
 	sac_am_aux = []
 	sac_dm_aux = []
 	#Number of files
-	for j in range(len(file_paths)): 
+	for j in range(len(file_paths_n1)): 
 		sac_am_aux.append(sac_am_by_files[j][i])
 		sac_dm_aux.append(sac_dm_by_files[j][i])
 

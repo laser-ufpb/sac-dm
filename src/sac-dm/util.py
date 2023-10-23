@@ -626,6 +626,7 @@ def jumpingWindowAllAxes(dataset, file_tags, title, window_size, N):
 	# filename = (f"SlidingWindowN{N}Size{window_size}AllAxes.txt")
 	# header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window}\n\n")
 	# saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
+	return outputMatrix
 
 def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 	average = []
@@ -693,6 +694,55 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 	# header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window}\n\n")
 	# saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 
+	return outputMatrix
+
+def plot_heat_windows(dataset, file_tags, title, window_size, N):
+
+	outputMatrixJumping = jumpingWindowAllAxes(dataset, file_tags, title, window_size, N)
+	outputMatrixSliding = slidingWindowAllAxes(dataset, file_tags, title, window_size, N)
+	labels = file_tags + ["Inconclusive"]
+
+	outputMatrixJumpingN = (outputMatrixJumping - outputMatrixJumping.min()) / (outputMatrixJumping.max() - outputMatrixJumping.min())
+	
+	fig, ax = plt.subplots()
+	
+
+	im, cbar = heatmap(outputMatrixJumpingN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
+
+	# Loop over data dimensions and create text annotations.
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixJumpingN[i][j], 2)
+			if(percentage > 0.2):
+				ax.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax.text(j, i, percentage, ha="center", va="center", color="b")
+	titleJump = title + (f"Jumping window[N:{N}, WindowSize:{window_size}]")
+	ax.set_title(titleJump)
+	ax.set(ylabel = "True label", xlabel =  "Predicted label")
+	fig.tight_layout()
+
+	outputMatrixSlidingN = (outputMatrixSliding - outputMatrixSliding.min()) / (outputMatrixSliding.max() - outputMatrixSliding.min())
+	
+	fig, ax = plt.subplots()
+	im, cbar = heatmap(outputMatrixSlidingN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
+
+	# Loop over data dimensions and create text annotations.
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixSlidingN[i][j], 2)
+			if(percentage > 0.2):
+				ax.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax.text(j, i, percentage, ha="center", va="center", color="b")
+	titleJump = title + (f"Sliding window[N:{N}, WindowSize:{window_size}]")
+	ax.set_title(titleJump)
+	ax.set(ylabel = "True label", xlabel =  "Predicted label")
+	fig.tight_layout()
+
+
+
+
 def acquisition_Rate(dataset, file_tag):
 	timestamp_seconds = np.zeros(len(dataset))
 	for i in range(len(dataset)):
@@ -733,3 +783,58 @@ def acquisition_Rate(dataset, file_tag):
 	ax.set(ylabel = "Samples", xlabel = "Seconds", title = (f"Acquisition rate: File {file_tag} "))
 	ax.plot(samples_plot)
 
+def heatmap(data, row_labels, col_labels, ax=None,
+            cbar_kw=None, cbarlabel="", **kwargs):
+    """
+    Create a heatmap from a numpy array and two lists of labels.
+
+    Parameters
+    ----------
+    data
+        A 2D numpy array of shape (M, N).
+    row_labels
+        A list or array of length M with the labels for the rows.
+    col_labels
+        A list or array of length N with the labels for the columns.
+    ax
+        A `matplotlib.axes.Axes` instance to which the heatmap is plotted.  If
+        not provided, use current axes or create a new one.  Optional.
+    cbar_kw
+        A dictionary with arguments to `matplotlib.Figure.colorbar`.  Optional.
+    cbarlabel
+        The label for the colorbar.  Optional.
+    **kwargs
+        All other arguments are forwarded to `imshow`.
+    """
+
+    if ax is None:
+        ax = plt.gca()
+
+    if cbar_kw is None:
+        cbar_kw = {}
+
+    # Plot the heatmap
+    im = ax.imshow(data, **kwargs)
+
+    # Create colorbar
+    cbar = ax.figure.colorbar(im, ax=ax, **cbar_kw)
+    cbar.ax.set_ylabel(cbarlabel, rotation=-90, va="bottom")
+
+    # Show all ticks and label them with the respective list entries.
+    ax.set_xticks(np.arange(data.shape[1]), labels=col_labels)
+    ax.set_yticks(np.arange(data.shape[0]), labels=row_labels)
+
+    # Let the horizontal axes labeling appear on top.
+    ax.tick_params(top=False, bottom=True,
+                   labeltop=False, labelbottom=True)
+
+
+    # Turn spines off and create white grid.
+    ax.spines[:].set_visible(False)
+
+    ax.set_xticks(np.arange(data.shape[1]+1)-.5, minor=True)
+    ax.set_yticks(np.arange(data.shape[0]+1)-.5, minor=True)
+    ax.grid(which="minor", color="w", linestyle='-', linewidth=3)
+    ax.tick_params(which="minor", bottom=False, left=False)
+
+    return im, cbar
