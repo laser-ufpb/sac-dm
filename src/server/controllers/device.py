@@ -1,5 +1,5 @@
 import datetime
-from models.models import Device
+from models.models import Device, AccelerometerAcquisition
 from schemas.device import DeviceSchema
 from sqlalchemy.orm import Session
 from fastapi import status
