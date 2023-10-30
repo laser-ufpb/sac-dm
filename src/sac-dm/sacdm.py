@@ -137,10 +137,9 @@ def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	for i in range(3):
 		util.plotWindowsComparation(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
 	
-def plot_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N):
-	# util.slidingWindowAllAxes(sac_am_by_files, file_tags, (f"SAC-AM: "), int(sys.argv[2]), N)
-	# util.jumpingWindowAllAxes(sac_am_by_files, file_tags, (f"SAC-AM: "), int(sys.argv[2]), N)
-	util.plot_heat_windows(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
+def plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N):
+	util.plot_heat_jumpingWindow(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
+	util.plot_heat_slidingWindow(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
 
 def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N):
 
@@ -158,7 +157,8 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	plot_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	util.search_optimal(sac_am_by_files,file_tags)
 	
 	plt.show()
 	return 0
@@ -331,23 +331,22 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-#Arquivos "normalizados"
-# file_paths = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt02n2.csv",
-# 			"../../files/hexacopter_signals/csv/failure_condition_1/FC1Flt02n2.csv",
-# 			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt02n2.csv" ]
-# file_tags = [ "NFlt", "FC1", "FC2"]
+# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n1.csv",
+# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n1.csv",
+# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n1.csv",
+# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n1.csv" ]
 
-# Arquivos não "normalizados"
-file_paths_n2 = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n2.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n2.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt03n2.csv" ]
-file_paths_n1 = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n1.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n1.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt03n1.csv" ]
-file_paths_n3 = [  "../../files/hexacopter_signals/csv/nominal_flight/NFlt03n3.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_2/FC2Flt05n3.csv",
-			"../../files/hexacopter_signals/csv/failure_condition_3/FC3Flt03n3.csv" ]
-file_tags = [ "NFlt", "FC2", "FC3"]
+file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n2.csv",
+			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n2.csv",
+			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n2.csv",
+			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n2.csv" ]
+
+# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n3.csv",
+# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n3.csv",
+# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n3.csv",
+# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n3.csv" ]
+
+file_tags = [ "NFlt","FC1", "FC2", "FC3"]
 
 file_columns = ['x','y','z','t']
 N = int(sys.argv[1])
@@ -359,11 +358,11 @@ sac_am_by_axes = []
 sac_dm_by_axes = []
 
 #Opening files
-for i in range(len(file_paths_n1)):
-	files_aux = np.genfromtxt( file_paths_n3[i], delimiter=';',names= file_columns)
+for i in range(len(file_paths)):
+	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
 	files.append(files_aux)
 
-for i in range(len(file_paths_n1)):
+for i in range(len(file_paths)):
 	file_list = []
 	sac_am_list = []
 	sac_dm_list = []
@@ -390,19 +389,12 @@ for i in range(3):
 	sac_am_aux = []
 	sac_dm_aux = []
 	#Number of files
-	for j in range(len(file_paths_n1)): 
+	for j in range(len(file_paths)): 
 		sac_am_aux.append(sac_am_by_files[j][i])
 		sac_dm_aux.append(sac_dm_by_files[j][i])
 
 	sac_am_by_axes.append(sac_am_aux)
 	sac_dm_by_axes.append(sac_dm_aux)
-
-
-# for i in range(len(file_tags)):
-# 	fig, ax = plt.subplots(3)
-# 	fig.suptitle(f"File: {file_tags[i]}")
-# 	for j in range(len(file_tags)):
-# 		ax[j].plot(file_axes[i][j])
 
 plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 

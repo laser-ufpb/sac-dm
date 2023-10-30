@@ -56,7 +56,6 @@ def windowCompare( window, average, deviation, file_tags ):
 		for j in range(len(file_tags)):
 
 			result = np.logical_and(window[i] >= (average[i][j] - deviation[i][j]), window[i] <= (average[i][j] + deviation[i][j]))
-			# print(f"Result: {result} Window: {window[i]} LimitS: {(average[i][j] - deviation[i][j])} LimitI: { (average[i][j] + deviation[i][j])}")
 			auxConclusion = np.where(result == True)[0]
 
 			#checks if the entire window is classified with the same tag
@@ -76,21 +75,10 @@ def windowCompare( window, average, deviation, file_tags ):
 
 			conclusion[i] = (len(file_tags))
 
-	#modificar retorno da função: trocar majoritaria
-	# identificação
-	# 	- Sem falha = Se os 3 eixos estão na condiçao normal
-	#	- Falha = Se pelo menos um eixo está fora da condição normal
-	#Classificação -> Verificar em qual faixa do erro que a janela está
-	#	- se eixos != de normal estão na mesma faixa:
-	# 		- Erro dessa faixa
-	# 	- se eixos != de normal estão em faixas de erros diferentes: 
-	#		- Inconclusivo 
-
 	#check if the 3 axes are in the same condition
 	for i in range(len(file_tags)):
 		auxConclusion = np.where(conclusion == i)[0]
 		if(len(auxConclusion) == len(conclusion)):
-			print(f"Eixos com mesma falha: conclusao: {conclusion}")
 			return i
 	
 	auxConclusion = np.where(conclusion > 0)[0]
@@ -98,16 +86,13 @@ def windowCompare( window, average, deviation, file_tags ):
 	#check if at least one axis is outside the normal condition
 	#only one axis outside the normal condition
 	if(len(auxConclusion) == 1):
-		print(f"Apenas um eixo com falha:  conclusao: {conclusion}")
 		return auxConclusion
 	
 	#more than one axis outside the normal condition but with the same fault condition
 	if(len(auxConclusion) == 2 and conclusion[auxConclusion[0]] == conclusion[auxConclusion[1]]):
-		print(f"Dois eixos com mesma falha e outro sem:  conclusao: {conclusion}")
 		return conclusion[auxConclusion[0]]
 	else:
 		#different failure conditions
-		print(f"Inconclusivo:  conclusao: {conclusion}")
 		return len(file_tags)
 
 def saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header):
@@ -134,7 +119,6 @@ def saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_t
 		matrix_file.write("\n\n")
 
 	matrix_file.close()
-
 
 def halfTraining(dataset, title, fig, ax, file_tag):
 	
@@ -280,7 +264,6 @@ def confusionMatrix(dataset, file_tags, title, N, save):
 		saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 
 def slidingWindow(dataset, file_tags, title, window_size, N, save):
-
 
 	average = np.zeros(round(len(dataset[0])/2))
 	deviation = np.zeros((round(len(dataset[0])/2)))
@@ -609,23 +592,24 @@ def jumpingWindowAllAxes(dataset, file_tags, title, window_size, N):
 			count_window[i] += 1
 			outputMatrix[i][conclusion] += 1
 
-	print(f"Confusion matrix[%] - Jumping window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
-	print((f"{'File':<10}"), end="")
-	for i in range(len(file_tags)):
-		print(f"{file_tags[i]:<10}", end="")
-	print(f"{'Inconclusive':<10}")
+	# print(f"Confusion matrix[%] - Jumping window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+	# print((f"{'File':<10}"), end="")
+	# for i in range(len(file_tags)):
+	# 	print(f"{file_tags[i]:<10}", end="")
+	# print(f"{'Inconclusive':<10}")
+
+	# for i in range(len(outputMatrix)):
+	# 	print(f"{file_tags[i]:<10}", end="")
+	# 	for j in range(len(outputMatrix[i])):
+	# 		outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
+	# 		aux = (f"{outputMatrix[i][j]}")
+	# 		print(f"{aux:<10}", end="")
+	# 	print("\n")
 
 	for i in range(len(outputMatrix)):
-		print(f"{file_tags[i]:<10}", end="")
 		for j in range(len(outputMatrix[i])):
 			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
-			aux = (f"{outputMatrix[i][j]}")
-			print(f"{aux:<10}", end="")
-		print("\n")
 
-	# filename = (f"SlidingWindowN{N}Size{window_size}AllAxes.txt")
-	# header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window}\n\n")
-	# saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 	return outputMatrix
 
 def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
@@ -663,7 +647,6 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 		
 		window.append(window_files)
 
-	print(f"Qtd de arquivos: {len(window)} Janelas: {len(window[0])} Qtd de janelas: {len(window[0][0])}")
 	#files
 	for i in range(len(window)):
 		#windows
@@ -676,43 +659,40 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 				outputMatrix[i][conclusion] += 1
 				count_window[i] += 1
 
-	print(f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
-	print((f"{'File':<10}"), end="")
-	for i in range(len(file_tags)):
-		print(f"{file_tags[i]:<10}", end="")
-	print(f"{'Inconclusive':<10}")
+	# print(f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
+	# print((f"{'File':<10}"), end="")
+	# for i in range(len(file_tags)):
+	# 	print(f"{file_tags[i]:<10}", end="")
+	# print(f"{'Inconclusive':<10}")
+
+	# for i in range(len(outputMatrix)):
+	# 	print(f"{file_tags[i]:<10}", end="")
+	# 	for j in range(len(outputMatrix[i])):
+	# 		outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
+	# 		aux = (f"{outputMatrix[i][j]}")
+	# 		print(f"{aux:<10}", end="")
+	# 	print("\n")
 
 	for i in range(len(outputMatrix)):
-		print(f"{file_tags[i]:<10}", end="")
 		for j in range(len(outputMatrix[i])):
 			outputMatrix[i][j] = round(get_change_t(outputMatrix[i][j],count_window[i]),2)
-			aux = (f"{outputMatrix[i][j]}")
-			print(f"{aux:<10}", end="")
-		print("\n")
-
-	# filename = (f"SlidingWindowN{N}Size{window_size}AllAxes.txt")
-	# header = (f"Confusion matrix[%] - Sliding window[{window_size}] AllAxes - N{N} - Quantity of windows{count_window}\n\n")
-	# saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
 
 	return outputMatrix
 
-def plot_heat_windows(dataset, file_tags, title, window_size, N):
+def plot_heat_jumpingWindow(dataset, file_tags, title, window_size, N):
 
-	outputMatrixJumping = jumpingWindowAllAxes(dataset, file_tags, title, window_size, N)
-	outputMatrixSliding = slidingWindowAllAxes(dataset, file_tags, title, window_size, N)
+	outputMatrix = jumpingWindowAllAxes(dataset, file_tags, title, window_size, N)
 	labels = file_tags + ["Inconclusive"]
 
-	outputMatrixJumpingN = (outputMatrixJumping - outputMatrixJumping.min()) / (outputMatrixJumping.max() - outputMatrixJumping.min())
-	
+	# outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
+	outputMatrixN = outputMatrix
 	fig, ax = plt.subplots()
-	
-
-	im, cbar = heatmap(outputMatrixJumpingN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
+	im, cbar = heatmap(outputMatrixN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
 
 	# Loop over data dimensions and create text annotations.
 	for i in range(len(file_tags)):
 		for j in range(len(labels)):
-			percentage = round(outputMatrixJumpingN[i][j], 2)
+			percentage = round(outputMatrixN[i][j], 2)
 			if(percentage > 0.2):
 				ax.text(j, i, percentage, ha="center", va="center", color="w")
 			else:
@@ -722,15 +702,20 @@ def plot_heat_windows(dataset, file_tags, title, window_size, N):
 	ax.set(ylabel = "True label", xlabel =  "Predicted label")
 	fig.tight_layout()
 
-	outputMatrixSlidingN = (outputMatrixSliding - outputMatrixSliding.min()) / (outputMatrixSliding.max() - outputMatrixSliding.min())
+def plot_heat_slidingWindow(dataset, file_tags, title, window_size, N):
+
+	outputMatrix = slidingWindowAllAxes(dataset, file_tags, title, window_size, N)
+	labels = file_tags + ["Inconclusive"]
+
+	outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
 	
 	fig, ax = plt.subplots()
-	im, cbar = heatmap(outputMatrixSlidingN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
+	im, cbar = heatmap(outputMatrixN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
 
 	# Loop over data dimensions and create text annotations.
 	for i in range(len(file_tags)):
 		for j in range(len(labels)):
-			percentage = round(outputMatrixSlidingN[i][j], 2)
+			percentage = round(outputMatrixN[i][j], 2)
 			if(percentage > 0.2):
 				ax.text(j, i, percentage, ha="center", va="center", color="w")
 			else:
@@ -739,9 +724,6 @@ def plot_heat_windows(dataset, file_tags, title, window_size, N):
 	ax.set_title(titleJump)
 	ax.set(ylabel = "True label", xlabel =  "Predicted label")
 	fig.tight_layout()
-
-
-
 
 def acquisition_Rate(dataset, file_tag):
 	timestamp_seconds = np.zeros(len(dataset))
@@ -838,3 +820,71 @@ def heatmap(data, row_labels, col_labels, ax=None,
     ax.tick_params(which="minor", bottom=False, left=False)
 
     return im, cbar
+
+def search_optimal(dataset, file_tags):
+
+	jumping_dict = {}
+	sliding_dict = {}
+	title = ""
+	for N in range(1000,6000,100):
+		window_range = [3,5,7,11]
+		for j in range(len(window_range)):
+			outputMatrixJumping = jumpingWindowAllAxes(dataset, file_tags, title, window_range[j], N)
+			outputMatrixSliding = slidingWindowAllAxes(dataset, file_tags, title, window_range[j], N)
+			jumping_result = np.zeros(len(file_tags) + 2)
+			sliding_result = np.zeros(len(file_tags) + 2)
+			
+			sli_axes_percent = 0
+			jump_axes_percent = 0
+			for i in range(len(file_tags)):
+				jumping_result[i] = outputMatrixJumping[i][i]
+				sliding_result[i] = outputMatrixSliding[i][i]
+				sli_axes_percent += sliding_result[i]
+				jump_axes_percent += jumping_result[i]
+			jumping_result[len(file_tags)] = N
+			sliding_result[len(file_tags)] = N
+			jumping_result[len(file_tags) + 1] = window_range[j]
+			sliding_result[len(file_tags) + 1] = window_range[j]
+			print(f"%: {jump_axes_percent}")
+			if not jump_axes_percent in jumping_dict:
+				jumping_dict[jump_axes_percent] = jumping_result
+
+			if not sli_axes_percent in sliding_dict:
+				sliding_dict[sli_axes_percent] = sliding_result
+
+	slidingKeys = list(sliding_dict.keys())
+	slidingKeys.sort()
+	sorted_sliding_dict = {i: sliding_dict[i] for i in slidingKeys}
+	jumpingKeys = list(jumping_dict.keys())
+	jumpingKeys.sort()
+	sorted_jumping_dict = {i: jumping_dict[i] for i in jumpingKeys}
+	print("\n\n Sliding window \n")
+	for i in range(len(file_tags)):
+		print(f"{file_tags[i]:<10}", end="")
+	print(f"{'N':<10}", end="")
+	print(f"{'window_size':<10}")
+	
+	for i in range(1,5):
+		if((len(sorted_sliding_dict) - i) < 0):
+			break
+		key = list(sorted_sliding_dict.keys())[len(sorted_sliding_dict)-i]
+		for j in range(len(sorted_sliding_dict[key])):
+			sliding_result = sorted_sliding_dict[key]
+			print(f"{sliding_result[j]:<10}", end="")
+		print("")
+	
+	print("\n\n Jumping window \n")
+	for i in range(len(file_tags)):
+		print(f"{file_tags[i]:<10}", end="")
+	print(f"{'N':<10}", end="")
+	print(f"{'window_size':<10}")
+	
+	for i in range(1,5):
+		if((len(sorted_jumping_dict) - i) < 0):
+			break
+		key = list(sorted_jumping_dict.keys())[len(sorted_jumping_dict)-i]
+		for j in range(len(sorted_jumping_dict[key])):
+			sliding_result = sorted_jumping_dict[key]
+			print(f"{sliding_result[j]:<10}", end="")
+		print("")
+	
