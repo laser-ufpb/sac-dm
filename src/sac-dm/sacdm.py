@@ -157,8 +157,8 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
-	util.search_optimal(sac_am_by_files,file_tags)
+	plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	# util.search_optimal(sac_am_by_files,file_tags)
 	
 	plt.show()
 	return 0
@@ -396,6 +396,7 @@ for i in range(3):
 	sac_am_by_axes.append(sac_am_aux)
 	sac_dm_by_axes.append(sac_dm_aux)
 
-plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
+print(files[1])
+# plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
 # plot_SAC_AM_DM_motor_signals()
