@@ -145,7 +145,7 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
 
-	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 

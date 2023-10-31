@@ -826,7 +826,7 @@ def search_optimal(dataset, file_tags):
 	jumping_dict = {}
 	sliding_dict = {}
 	title = ""
-	for N in range(1000,6000,100):
+	for N in range(500,6000,100):
 		window_range = [3,5,7,11]
 		for j in range(len(window_range)):
 			outputMatrixJumping = jumpingWindowAllAxes(dataset, file_tags, title, window_range[j], N)
