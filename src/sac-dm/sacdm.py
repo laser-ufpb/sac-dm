@@ -63,10 +63,10 @@ def sac_am(data, N):
 	
 	return sacdm
 
-def plot_trainning_test(sac_am_by_files, sac_dm_by_files, file_tags):
+def plot_trainning_test(sac_am_by_files, sac_dm_by_files, file_tags, file=0):
 	#Plotting test and training from the same file
-	util.plotTraining(sac_am_by_files[0], (f"SAC-AM: {file_tags[0]}"), file_tags[0])
-	util.plotTraining(sac_dm_by_files[0], (f"SAC-DM: {file_tags[0]}"), file_tags[0])
+	util.plotTraining(sac_am_by_files[file], (f"SAC-AM: {file_tags[file]}"), file_tags[file])
+	util.plotTraining(sac_dm_by_files[file], (f"SAC-DM: {file_tags[file]}"), file_tags[file])
 
 def plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N):
 	#Plotting 3 graphs on the same figure (1 for each axis), including training and testing done on different files.
@@ -138,6 +138,7 @@ def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 		util.plotWindowsComparation(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
 	
 def plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N):
+	print(f"ws: {int(sys.argv[2])}")
 	util.plot_heat_jumpingWindow(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
 	util.plot_heat_slidingWindow(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
 
@@ -145,7 +146,7 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
 
-	plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
@@ -157,8 +158,8 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
-	# util.search_optimal(sac_am_by_files,file_tags)
+	util.search_optimal(sac_am_by_files,file_tags)
+	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
 	
 	plt.show()
 	return 0
@@ -336,10 +337,10 @@ def plot_SAC_AM_DM_motor_signals():
 # 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n1.csv",
 # 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n1.csv" ]
 
-file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n2.csv",
-			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n2.csv",
-			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n2.csv",
-			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n2.csv" ]
+file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt03n2.csv",
+			"../../files/hexacopter_signals/failure_condition_1/FC1Flt03n2.csv",
+			"../../files/hexacopter_signals/failure_condition_2/FC2Flt03n2.csv",
+			"../../files/hexacopter_signals/failure_condition_3/FC3Flt03n2.csv" ]
 
 # file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n3.csv",
 # 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n3.csv",
@@ -396,7 +397,6 @@ for i in range(3):
 	sac_am_by_axes.append(sac_am_aux)
 	sac_dm_by_axes.append(sac_dm_aux)
 
-print(files[1])
-# plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
+plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
 # plot_SAC_AM_DM_motor_signals()

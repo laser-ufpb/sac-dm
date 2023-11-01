@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.colors as mcolors
 import time
 
+from scipy.signal import find_peaks, peak_prominences
+
 def average_sac(dataset, start, end):
 
 	average = np.average(dataset[start:end])
@@ -684,8 +686,10 @@ def plot_heat_jumpingWindow(dataset, file_tags, title, window_size, N):
 	outputMatrix = jumpingWindowAllAxes(dataset, file_tags, title, window_size, N)
 	labels = file_tags + ["Inconclusive"]
 
+	# Min = 0% Max = 100%
 	# outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
-	outputMatrixN = outputMatrix
+	outputMatrixN = outputMatrix / 100
+
 	fig, ax = plt.subplots()
 	im, cbar = heatmap(outputMatrixN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
 
@@ -697,6 +701,7 @@ def plot_heat_jumpingWindow(dataset, file_tags, title, window_size, N):
 				ax.text(j, i, percentage, ha="center", va="center", color="w")
 			else:
 				ax.text(j, i, percentage, ha="center", va="center", color="b")
+
 	titleJump = title + (f"Jumping window[N:{N}, WindowSize:{window_size}]")
 	ax.set_title(titleJump)
 	ax.set(ylabel = "True label", xlabel =  "Predicted label")
@@ -707,7 +712,9 @@ def plot_heat_slidingWindow(dataset, file_tags, title, window_size, N):
 	outputMatrix = slidingWindowAllAxes(dataset, file_tags, title, window_size, N)
 	labels = file_tags + ["Inconclusive"]
 
-	outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
+	# Min = 0% Max = 100%
+	# outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
+	outputMatrixN = outputMatrix / 100
 	
 	fig, ax = plt.subplots()
 	im, cbar = heatmap(outputMatrixN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
@@ -720,6 +727,7 @@ def plot_heat_slidingWindow(dataset, file_tags, title, window_size, N):
 				ax.text(j, i, percentage, ha="center", va="center", color="w")
 			else:
 				ax.text(j, i, percentage, ha="center", va="center", color="b")
+
 	titleJump = title + (f"Sliding window[N:{N}, WindowSize:{window_size}]")
 	ax.set_title(titleJump)
 	ax.set(ylabel = "True label", xlabel =  "Predicted label")
@@ -823,55 +831,35 @@ def heatmap(data, row_labels, col_labels, ax=None,
 
 def search_optimal(dataset, file_tags):
 
-	jumping_dict = {}
-	sliding_dict = {}
+	jumping_list_result = []
+	sliding_list_result = []
 	title = ""
-	for N in range(500,6000,100):
-		window_range = [3,5,7,11]
+	stop = 0
+	for k in range(500,6000,100):
+		window_range = [3,5]
 		for j in range(len(window_range)):
-			outputMatrixJumping = jumpingWindowAllAxes(dataset, file_tags, title, window_range[j], N)
-			outputMatrixSliding = slidingWindowAllAxes(dataset, file_tags, title, window_range[j], N)
+			print(f"Calculating N:{k} ws:{window_range[j]}")
+			dataset = openFiles(k)
+			outputMatrixJumping = jumpingWindowAllAxes(dataset, file_tags, title, window_range[j], k)
+			outputMatrixJumping = outputMatrixJumping / 100
 			jumping_result = np.zeros(len(file_tags) + 2)
-			sliding_result = np.zeros(len(file_tags) + 2)
-			
+
 			sli_axes_percent = 0
 			jump_axes_percent = 0
 			for i in range(len(file_tags)):
-				jumping_result[i] = outputMatrixJumping[i][i]
-				sliding_result[i] = outputMatrixSliding[i][i]
-				sli_axes_percent += sliding_result[i]
+				jumping_result[i] = round(outputMatrixJumping[i][i],2)
 				jump_axes_percent += jumping_result[i]
-			jumping_result[len(file_tags)] = N
-			sliding_result[len(file_tags)] = N
+
+			jumping_result[len(file_tags)] = k
 			jumping_result[len(file_tags) + 1] = window_range[j]
-			sliding_result[len(file_tags) + 1] = window_range[j]
-			print(f"%: {jump_axes_percent}")
-			if not jump_axes_percent in jumping_dict:
-				jumping_dict[jump_axes_percent] = jumping_result
 
-			if not sli_axes_percent in sliding_dict:
-				sliding_dict[sli_axes_percent] = sliding_result
-
-	slidingKeys = list(sliding_dict.keys())
-	slidingKeys.sort()
-	sorted_sliding_dict = {i: sliding_dict[i] for i in slidingKeys}
-	jumpingKeys = list(jumping_dict.keys())
-	jumpingKeys.sort()
-	sorted_jumping_dict = {i: jumping_dict[i] for i in jumpingKeys}
-	print("\n\n Sliding window \n")
-	for i in range(len(file_tags)):
-		print(f"{file_tags[i]:<10}", end="")
-	print(f"{'N':<10}", end="")
-	print(f"{'window_size':<10}")
-	
-	for i in range(1,5):
-		if((len(sorted_sliding_dict) - i) < 0):
+			if(jump_axes_percent >= 3.9):
+				jumping_list_result.append(jumping_result)
+			if(jump_axes_percent == 4):
+				stop += 1
+			
+		if(stop == 2):
 			break
-		key = list(sorted_sliding_dict.keys())[len(sorted_sliding_dict)-i]
-		for j in range(len(sorted_sliding_dict[key])):
-			sliding_result = sorted_sliding_dict[key]
-			print(f"{sliding_result[j]:<10}", end="")
-		print("")
 	
 	print("\n\n Jumping window \n")
 	for i in range(len(file_tags)):
@@ -879,12 +867,95 @@ def search_optimal(dataset, file_tags):
 	print(f"{'N':<10}", end="")
 	print(f"{'window_size':<10}")
 	
-	for i in range(1,5):
-		if((len(sorted_jumping_dict) - i) < 0):
-			break
-		key = list(sorted_jumping_dict.keys())[len(sorted_jumping_dict)-i]
-		for j in range(len(sorted_jumping_dict[key])):
-			sliding_result = sorted_jumping_dict[key]
-			print(f"{sliding_result[j]:<10}", end="")
+	for i in range(len(jumping_list_result)):
+		for j in range(len(jumping_list_result[i])):
+			result = jumping_list_result[i]
+			print(f"{result[j]:<10}", end="")
 		print("")
 	
+def openFiles(N):
+		# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n1.csv",
+	# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n1.csv",
+	# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n1.csv",
+	# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n1.csv" ]
+
+	file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt03n2.csv",
+				"../../files/hexacopter_signals/failure_condition_1/FC1Flt03n2.csv",
+				"../../files/hexacopter_signals/failure_condition_2/FC2Flt03n2.csv",
+				"../../files/hexacopter_signals/failure_condition_3/FC3Flt03n2.csv" ]
+
+	# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n3.csv",
+	# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n3.csv",
+	# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n3.csv",
+	# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n3.csv" ]
+
+	file_tags = [ "NFlt","FC1", "FC2", "FC3"]
+
+	file_columns = ['x','y','z','t']
+	files = []
+	file_axes = []
+	sac_am_by_files = []
+	sac_dm_by_files = []
+	sac_am_by_axes = []
+	sac_dm_by_axes = []
+
+	#Opening files
+	for i in range(len(file_paths)):
+		files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
+		files.append(files_aux)
+
+	for i in range(len(file_paths)):
+		file_list = []
+		sac_am_list = []
+		sac_dm_list = []
+		#Extracting axes
+		for j in range(len(file_columns)):
+			file_axes_aux = files[i][file_columns[j]].reshape(-1)
+			file_list.append(file_axes_aux)
+
+			#Getting SACs
+			if( j < 3):
+				sac_am_aux = sac_am(file_axes_aux, N)
+				sac_am_aux.pop()
+				sac_am_list.append(sac_am_aux)
+
+		
+		file_axes.append(file_list)
+		sac_am_by_files.append(sac_am_list)
+
+
+	#Number of axes
+	for i in range(3): 
+		sac_am_aux = []
+
+		#Number of files
+		for j in range(len(file_paths)): 
+			sac_am_aux.append(sac_am_by_files[j][i])
+
+
+		sac_am_by_axes.append(sac_am_aux)
+
+
+	return sac_am_by_files
+
+def sac_am(data, N):
+	
+	M = len(data)
+	size = 1 + int(M/N)
+	sacdm=[0.0] * size
+
+
+	inicio = 0
+	fim = N
+	for k in range(size):
+		peaks, _ = find_peaks(data[inicio:fim])
+		v = np.abs(data[peaks])
+		# s = sum(v)
+		s = np.mean(v)
+		sacdm[k] = 1.0*s/N
+		inicio = fim
+		fim = fim + N
+
+		
+	
+	return sacdm
