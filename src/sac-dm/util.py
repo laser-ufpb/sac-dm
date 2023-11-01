@@ -829,7 +829,15 @@ def heatmap(data, row_labels, col_labels, ax=None,
 
     return im, cbar
 
-def search_optimal(dataset, file_tags):
+def search_optimal(file_columns, file_paths, file_tags):
+
+	files = []
+	file_axes = []
+
+	#Opening files
+	for i in range(len(file_paths)):
+		files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
+		files.append(files_aux)
 
 	jumping_list_result = []
 	sliding_list_result = []
@@ -839,10 +847,10 @@ def search_optimal(dataset, file_tags):
 		window_range = [3,5]
 		for j in range(len(window_range)):
 			print(f"Calculating N:{k} ws:{window_range[j]}")
-			dataset = openFiles(k)
+			dataset = relocateN(files, file_columns,file_paths, k)
 			outputMatrixJumping = jumpingWindowAllAxes(dataset, file_tags, title, window_range[j], k)
 			outputMatrixJumping = outputMatrixJumping / 100
-			jumping_result = np.zeros(len(file_tags) + 2)
+			jumping_result = np.zeros(len(file_tags) + 3)
 
 			sli_axes_percent = 0
 			jump_axes_percent = 0
@@ -852,57 +860,36 @@ def search_optimal(dataset, file_tags):
 
 			jumping_result[len(file_tags)] = k
 			jumping_result[len(file_tags) + 1] = window_range[j]
+			jumping_result[len(file_tags) + 2] = jump_axes_percent
 
-			if(jump_axes_percent >= 3.9):
+			if(jump_axes_percent >= 4):
 				jumping_list_result.append(jumping_result)
+
 			if(jump_axes_percent == 4):
 				stop += 1
 			
 		if(stop == 2):
 			break
 	
-	print("\n\n Jumping window \n")
+	print("\n\nJumping window \n")
 	for i in range(len(file_tags)):
-		print(f"{file_tags[i]:<10}", end="")
+		print(f"{file_tags[i]:<12}", end="")
 	print(f"{'N':<10}", end="")
-	print(f"{'window_size':<10}")
+	print(f"{'window_size':<12}",end="")
+	print(f"{'soma diagonal':<12}",)
 	
 	for i in range(len(jumping_list_result)):
 		for j in range(len(jumping_list_result[i])):
 			result = jumping_list_result[i]
-			print(f"{result[j]:<10}", end="")
+			print(f"{result[j]:<12}", end="")
 		print("")
 	
-def openFiles(N):
-		# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n1.csv",
-	# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n1.csv",
-	# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n1.csv",
-	# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n1.csv" ]
+def relocateN(files, file_columns, file_paths, N):
 
-	file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt03n2.csv",
-				"../../files/hexacopter_signals/failure_condition_1/FC1Flt03n2.csv",
-				"../../files/hexacopter_signals/failure_condition_2/FC2Flt03n2.csv",
-				"../../files/hexacopter_signals/failure_condition_3/FC3Flt03n2.csv" ]
-
-	# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n3.csv",
-	# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n3.csv",
-	# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n3.csv",
-	# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n3.csv" ]
-
-	file_tags = [ "NFlt","FC1", "FC2", "FC3"]
-
-	file_columns = ['x','y','z','t']
-	files = []
-	file_axes = []
 	sac_am_by_files = []
 	sac_dm_by_files = []
 	sac_am_by_axes = []
 	sac_dm_by_axes = []
-
-	#Opening files
-	for i in range(len(file_paths)):
-		files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
-		files.append(files_aux)
 
 	for i in range(len(file_paths)):
 		file_list = []
@@ -919,8 +906,6 @@ def openFiles(N):
 				sac_am_aux.pop()
 				sac_am_list.append(sac_am_aux)
 
-		
-		file_axes.append(file_list)
 		sac_am_by_files.append(sac_am_list)
 
 

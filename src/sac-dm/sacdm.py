@@ -158,7 +158,7 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	util.search_optimal(sac_am_by_files,file_tags)
+
 	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
 	
 	plt.show()
@@ -332,24 +332,27 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n1.csv",
+# file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt05n1.csv",
 # 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n1.csv",
 # 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n1.csv",
 # 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n1.csv" ]
 
-file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt03n2.csv",
-			"../../files/hexacopter_signals/failure_condition_1/FC1Flt03n2.csv",
-			"../../files/hexacopter_signals/failure_condition_2/FC2Flt03n2.csv",
-			"../../files/hexacopter_signals/failure_condition_3/FC3Flt03n2.csv" ]
+# file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt05n2.csv",
+# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n2.csv",
+# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n2.csv",
+# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n2.csv" ]
 
-# file_paths = [  "../../files/hexacopter_signals/nominal_flight/NFlt05n3.csv",
-# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n3.csv",
-# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n3.csv",
-# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n3.csv" ]
+file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt05n3.csv",
+			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n3.csv",
+			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n3.csv",
+			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n3.csv" ]
 
 file_tags = [ "NFlt","FC1", "FC2", "FC3"]
 
 file_columns = ['x','y','z','t']
+
+util.search_optimal(file_columns, file_paths, file_tags)
+
 N = int(sys.argv[1])
 files = []
 file_axes = []
