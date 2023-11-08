@@ -20,7 +20,7 @@ from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.device import create_device, get_all_devices, delete_a_device, change_device_status
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
-from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_by_device_id, get_accelerometer_record_by_datetime, get_accelerometer_record_by_device_id_and_datetime, delete_accelerometer_records_by_device_id, delete_accelerometer_records_by_datetime
+from controllers.accelerometer import *
 from controllers.status import create_status
 from database import (get_db, Session)
 from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
