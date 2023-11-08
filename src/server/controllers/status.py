@@ -6,10 +6,15 @@ from fastapi.responses import JSONResponse
 
 
 def create_status(status_schema: StatusSchema, db: Session):
-    status_to_insert = Status(**status_schema.dict())
-    db.add(status_to_insert)
-    db.commit()
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content="Successfully entered status data!")
+    try:
+        status_to_insert = Status(**status_schema.dict())
+        db.add(status_to_insert)
+        db.commit()
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content="Successfully entered status data!")
+    except Exception:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Failed to create status!")
     
