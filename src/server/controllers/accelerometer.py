@@ -65,19 +65,37 @@ def delete_accelerometer_records_by_device_id(device_id_filter: Filter, db: Sess
     
 
 def delete_accelerometer_records_by_datetime(device_datetime_filter: Filter, db: Session):
-    try:
-        records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= device_datetime_filter.datetime_initial, AccelerometerAcquisition.timestamp <= device_datetime_filter.datetime_final).all()
-        if(not records):
+    if device_datetime_filter.datetime_initial and not device_datetime_filter.datetime_final:
+        try:
+            records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= device_datetime_filter.datetime_initial).all()
+            if(not records):
+                return JSONResponse(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                content="Datetime don't have logs!")
+            for record in records:
+                db.delete(record)            
+            db.commit()
             return JSONResponse(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content="Datetime don't have logs!")
-        for record in records:
-            db.delete(record)            
-        db.commit()
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content="Successfully deleted data!")
-    except Exception:
-        return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content="Delete failed!")
+                status_code=status.HTTP_200_OK,
+                content="Successfully deleted data!")
+        except Exception:
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content="Delete failed!")
+    elif device_datetime_filter.datetime_initial and device_datetime_filter.datetime_final:
+        try:
+            records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= device_datetime_filter.datetime_initial, AccelerometerAcquisition.timestamp <= device_datetime_filter.datetime_final).all()
+            if(not records):
+                return JSONResponse(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                content="Datetime don't have logs!")
+            for record in records:
+                db.delete(record)            
+            db.commit()
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content="Successfully deleted data!")
+        except Exception:
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content="Delete failed!")
