@@ -1,0 +1,174 @@
+SAC-AM: x-axis - N10000
+
+F0: Average - 0.0014
+F0: Standard deviation - 0.0002
+F0: Lower limit - 0.0012 | Upper limit - 0.0016
+
+F6: Average - 0.0017
+F6: Standard deviation - 0.0001
+F6: Lower limit - 0.0016 | Upper limit - 0.0018
+
+F14: Average - 0.0029
+F14: Standard deviation - 0.0001
+F14: Lower limit - 0.0028 | Upper limit - 0.0029
+
+F22: Average - 0.0049
+F22: Standard deviation - 0.0
+F22: Lower limit - 0.0048 | Upper limit - 0.0049
+
+Confusion matrix[%] 
+
+File      F0        F6        F14       F22       Inconclusive
+F0        96.8%     0.0%      0.0%      0.0%      0.0%      
+
+F6        0.0%      96.8%     0.0%      0.0%      0.0%      
+
+F14       0.0%      0.0%      96.8%     0.0%      0.0%      
+
+F22       0.0%      0.0%      0.0%      77.4%     19.4%     
+
+SAC-AM: y-axis - N10000
+
+F0: Average - 0.0012
+F0: Standard deviation - 0.0001
+F0: Lower limit - 0.0011 | Upper limit - 0.0012
+
+F6: Average - 0.0023
+F6: Standard deviation - 0.0001
+F6: Lower limit - 0.0022 | Upper limit - 0.0024
+
+F14: Average - 0.0043
+F14: Standard deviation - 0.0001
+F14: Lower limit - 0.0041 | Upper limit - 0.0044
+
+F22: Average - 0.0054
+F22: Standard deviation - 0.0001
+F22: Lower limit - 0.0054 | Upper limit - 0.0055
+
+Confusion matrix[%] 
+
+File      F0        F6        F14       F22       Inconclusive
+F0        96.8%     0.0%      0.0%      0.0%      0.0%      
+
+F6        0.0%      96.8%     0.0%      0.0%      0.0%      
+
+F14       0.0%      0.0%      96.8%     0.0%      0.0%      
+
+F22       0.0%      0.0%      0.0%      83.9%     12.9%     
+
+SAC-AM: z-axis - N10000
+
+F0: Average - 0.0009
+F0: Standard deviation - 0.0
+F0: Lower limit - 0.0009 | Upper limit - 0.001
+
+F6: Average - 0.0015
+F6: Standard deviation - 0.0001
+F6: Lower limit - 0.0015 | Upper limit - 0.0016
+
+F14: Average - 0.0025
+F14: Standard deviation - 0.0001
+F14: Lower limit - 0.0024 | Upper limit - 0.0026
+
+F22: Average - 0.0039
+F22: Standard deviation - 0.0002
+F22: Lower limit - 0.0038 | Upper limit - 0.0041
+
+Confusion matrix[%] 
+
+File      F0        F6        F14       F22       Inconclusive
+F0        96.8%     0.0%      0.0%      0.0%      0.0%      
+
+F6        0.0%      96.8%     0.0%      0.0%      0.0%      
+
+F14       0.0%      0.0%      96.8%     0.0%      0.0%      
+
+F22       0.0%      0.0%      0.0%      96.8%     0.0%      
+
+SAC-DM: x-axis - N10000
+
+F0: Average - 0.3435
+F0: Standard deviation - 0.0038
+F0: Lower limit - 0.3397 | Upper limit - 0.3473
+
+F6: Average - 0.3494
+F6: Standard deviation - 0.0025
+F6: Lower limit - 0.347 | Upper limit - 0.3519
+
+F14: Average - 0.3331
+F14: Standard deviation - 0.0062
+F14: Lower limit - 0.327 | Upper limit - 0.3393
+
+F22: Average - 0.2802
+F22: Standard deviation - 0.0028
+F22: Lower limit - 0.2774 | Upper limit - 0.283
+
+Confusion matrix[%] 
+
+File      F0        F6        F14       F22       Inconclusive
+F0        58.1%     12.9%     19.4%     0.0%      6.5%      
+
+F6        0.0%      83.9%     0.0%      0.0%      12.9%     
+
+F14       64.5%     0.0%      32.3%     0.0%      0.0%      
+
+F22       0.0%      0.0%      0.0%      6.5%      90.3%     
+
+SAC-DM: y-axis - N10000
+
+F0: Average - 0.3468
+F0: Standard deviation - 0.0039
+F0: Lower limit - 0.3429 | Upper limit - 0.3507
+
+F6: Average - 0.3382
+F6: Standard deviation - 0.0023
+F6: Lower limit - 0.3359 | Upper limit - 0.3405
+
+F14: Average - 0.3385
+F14: Standard deviation - 0.0033
+F14: Lower limit - 0.3352 | Upper limit - 0.3418
+
+F22: Average - 0.2663
+F22: Standard deviation - 0.0097
+F22: Lower limit - 0.2566 | Upper limit - 0.276
+
+Confusion matrix[%] 
+
+File      F0        F6        F14       F22       Inconclusive
+F0        45.2%     0.0%      0.0%      0.0%      51.6%     
+
+F6        0.0%      83.9%     12.9%     0.0%      0.0%      
+
+F14       19.4%     25.8%     25.8%     0.0%      25.8%     
+
+F22       0.0%      0.0%      0.0%      71.0%     25.8%     
+
+SAC-DM: z-axis - N10000
+
+F0: Average - 0.3403
+F0: Standard deviation - 0.0024
+F0: Lower limit - 0.3379 | Upper limit - 0.3428
+
+F6: Average - 0.3414
+F6: Standard deviation - 0.002
+F6: Lower limit - 0.3394 | Upper limit - 0.3434
+
+F14: Average - 0.3537
+F14: Standard deviation - 0.0056
+F14: Lower limit - 0.348 | Upper limit - 0.3593
+
+F22: Average - 0.3372
+F22: Standard deviation - 0.0087
+F22: Lower limit - 0.3285 | Upper limit - 0.3459
+
+Confusion matrix[%] 
+
+File      F0        F6        F14       F22       Inconclusive
+F0        45.2%     0.0%      0.0%      51.6%     0.0%      
+
+F6        71.0%     6.5%      0.0%      12.9%     6.5%      
+
+F14       0.0%      0.0%      25.8%     0.0%      71.0%     
+
+F22       6.5%      0.0%      0.0%      25.8%     64.5%     
+

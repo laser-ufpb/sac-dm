@@ -84,7 +84,9 @@ def halfTraining(dataset, title, fig, ax, file_tag):
 	deviation_dataset = deviation_sac(half_dataset, 0, len(half_dataset))
 
 	aux_dev = np.zeros(len(half_dataset))
+	print(round(len(half_dataset)/2))
 	aux_dev[round(len(half_dataset)/2)] = deviation_dataset
+	
 
 	x = np.arange(len(half_dataset))
 	y = np.zeros(len(half_dataset))
@@ -125,7 +127,7 @@ def plotTraining(dataset, title, file_tag):
 def plotSACsInOneFigureWithTraining(dataset, title, file_tag):
 
 	#Creating base graphics (Training)
-	fig, (axs) = plt.subplots(3)
+	fig, (axs) = plt.subplots(1)
 
 	fig.suptitle(title)
 	aux = title.split(':',1)
@@ -133,19 +135,19 @@ def plotSACsInOneFigureWithTraining(dataset, title, file_tag):
 	#Plot the axes on base graphs (Test)
 	#Axes
 	for i in range(len(dataset[0])):
-		halfTraining(dataset[0][i], "", fig, axs[i], file_tag[0])
+		halfTraining(dataset[0][i], "", fig, axs, file_tag[0])
 		
 		#Files
 		for j in range(0 ,len(dataset)):
 			testing_data = sampling_sac(dataset[j][i], round(len(dataset[j][i])/2), len(dataset[j][i]) )
-			testing(testing_data, (f"Second half of the file: {file_tag[j]}"), fig, axs[i], (11+j))
+			testing(testing_data, (f"Second half of the file: {file_tag[j]}"), fig, axs, (11+j))
 		
-		axs[i].set_xlim(-1, round(len(dataset[0][i]) * 0.69))
-		axs[i].legend(loc='lower right')
+		axs.set_xlim(-1, round(len(dataset[0][i]) * 0.69))
+		axs.legend(loc='lower right')
 		
-	axs[0].set(ylabel = (aux[0] + ": x-axis"))
-	axs[1].set(ylabel = (aux[0] + ": y-axis"))
-	axs[2].set(ylabel = (aux[0] + ": z-axis"))	
+	axs.set(ylabel = (aux[0] + ": x-axis"))
+	#axs[1].set(ylabel = (aux[0] + ": y-axis"))
+	#axs[2].set(ylabel = (aux[0] + ": z-axis"))	
 
 def plotSACsAxis(dataset, title, file_tag):
 

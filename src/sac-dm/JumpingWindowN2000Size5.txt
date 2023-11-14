@@ -1,0 +1,174 @@
+SAC-AM: x-axis - N2000
+
+F0: Average - 0.0071
+F0: Standard deviation - 0.0004
+F0: Lower limit - 0.0067 | Upper limit - 0.0075
+
+F6: Average - 0.0087
+F6: Standard deviation - 0.0004
+F6: Lower limit - 0.0083 | Upper limit - 0.009
+
+F14: Average - 0.015
+F14: Standard deviation - 0.0004
+F14: Lower limit - 0.0146 | Upper limit - 0.0154
+
+F22: Average - 0.0231
+F22: Standard deviation - 0.0006
+F22: Lower limit - 0.0225 | Upper limit - 0.0237
+
+Confusion matrix[%] - Jumping Window[5] - N2000 - Quantity of windows[16. 16. 16. 16.]
+
+File      F0        F6        F14       F22       Inconclusive
+F0        100.0%    0.0%      0.0%      0.0%      0.0%      
+
+F6        0.0%      100.0%    0.0%      0.0%      0.0%      
+
+F14       0.0%      0.0%      93.75%    0.0%      6.25%     
+
+F22       0.0%      0.0%      0.0%      81.25%    18.75%    
+
+SAC-AM: y-axis - N2000
+
+F0: Average - 0.0056
+F0: Standard deviation - 0.0002
+F0: Lower limit - 0.0054 | Upper limit - 0.0058
+
+F6: Average - 0.0115
+F6: Standard deviation - 0.0004
+F6: Lower limit - 0.0112 | Upper limit - 0.0119
+
+F14: Average - 0.0216
+F14: Standard deviation - 0.0005
+F14: Lower limit - 0.0211 | Upper limit - 0.0222
+
+F22: Average - 0.0274
+F22: Standard deviation - 0.0007
+F22: Lower limit - 0.0268 | Upper limit - 0.0281
+
+Confusion matrix[%] - Jumping Window[5] - N2000 - Quantity of windows[16. 16. 16. 16.]
+
+File      F0        F6        F14       F22       Inconclusive
+F0        100.0%    0.0%      0.0%      0.0%      0.0%      
+
+F6        0.0%      93.75%    0.0%      0.0%      6.25%     
+
+F14       0.0%      0.0%      87.5%     0.0%      12.5%     
+
+F22       0.0%      0.0%      0.0%      68.75%    31.25%    
+
+SAC-AM: z-axis - N2000
+
+F0: Average - 0.0046
+F0: Standard deviation - 0.0001
+F0: Lower limit - 0.0044 | Upper limit - 0.0047
+
+F6: Average - 0.0076
+F6: Standard deviation - 0.0002
+F6: Lower limit - 0.0074 | Upper limit - 0.0078
+
+F14: Average - 0.0111
+F14: Standard deviation - 0.0003
+F14: Lower limit - 0.0107 | Upper limit - 0.0114
+
+F22: Average - 0.0191
+F22: Standard deviation - 0.0006
+F22: Lower limit - 0.0184 | Upper limit - 0.0197
+
+Confusion matrix[%] - Jumping Window[5] - N2000 - Quantity of windows[16. 16. 16. 16.]
+
+File      F0        F6        F14       F22       Inconclusive
+F0        93.75%    0.0%      0.0%      0.0%      6.25%     
+
+F6        0.0%      93.75%    0.0%      0.0%      6.25%     
+
+F14       0.0%      0.0%      100.0%    0.0%      0.0%      
+
+F22       0.0%      0.0%      0.0%      87.5%     12.5%     
+
+SAC-DM: x-axis - N2000
+
+F0: Average - 0.3432
+F0: Standard deviation - 0.0056
+F0: Lower limit - 0.3376 | Upper limit - 0.3489
+
+F6: Average - 0.3491
+F6: Standard deviation - 0.0048
+F6: Lower limit - 0.3443 | Upper limit - 0.3539
+
+F14: Average - 0.3328
+F14: Standard deviation - 0.0082
+F14: Lower limit - 0.3246 | Upper limit - 0.341
+
+F22: Average - 0.2801
+F22: Standard deviation - 0.0065
+F22: Lower limit - 0.2736 | Upper limit - 0.2866
+
+Confusion matrix[%] - Jumping Window[5] - N2000 - Quantity of windows[16. 16. 16. 16.]
+
+File      F0        F6        F14       F22       Inconclusive
+F0        93.75%    6.25%     0.0%      0.0%      0.0%      
+
+F6        50.0%     43.75%    0.0%      0.0%      6.25%     
+
+F14       50.0%     6.25%     43.75%    0.0%      0.0%      
+
+F22       0.0%      0.0%      0.0%      12.5%     87.5%     
+
+SAC-DM: y-axis - N2000
+
+F0: Average - 0.3467
+F0: Standard deviation - 0.0066
+F0: Lower limit - 0.34 | Upper limit - 0.3533
+
+F6: Average - 0.3381
+F6: Standard deviation - 0.0037
+F6: Lower limit - 0.3344 | Upper limit - 0.3417
+
+F14: Average - 0.3383
+F14: Standard deviation - 0.0056
+F14: Lower limit - 0.3327 | Upper limit - 0.344
+
+F22: Average - 0.266
+F22: Standard deviation - 0.0115
+F22: Lower limit - 0.2545 | Upper limit - 0.2775
+
+Confusion matrix[%] - Jumping Window[5] - N2000 - Quantity of windows[16. 16. 16. 16.]
+
+File      F0        F6        F14       F22       Inconclusive
+F0        50.0%     6.25%     0.0%      0.0%      43.75%    
+
+F6        18.75%    81.25%    0.0%      0.0%      0.0%      
+
+F14       68.75%    31.25%    0.0%      0.0%      0.0%      
+
+F22       0.0%      0.0%      0.0%      75.0%     25.0%     
+
+SAC-DM: z-axis - N2000
+
+F0: Average - 0.34
+F0: Standard deviation - 0.0046
+F0: Lower limit - 0.3354 | Upper limit - 0.3446
+
+F6: Average - 0.341
+F6: Standard deviation - 0.0042
+F6: Lower limit - 0.3368 | Upper limit - 0.3452
+
+F14: Average - 0.3533
+F14: Standard deviation - 0.0071
+F14: Lower limit - 0.3463 | Upper limit - 0.3604
+
+F22: Average - 0.3373
+F22: Standard deviation - 0.0108
+F22: Lower limit - 0.3265 | Upper limit - 0.3481
+
+Confusion matrix[%] - Jumping Window[5] - N2000 - Quantity of windows[16. 16. 16. 16.]
+
+File      F0        F6        F14       F22       Inconclusive
+F0        75.0%     0.0%      0.0%      25.0%     0.0%      
+
+F6        87.5%     0.0%      6.25%     6.25%     0.0%      
+
+F14       0.0%      0.0%      37.5%     0.0%      62.5%     
+
+F22       18.75%    0.0%      0.0%      18.75%    62.5%     
+
