@@ -324,10 +324,10 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-file_paths = [#"../../files/voice_signals/task04/pac239.csv"
-			  #,"../../files/voice_signals/task04/pac240.csv"
-			  #,"../../files/voice_signals/task04/pac266.csv"
-			  #,"../../files/voice_signals/task04/pac484.csv"
+file_paths = [#"../../files/voice_signals/task03/pac239t3.csv"
+			  #"../../files/voice_signals/task03/pac240t3.csv"
+			  #,"../../files/voice_signals/task03/pac006t3.csv"
+			  "../../files/voice_signals/task03/pac670t3.csv"
 			  #,"../../files/voice_signals/task04/pac593.csv"
 			  #,"../../files/voice_signals/task04/pac638.csv"
 			  #,"../../files/voice_signals/task04/pac006.csv"
@@ -335,18 +335,16 @@ file_paths = [#"../../files/voice_signals/task04/pac239.csv"
 			  #,"../../files/voice_signals/task04/pac866.csv"
 			  #,"../../files/voice_signals/task04/pac1727.csv"
 			  #,"../../files/voice_signals/task04/pac1751.csv"
-			  "../../files/voice_signals/task04/pac629.csv"
-			  ,"../../files/voice_signals/task04/pac720.csv"
-			  ,"../../files/voice_signals/task04/pac879.csv"
+			  #"../../files/voice_signals/task04/pac629.csv"
+			  #,"../../files/voice_signals/task04/pac720.csv"
+			  #,"../../files/voice_signals/task04/pac879.csv"
 			  ]
 
 
 file_columns = ['x']
 
 
-#file_tags = ['pac239_F_N','pac240_F_N','pac266_F_N','pac484_F_N','pac593_F_N','pac638_F_N','pac006_F_D','pac670_F_D','pac866_F_D','pac1727_F_D','pac1751_F_D']
-file_tags = ['pac629_M_N','pac720_M_N','pac879_M_D']
-#file_tags = ['pac239_F_N','pac240_F_N','pac266_F_N','pac484_F_N','pac593_F_N','pac638_F_N','pac006_F_D','pac670_F_D','pac866_F_D','pac1727_F_D','pac1751_F_D','pac629_M_N','pac720_M_N','pac879_M_D']
+file_tags = ['N1']
 
 
 N = int(sys.argv[1])
