@@ -48,6 +48,22 @@ def get_change_t(current, previous):
     except ZeroDivisionError:
         return 0
 
+def windowCompareAxis( window, average, deviation, file_tags ):
+	conclusion = np.zeros((len(file_tags) + 1))
+
+	for i in range(len(window)):
+		classificationFound = False
+		for k in range(len(file_tags)):
+			if (window[i] >= (average[k] - deviation[k]) and window[i] <= (average[k] + deviation[k])):
+				conclusion[k] += 1
+				classificationFound = True
+				break
+
+		if(classificationFound == False):
+			conclusion[len(file_tags)] += 1
+	
+	return conclusion
+
 def windowCompare( window, average, deviation, file_tags ):
 
 	conclusion = np.full((len(window)), -1)
@@ -276,34 +292,14 @@ def slidingWindow(dataset, file_tags, title, window_size, N, save):
 	for i in range(len(dataset)):
 		average[i] = average_sac(dataset[i], 0, round(len(dataset[i])/2))
 		deviation[i] = deviation_sac(dataset[i], 0, round(len(dataset[i])/2))
-		
-
+	
 	#Files with the same axis
 	for i in range(len(dataset)):
 		#Array of SACs
 		for j in range( round(len(dataset[i])/2), (len(dataset[i]) - window_size + 1) ):
 			window = dataset[i][j:j+window_size]
 			conclusion = np.zeros((len(file_tags) + 1))
-			
-			for k in range(len(window)):
-				if (window[k] >= average[0] - deviation[0] and window[k] <= average[0] + deviation[0]):
-					conclusion[0] += 1
-					continue
-
-				elif(window[k] >= average[1] - deviation[1] and window[k] <= average[1] + deviation[1]):
-					conclusion[1] += 1
-					continue
-
-				elif(window[k] >= average[2] - deviation[2] and window[k] <= average[2] + deviation[2]):
-					conclusion[2] += 1
-					continue
-
-				# elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
-				# 	conclusion[3] += 1
-				# 	continue
-				
-				else:
-					conclusion[3] += 1
+			conclusion = windowCompareAxis(window, average, deviation, file_tags)
 			
 			if(j == (len(dataset[i]) - window_size)):
 				outputMatrix[i][np.argmax(conclusion)] += 1 * window_size
@@ -330,6 +326,8 @@ def slidingWindow(dataset, file_tags, title, window_size, N, save):
 		filename = (f"SlidingWindowN{N}Size{window_size}.txt")
 		header = (f"Confusion matrix[%] - Sliding window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
 		saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
+	
+	return outputMatrix
 
 def jumpingWindow(dataset, file_tags, title, window_size, N, save):
 	average = np.zeros(round(len(dataset[0])/2))
@@ -351,49 +349,11 @@ def jumpingWindow(dataset, file_tags, title, window_size, N, save):
 			count_window[i] += 1
 			if (j + window_size <= len(dataset[i])):
 				window = dataset[i][j:j+window_size]
-
-				for k in range(len(window)):
-					if (window[k] >= average[0] - deviation[0] and window[k] <= average[0] + deviation[0]):
-						conclusion[0] += 1
-						continue
-
-					elif(window[k] >= average[1] - deviation[1] and window[k] <= average[1] + deviation[1]):
-						conclusion[1] += 1
-						continue
-
-					elif(window[k] >= average[2] - deviation[2] and window[k] <= average[2] + deviation[2]):
-						conclusion[2] += 1
-						continue
-
-					elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
-						conclusion[3] += 1
-						continue
-					
-					else:
-						conclusion[4] += 1
+				conclusion = windowCompareAxis(window, average, deviation, file_tags)
 
 			else:
 				window = dataset[i][j:]
-
-				for k in range(len(window)):
-					if (window[k] >= average[0] - deviation[0] and window[k] <= average[0] + deviation[0]):
-						conclusion[0] += 1
-						continue
-
-					elif(window[k] >= average[1] - deviation[1] and window[k] <= average[1] + deviation[1]):
-						conclusion[1] += 1
-						continue
-
-					elif(window[k] >= average[2] - deviation[2] and window[k] <= average[2] + deviation[2]):
-						conclusion[2] += 1
-						continue
-
-					elif(window[k] >= average[3] - deviation[3] and window[k] <= average[3] + deviation[3]):
-						conclusion[3] += 1
-						continue
-					
-					else:
-						conclusion[4] += 1
+				conclusion = windowCompareAxis(window, average, deviation, file_tags)
 			
 			outputMatrix[i][np.argmax(conclusion)] += 1
 				
@@ -415,6 +375,8 @@ def jumpingWindow(dataset, file_tags, title, window_size, N, save):
 		filename = (f"JumpingWindowN{N}Size{window_size}.txt")
 		header = (f"Confusion matrix[%] - Jumping Window[{window_size}] - N{N} - Quantity of windows{count_window}\n\n")
 		saveMatrixInTxt(outputMatrix, average, deviation, title, N, filename, file_tags, header)
+	
+	return outputMatrix
 
 def plotWindowsComparation(dataset, file_tags, title, window_size, N):
 
@@ -681,7 +643,7 @@ def slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 
 	return outputMatrix
 
-def plot_heat_jumpingWindow(dataset, file_tags, title, window_size, N):
+def plot_heat_jumpingWindowAllAxes(dataset, file_tags, title, window_size, N):
 
 	outputMatrix = jumpingWindowAllAxes(dataset, file_tags, title, window_size, N)
 	labels = file_tags + ["Inconclusive"]
@@ -689,7 +651,7 @@ def plot_heat_jumpingWindow(dataset, file_tags, title, window_size, N):
 	# Min = 0% Max = 100%
 	# outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
 	outputMatrixN = outputMatrix / 100
-
+	print(f"test:a {len(outputMatrixN)}")
 	fig, ax = plt.subplots()
 	im, cbar = heatmap(outputMatrixN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
 
@@ -707,7 +669,7 @@ def plot_heat_jumpingWindow(dataset, file_tags, title, window_size, N):
 	ax.set(ylabel = "True label", xlabel =  "Predicted label")
 	fig.tight_layout()
 
-def plot_heat_slidingWindow(dataset, file_tags, title, window_size, N):
+def plot_heat_slidingWindowAllAxes(dataset, file_tags, title, window_size, N):
 
 	outputMatrix = slidingWindowAllAxes(dataset, file_tags, title, window_size, N)
 	labels = file_tags + ["Inconclusive"]
@@ -732,6 +694,114 @@ def plot_heat_slidingWindow(dataset, file_tags, title, window_size, N):
 	ax.set_title(titleJump)
 	ax.set(ylabel = "True label", xlabel =  "Predicted label")
 	fig.tight_layout()
+
+def plot_heat_jumpingWindowAxis(dataset, file_tags, title, window_size, N):
+
+	outputMatrix_x = jumpingWindow(dataset[0], file_tags, title, window_size, N,save=False)
+	outputMatrix_y = jumpingWindow(dataset[1], file_tags, title, window_size, N,save=False)
+	outputMatrix_z = jumpingWindow(dataset[2], file_tags, title, window_size, N,save=False)
+	labels = file_tags + ["   Inconclusive"]
+
+	# Min = 0% Max = 100%
+	# outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
+	outputMatrixN_x = outputMatrix_x / 100
+	outputMatrixN_y = outputMatrix_y / 100
+	outputMatrixN_z = outputMatrix_z / 100
+
+	fig, (ax_x, ax_y, ax_z) = plt.subplots(3)
+	plt.subplots_adjust(left=0.06, right=0.70, bottom=0.06, top=0.93)
+
+	im, cbar = heatmap(outputMatrixN_x, file_tags, labels, ax=ax_x, cmap="Blues", cbarlabel="")
+	im, cbar = heatmap(outputMatrixN_y, file_tags, labels, ax=ax_y, cmap="Blues", cbarlabel="")
+	im, cbar = heatmap(outputMatrixN_z, file_tags, labels, ax=ax_z, cmap="Blues", cbarlabel="")
+
+	# Loop over data dimensions and create text annotations.
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixN_x[i][j], 2)
+			if(percentage > 0.2):
+				ax_x.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax_x.text(j, i, percentage, ha="center", va="center", color="b")
+
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixN_y[i][j], 2)
+			if(percentage > 0.2):
+				ax_y.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax_y.text(j, i, percentage, ha="center", va="center", color="b")
+
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixN_z[i][j], 2)
+			if(percentage > 0.2):
+				ax_z.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax_z.text(j, i, percentage, ha="center", va="center", color="b")
+
+	titleJump = title + (f"Jumping window[N:{N}, WindowSize:{window_size}]")
+	fig.suptitle(titleJump)
+	ax_x.set(ylabel = "True label")
+	ax_x.set_title("x-axis")
+	ax_y.set(ylabel = "True label")
+	ax_y.set_title("y-axis")
+	ax_z.set(ylabel = "True label", xlabel =  "Predicted label")
+	ax_z.set_title("z-axis")
+
+def plot_heat_slidingWindowAxis(dataset, file_tags, title, window_size, N):
+
+	outputMatrix_x = slidingWindow(dataset[0], file_tags, title, window_size, N,save=False)
+	outputMatrix_y = slidingWindow(dataset[1], file_tags, title, window_size, N,save=False)
+	outputMatrix_z = slidingWindow(dataset[2], file_tags, title, window_size, N,save=False)
+	labels = file_tags + ["   Inconclusive"]
+
+	# Min = 0% Max = 100%
+	# outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
+	outputMatrixN_x = outputMatrix_x / 100
+	outputMatrixN_y = outputMatrix_y / 100
+	outputMatrixN_z = outputMatrix_z / 100
+
+	fig, (ax_x, ax_y, ax_z) = plt.subplots(3)
+	plt.subplots_adjust(left=0.06, right=0.70, bottom=0.06, top=0.93)
+
+	im, cbar = heatmap(outputMatrixN_x, file_tags, labels, ax=ax_x, cmap="Blues", cbarlabel="")
+	im, cbar = heatmap(outputMatrixN_y, file_tags, labels, ax=ax_y, cmap="Blues", cbarlabel="")
+	im, cbar = heatmap(outputMatrixN_z, file_tags, labels, ax=ax_z, cmap="Blues", cbarlabel="")
+
+	# Loop over data dimensions and create text annotations.
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixN_x[i][j], 2)
+			if(percentage > 0.2):
+				ax_x.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax_x.text(j, i, percentage, ha="center", va="center", color="b")
+
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixN_y[i][j], 2)
+			if(percentage > 0.2):
+				ax_y.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax_y.text(j, i, percentage, ha="center", va="center", color="b")
+
+	for i in range(len(file_tags)):
+		for j in range(len(labels)):
+			percentage = round(outputMatrixN_z[i][j], 2)
+			if(percentage > 0.2):
+				ax_z.text(j, i, percentage, ha="center", va="center", color="w")
+			else:
+				ax_z.text(j, i, percentage, ha="center", va="center", color="b")
+
+	titleJump = title + (f"Sliding window[N:{N}, WindowSize:{window_size}]")
+	fig.suptitle(titleJump)
+	ax_x.set(ylabel = "True label")
+	ax_x.set_title("x-axis")
+	ax_y.set(ylabel = "True label")
+	ax_y.set_title("y-axis")
+	ax_z.set(ylabel = "True label", xlabel =  "Predicted label")
+	ax_z.set_title("z-axis")
 
 def acquisition_Rate(dataset, file_tag):
 	timestamp_seconds = np.zeros(len(dataset))

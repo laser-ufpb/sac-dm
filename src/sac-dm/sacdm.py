@@ -137,10 +137,16 @@ def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	for i in range(3):
 		util.plotWindowsComparation(sac_dm_by_axes[i], file_tags, (f"SAC-DM: {auxAxes[i]}"), int(sys.argv[2]), N)
 	
-def plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N):
-	print(f"ws: {int(sys.argv[2])}")
-	util.plot_heat_jumpingWindow(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
-	util.plot_heat_slidingWindow(sac_am_by_files, file_tags, (f"Accelerometer 3: "), int(sys.argv[2]), N)
+def plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N, accelerometer):
+	#Heatmap of all axes window
+	util.plot_heat_jumpingWindowAllAxes(sac_am_by_files, file_tags, (f"Accelerometer {accelerometer}: "), int(sys.argv[2]), N)
+	util.plot_heat_slidingWindowAllAxes(sac_am_by_files, file_tags, (f"Accelerometer {accelerometer}: "), int(sys.argv[2]), N)
+
+def plot_heat_axis_window(sac_am_by_axes, sac_dm_by_axes, file_tags, N, accelerometer):
+	#Heatmaps of one axis window
+	util.plot_heat_jumpingWindowAxis(sac_am_by_axes, file_tags, (f"Accelerometer {accelerometer}: "), int(sys.argv[2]), N)
+	util.plot_heat_slidingWindowAxis(sac_am_by_axes, file_tags, (f"Accelerometer {accelerometer}: "), int(sys.argv[2]), N)
+
 
 def relocateN(files, file_columns, file_paths, N):
 
@@ -265,11 +271,11 @@ def search_optimal(files, file_columns, file_paths, file_tags):
 				print(f"{result[j]:<12}", end="")
 			print("")
 	else:
-		for i in range((len(jumping_list_result_nc) - 1) * 2 , ((len(jumping_list_result_nc) - 1) * 2) - 3 , -1):
+		for i in range((len(jumping_list_result_nc) - 1), ((len(jumping_list_result_nc) - 1)) - 2 , -1):
 			for j in range(len(jumping_list_result_nc[i])):
 				result = jumping_list_result_nc[i]
 				print(f"{result[j]:<12}", end="")
-		print("")
+			print("")
 
 	print("\n\nSliding window \n")
 	for i in range(len(file_tags)):
@@ -307,8 +313,9 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
+	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N, accelerometer=3)
 
-	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	plot_heat_axis_window(sac_am_by_axes, sac_dm_by_axes, file_tags, N, accelerometer=1)
 	
 	plt.show()
 	return 0
@@ -481,20 +488,20 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-# file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt05n1.csv",
-# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n1.csv",
-# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n1.csv",
-# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n1.csv" ]
+file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt01n1.csv",
+			"../../files/hexacopter_signals/failure_condition_1/FC1Flt01n1.csv",
+			"../../files/hexacopter_signals/failure_condition_2/FC2Flt01n1.csv",
+			"../../files/hexacopter_signals/failure_condition_3/FC3Flt01n1.csv" ]
 
-# file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt05n2.csv",
-# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n2.csv",
-# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n2.csv",
-# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n2.csv" ]
+# file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt01n2.csv",
+# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt01n2.csv",
+# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt01n2.csv",
+# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt01n2.csv" ]
 
-file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt05n3.csv",
-			"../../files/hexacopter_signals/failure_condition_1/FC1Flt05n3.csv",
-			"../../files/hexacopter_signals/failure_condition_2/FC2Flt05n3.csv",
-			"../../files/hexacopter_signals/failure_condition_3/FC3Flt05n3.csv" ]
+# file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt01n3.csv",
+# 			"../../files/hexacopter_signals/failure_condition_1/FC1Flt01n3.csv",
+# 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt01n3.csv",
+# 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt01n3.csv" ]
 
 file_tags = [ "NFlt","FC1", "FC2", "FC3"]
 
@@ -547,7 +554,7 @@ for i in range(3):
 	sac_am_by_axes.append(sac_am_aux)
 	sac_dm_by_axes.append(sac_dm_aux)
 
-search_optimal(files,file_columns, file_paths, file_tags)
+# search_optimal(files,file_columns, file_paths, file_tags)
 plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
 # plot_SAC_AM_DM_motor_signals()
