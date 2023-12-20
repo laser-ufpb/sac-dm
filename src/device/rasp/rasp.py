@@ -47,23 +47,25 @@ def write_log(data, lock):
 	log = open("log.txt", "a")
 	for reading in data:
 		with lock:
-			log.write(reading)
+			split = reading.split(";")
+			str_write = str(convertData(split[0])) + ";" + str(convertData(split[1])) + ";" + str(convertData(split[2])) + ";" + split[3]
+			log.write(str_write)
 			log.write("\n")
 	log.close()
 
-def read_log_send(lock)
-	sendHttp = []
-
-	with lock:
-		log = open("log.txt", "r")
-		lines = log.readlines()
-		log.close()
-		for l in lines:
-			sendHttp.append(l.strip())
-		if(sendJSONhttp(sendHttp, http_lock) == 200):
-			log = open("log.txt", "w")
-			log.close()
-			sendHttp.clear()
+#def read_log_send(lock)
+#	sendHttp = []
+#
+#	with lock:
+#		log = open("log.txt", "r")
+#		lines = log.readlines()
+#		log.close()
+#		for l in lines:
+#			sendHttp.append(l.strip())
+#		if(sendJSONhttp(sendHttp, http_lock) == 200):
+#			log = open("log.txt", "w")
+#			log.close()
+#			sendHttp.clear()
 	
 		
 		
@@ -72,13 +74,14 @@ def read_log_send(lock)
 
 
 
-#url = 'https://enmpf6xid68v.x.pipedream.net/'
-url = 'http://150.165.167.12:8100/accelerometer/'
+url = 'https://enmpf6xid68v.x.pipedream.net/'
+#url = 'http://150.165.167.12:8100/accelerometer/'
 
 ser = serial.Serial("/dev/ttyS0", 115200)
 ser.reset_input_buffer()
 sensor_buffer = []
 
+online = False
 disconnected_flag = 0 # 1 if previously disconnected then reconnect to wifi, 0 if not
 
 log_lock = Lock()
@@ -96,7 +99,7 @@ while True:
 	esp_serial = str(ser.readline())
 	sensor_buffer.append(esp_serial[2:][:-5] + ';'+ str(time.time_ns()*1000000))
 	
-	if len(sensor_buffer) %10000 == 0:
+	if len(sensor_buffer) %1000 == 0:
 		print(sensor_buffer[-1])
 		print(len(sensor_buffer))
 		
@@ -109,11 +112,10 @@ while True:
 		
 		toSend = sensor_buffer.copy()
 
-		if(check_connection()):
+		if(online):
 			
-			if(disconnected_flag):
-				read_log_send()
 			
+			disconnected_flag = 0
 			print("online")
 			t_http = Thread(target=sendJSONhttp, args=(toSend, http_lock))
 			t_http.start()
