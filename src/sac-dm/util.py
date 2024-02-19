@@ -156,14 +156,16 @@ def halfTraining(dataset, title, fig, ax, file_tag):
 	y = np.zeros(len(half_dataset))
 	y = np.full_like(y, average_dataset)
 
-	ax.plot(x,y,color=colors[10], label = (f"Average of the first half of the SAC {file_tag}"))
+	# ax.plot(x,y,color=colors[10], label = (f"Average of the first half of the SAC {file_tag}"))
+	ax.plot(x,y,color=colors[10])
 
 	for j in range(len(half_dataset)):
 
 		if(aux_dev[j] != 0):			
 			ax.errorbar(j,average_dataset,yerr = aux_dev[j], color = colors[20],marker='s', capsize=2, markersize=4, linewidth=1, linestyle='--')
 
-	ax.fill_between(x, average_dataset - deviation_dataset, average_dataset + deviation_dataset, alpha = 0.2, label = (f"Standard Deviation of the first half of the File {file_tag}"))
+	# ax.fill_between(x, average_dataset - deviation_dataset, average_dataset + deviation_dataset, alpha = 0.2, label = (f"Standard Deviation of the first half of the File {file_tag}"))
+	ax.fill_between(x, average_dataset - deviation_dataset, average_dataset + deviation_dataset, alpha = 0.2)
 
 def testing(dataset, title, fig, ax, color):
 
@@ -204,11 +206,14 @@ def plotSACsInOneFigureWithTraining(dataset, title, file_tag):
 		#Files
 		for j in range(0 ,len(dataset)):
 			testing_data = sampling_sac(dataset[j][i], round(len(dataset[j][i])/2), len(dataset[j][i]) )
-			testing(testing_data, (f"Second half of the file: {file_tag[j]}"), fig, axs[i], (11+j))
+			k = j
+			if(j == 1):
+				k = 2
+			testing(testing_data, (f"{file_tag[j]}"), fig, axs[i], (11+k))
 		
-		axs[i].set_xlim(-1, round(len(dataset[0][i]) * 0.69))
-		axs[i].legend(loc='lower right')
-		
+		axs[i].set_xlim(-1, round(len(dataset[0][i]) * 0.59))
+		axs[i].legend(loc='upper right')
+	
 	axs[0].set(ylabel = (aux[0] + ": x-axis"))
 	axs[1].set(ylabel = (aux[0] + ": y-axis"))
 	axs[2].set(ylabel = (aux[0] + ": z-axis"))	
@@ -651,7 +656,7 @@ def plot_heat_jumpingWindowAllAxes(dataset, file_tags, title, window_size, N):
 	# Min = 0% Max = 100%
 	# outputMatrixN = (outputMatrix - outputMatrix.min()) / (outputMatrix.max() - outputMatrix.min())
 	outputMatrixN = outputMatrix / 100
-	print(f"test:a {len(outputMatrixN)}")
+
 	fig, ax = plt.subplots()
 	im, cbar = heatmap(outputMatrixN, file_tags, labels, ax=ax, cmap="Blues", cbarlabel="")
 

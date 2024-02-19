@@ -71,9 +71,9 @@ def plot_trainning_test(sac_am_by_files, sac_dm_by_files, file_tags, file=0):
 def plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N):
 	#Plotting 3 graphs on the same figure (1 for each axis), including training and testing done on different files.
 	#SAC-AM
-	util.plotSACsInOneFigureWithTraining( sac_am_by_files, (f"SAC-AM: Half training/testing - N{N}"), file_tags)
+	util.plotSACsInOneFigureWithTraining( sac_am_by_files, (f"SAC-AM: N{N}"), file_tags)
 	#SAC-DM
-	# util.plotSACsInOneFigureWithTraining( sac_dm_by_files, (f"SAC-DM: Half training/testing - N{N}"), file_tags)
+	util.plotSACsInOneFigureWithTraining( sac_dm_by_files, (f"SAC-DM: Half training/testing - N{N}"), file_tags)
 
 def plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags):
 	#Plotting graphs individually
@@ -299,9 +299,9 @@ def search_optimal(files, file_columns, file_paths, file_tags):
 
 def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N):
 
-	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
+	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags, file = 0)
 
-	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
@@ -313,9 +313,9 @@ def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_fi
 
 	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 
-	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N, accelerometer=3)
+	# plot_heat_all_axes_windows(sac_am_by_files, sac_dm_by_files, file_tags, N, accelerometer=1)
 
-	plot_heat_axis_window(sac_am_by_axes, sac_dm_by_axes, file_tags, N, accelerometer=1)
+	# plot_heat_axis_window(sac_am_by_axes, sac_dm_by_axes, file_tags, N, accelerometer=1)
 	
 	plt.show()
 	return 0
@@ -503,7 +503,8 @@ file_paths = [     "../../files/hexacopter_signals/nominal_flight/NFlt01n1.csv",
 # 			"../../files/hexacopter_signals/failure_condition_2/FC2Flt01n3.csv",
 # 			"../../files/hexacopter_signals/failure_condition_3/FC3Flt01n3.csv" ]
 
-file_tags = [ "NFlt","FC1", "FC2", "FC3"]
+
+file_tags = [ "Nflt","FC1", "FC2", "FC3"]
 
 file_columns = ['x','y','z','t']
 
@@ -554,7 +555,8 @@ for i in range(3):
 	sac_am_by_axes.append(sac_am_aux)
 	sac_dm_by_axes.append(sac_dm_aux)
 
-# search_optimal(files,file_columns, file_paths, file_tags)
+
 plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
+# search_optimal(files,file_columns, file_paths, file_tags)
 # plot_SAC_AM_DM_motor_signals()
