@@ -36,14 +36,14 @@ def wavelet_denoise(signal, wavelet='db6', level=1, threshold=0.2):
     # Aplica a transformada discreta de wavelet
     coeffs = wavedec(signal, wavelet, level=level)
 
+
+
     # Aplica soft thresholding nos coeficientes de detalhes
     denoised_coeffs = [soft_thresholding(detail, threshold) for detail in coeffs[1:]]
 
     # Reconstroi o sinal denoised a partir dos coeficientes denoised e do coeficiente de aproximação original
     denoised_signal = waverec([coeffs[0]] + denoised_coeffs, wavelet)
     return denoised_signal
-   
-
 
 
 # Calcula SAC-DM utilizando a funcao find_peaks do Python
@@ -350,28 +350,28 @@ def plot_SAC_AM_DM_motor_signals():
 	return 0
 
 #source .venv/bin/activate
+#python3 -m pip install -r requirements.txt
+#pip install PyWavelets
+#pip install soundfile
 
 
+#taxa de aquisição 45
 #********* Main ********
-file_paths = [#'../../files/voice_signals/VGA6-denoizado_.csv'
-			  #, '../../files/voice_signals/VGA239-denoizado_.csv'
-			  #, '../../files/voice_signals/VGA240-denoizado_.csv'
-			  #, '../../files/voice_signals/VGA266-denoizado_.csv'
-			   #'../../files/voice_signals/VGA484-denoizado_.csv'
-			  #'../../files/voice_signals/original-denoizado_.csv'
-			  #, '../../files/voice_signals/fundo-denoizado_.csv'
-				#'../../files/voice_signals/fundo-denoizado_.csv'
-				#, '../../files/voice_signals/original-denoizado_.csv'
-				'../../files/voice_signals/VGA6-denoizado.wav'
-				,'../../files/voice_signals/VGA6-denoizado.wav'
+file_paths = [#'/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/galvao_original_denoised.csv'
+			  #, '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/galvao_ia_denoised.csv'
+			  '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/lud_original_denoised.csv'
+			  , '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/lud_ia_denoised.csv'
+			  , '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/ivete_original_denoised.csv'
+			  , '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/ivete_ia_denoised.csv'
 
+
+				
 			]
 
 
 
-
 file_columns = ['x']
-file_tags = ['original', 'original2']
+file_tags = ['P1 - original', 'P1 - ia', 'P2 - original', 'P2 - ia']
 
 
 
@@ -386,34 +386,23 @@ sac_dm_by_axes = []
 
 
 #Opening files
+for i in range(len(file_paths)):
+	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
+	files_aux=files_aux[100000:]
+	files_aux=files_aux[:100000]
+	files.append(files_aux)
+
+
+#Opening .wav files, apply wavelet filter, and remove zeros
 #for i in range(len(file_paths)):
-#	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
+#	audio_data, sample_rate = sf.read(file_paths[i])
+#	denoised_signal = wavelet_denoise(audio_data, wavelet='db6', level=11, threshold=0.2)
 	
+#	denoised_signal=denoised_signal[100000:]
+#	denoised_signal=denoised_signal[:100000]
 	
-	#original_signal, sr = sf.read(file_paths[i])
-	#denoised_signal = wavelet_denoise(original_signal, wavelet='db6', level=11, threshold=0.2)
+#	files.append(denoised_signal)
 
-#	files_aux=files_aux[100000:]
-	#files_aux=files_aux[:100000]
-
-	#files.append(files_aux)
-
-
-
-audio_data_list = []
-
-# Leitura do .wav e aplicação de filtro 
-for file_path in file_paths:
-	audio_data, sample_rate = sf.read(file_path)
-	denoised_signal = wavelet_denoise(audio_data, wavelet='db6', level=11, threshold=0.2)
-	audio_data_list.append(denoised_signal)
-
-	audio_data_list=audio_data_list[100000:]
-	audio_data_list=audio_data_list[:100000]
-
-	files.append(np.array(audio_data_list))
-	
-	print('caminho', file_path)
 
 for i in range(len(file_paths)):
 	file_list = []
@@ -421,7 +410,8 @@ for i in range(len(file_paths)):
 	sac_dm_list = []
 	#Extracting axes
 	for j in range(1):
-		file_axes_aux = files[i][0].reshape(-1)
+
+		file_axes_aux = files[i][file_columns[0]].reshape(-1)
 		file_list.append(file_axes_aux)
 
 		#Getting SACs
