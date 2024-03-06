@@ -9,6 +9,7 @@ from schemas.device import DeviceSchema
 from schemas.sacdm import SACDMSchema
 from schemas.accelerometer import AccelerometerSchema
 from schemas.filter import Filter
+from schemas.status import StatusSchema
 from schemas.user import UserSchema
 from fastapi import Depends, FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,9 +18,10 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import List, Optional
 from typing_extensions import Annotated
 from uuid import uuid4
-from controllers.device import create_device, get_all_devices
+from controllers.device import create_device, get_all_devices, delete_a_device, change_device_status
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
-from controllers.accelerometer import create_accelerometer_record, get_all_accelerometer_records, get_accelerometer_record_by_device_id, get_accelerometer_record_by_datetime, get_accelerometer_record_by_device_id_and_datetime
+from controllers.accelerometer import *
+from controllers.status import create_status
 from database import (get_db, Session)
 from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
 
@@ -51,10 +53,29 @@ def get_devices(db: Session=Depends(get_db)):
 @app.post("/device")
 def new_device(device: DeviceSchema, db: Session=Depends(get_db)):
     if (str(device.device_code).strip()):
+        print(device.device_code)
         return create_device(device, db)
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content="Invalid data!")
+
+
+# Route to delete data from devices table
+@app.delete("/device")
+def delete_device(device: DeviceSchema, db: Session=Depends(get_db)):
+    return delete_a_device(device, db)
+
+
+# Route to update status_id from a device
+@app.put("/device")
+def update_device_status(device: DeviceSchema, db: Session=Depends(get_db)):
+    return change_device_status(device, db)
+
+
+# Route to insert a new data into the status table
+@app.post("/status")
+def new_status(status: StatusSchema, db: Session=Depends(get_db)):
+    return create_status(status, db)
 
 
 # Route to get all data from sac_dm table
@@ -83,29 +104,6 @@ def sacdm_by_datetime(data: Filter, db: Session=Depends(get_db)):
 def sacdm_by_device_id_and_datetime(data: Filter, db: Session=Depends(get_db)):
     banco_dados: List[SACDM] = get_sacdm_by_device_id_and_datetime(data, db)
     return banco_dados
-
-# Route to insert a new data into users table
-@app.post("/user")
-def new_user(user: UserSchema, db: Session = Depends(get_db)):
-    return create_user(user, db)
-
-@app.get("/user")
-def list_users(db: Session = Depends(get_db)):
-    return get_all_users(db)
-
-@app.get("/user/{username}")
-def get_user_by_username_route(username: str, db: Session = Depends(get_db)):
-    user = get_user_by_username(username, db)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-
-@app.delete("/user/delete/{user_id}")
-def remove_user(user_id: int, db: Session = Depends(get_db)):
-    return delete_user(user_id, db)
-
-
 
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")
@@ -145,6 +143,40 @@ def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
 @app.post("/accelerometer")
 def new_accelerometer_record(accelerometer_data: List[AccelerometerSchema], db: Session=Depends(get_db)):
     return create_accelerometer_record(accelerometer_data, db)
+
+
+# Route to delete data from accelerometer table by device_id
+@app.delete("/accelerometer_by_device_id")
+def delete_device(filter_delete: Filter, db: Session=Depends(get_db)):
+    return delete_accelerometer_records_by_device_id(filter_delete, db)
+
+
+# Route to delete data from accelerometer table by datetime
+@app.delete("/accelerometer_by_datetime")
+def delete_device(filter_delete: Filter, db: Session=Depends(get_db)):
+    return delete_accelerometer_records_by_datetime(filter_delete, db)
+
+
+# Route to insert a new data into users table
+@app.post("/user")
+def new_user(user: UserSchema, db: Session = Depends(get_db)):
+    return create_user(user, db)
+
+@app.get("/user")
+def list_users(db: Session = Depends(get_db)):
+    return get_all_users(db)
+
+@app.get("/user/{username}")
+def get_user_by_username_route(username: str, db: Session = Depends(get_db)):
+    user = get_user_by_username(username, db)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@app.delete("/user/delete/{user_id}")
+def remove_user(user_id: int, db: Session = Depends(get_db)):
+    return delete_user(user_id, db)
 
 
 @app.post("/login")

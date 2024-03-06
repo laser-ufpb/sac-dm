@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from typing import Optional, Union
 from database import Base, engine
 from sqlalchemy import Column, Float, ForeignKey, Integer, String, Boolean, UniqueConstraint
+from sqlalchemy.orm import relationship
+from sqlalchemy import create_engine
 
 
 class Device(Base):
@@ -10,6 +12,14 @@ class Device(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     device_code = Column(String, nullable=False, unique=True)
     timestamp = Column(String, nullable=True)
+    status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
+    status = relationship("Status")
+
+
+class Status(Base):
+    __tablename__ = "status_description"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    description = Column(String, nullable=False)
 
 
 class SACDM(Base):
@@ -30,6 +40,7 @@ class AccelerometerAcquisition(Base):
     ACy = Column(Float, nullable=False)
     ACz = Column(Float, nullable=False)
     timestamp = Column(String, nullable=True)
+    label = Column(String, nullable=True)
 
 class User(Base):
     __tablename__= "user"
