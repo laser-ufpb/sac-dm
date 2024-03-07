@@ -138,20 +138,20 @@ def plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N):
 	
 
 def plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N):
+	
+	plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
 
-	# plot_trainning_test(sac_am_by_files, sac_am_by_files, file_tags)
-
-	# plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
+	#plot_sacs_one_figure(sac_am_by_files, sac_dm_by_files, file_tags, N)
 
 	# plot_sacs_by_axes(sac_am_by_files, sac_dm_by_files, file_tags)
 
-	plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
+	#plot_confusion_matrix_save_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
 	# slinding_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
+	#jumping_window_in_txt(sac_am_by_axes, sac_dm_by_axes, file_tags, N, save=True)
 
-	# plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
+	#plot_compare_windows(sac_am_by_axes, sac_dm_by_axes, file_tags, N)
 	
 	plt.show()
 	return 0
@@ -324,10 +324,11 @@ def plot_SAC_AM_DM_motor_signals():
 
 #********* Main ********
 
-file_paths = [  "../../files/drone_signals/accel_80_F0.csv",
-			"../../files/drone_signals/accel_80_F6.csv",
-			"../../files/drone_signals/accel_80_F14.csv",
-			"../../files/drone_signals/accel_80_F22.csv" ]
+file_paths = ["../../files/drone_signals/accel_80_F0.csv"#,
+			#"../../files/drone_signals/accel_80_F6.csv",
+			#"../../files/drone_signals/accel_80_F14.csv",
+			#"../../files/drone_signals/accel_80_F22.csv" 
+			]
 
 file_columns = ['x','y','z','s','t']
 
@@ -345,6 +346,7 @@ sac_dm_by_axes = []
 for i in range(len(file_paths)):
 	files_aux = np.genfromtxt( file_paths[i], delimiter=';',names= file_columns)
 	files.append(files_aux)
+
 
 for i in range(len(file_paths)):
 	file_list = []
@@ -368,6 +370,8 @@ for i in range(len(file_paths)):
 	sac_am_by_files.append(sac_am_list)
 	sac_dm_by_files.append(sac_dm_list)
 
+
+
 #Number of axes
 for i in range(3): 
 	sac_am_aux = []
@@ -379,6 +383,8 @@ for i in range(3):
 
 	sac_am_by_axes.append(sac_am_aux)
 	sac_dm_by_axes.append(sac_dm_aux)
+
+
 
 plot_SAC_AM_DM(sac_am_by_axes, sac_am_by_files, sac_dm_by_axes, sac_dm_by_files, file_tags, N)
 
