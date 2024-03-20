@@ -118,7 +118,9 @@ def plotTraining(dataset, title, file_tag):
 	for i in range(len(dataset)):
 
 		halfTraining(dataset[i], title, fig, axs[i],file_tag)
-		testing_data = sampling_sac(dataset[i], round(len(dataset[i])/2), len(dataset[i]) )
+		testing_data = sampling_sac(dataset[i], round(len(dataset[i])), len(dataset[i]), len(dataset[i]) )
+		#testing_data = sampling_sac(dataset[i], round(len(dataset[i])), len(dataset[i]/2), len(dataset[i]) )
+
 		testing(testing_data, (f"Second half of the file {file_tag}"), fig, axs[i], (11+i))
 		axs[i].set_xlim(left = -1)
 		axs[i].set(ylabel = auxT[i])
