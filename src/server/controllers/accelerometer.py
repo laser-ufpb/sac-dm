@@ -13,8 +13,7 @@ def create_accelerometer_record(accelerometer_schema: List[AccelerometerSchema],
         records = [AccelerometerAcquisition(**accelerometer_record.dict()) for accelerometer_record in accelerometer_schema]
         db.add_all(records)
         db.commit()
-    except Exception as e:
-        print(e)
+    except Exception:
         return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"error": "Failed to insert data to the database."}
