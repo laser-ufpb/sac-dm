@@ -11,9 +11,11 @@ from fastapi.responses import JSONResponse
 def create_accelerometer_record(accelerometer_schema: List[AccelerometerSchema], db: Session):
     try:
         records = [AccelerometerAcquisition(**accelerometer_record.dict()) for accelerometer_record in accelerometer_schema]
+        print(records)
         db.add_all(records)
         db.commit()
-    except Exception:
+    except Exception as e:
+        print(e)
         return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"error": "Failed to insert data to the database."}
