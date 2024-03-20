@@ -62,8 +62,9 @@ def sac_dm(data, N):
 		sacdm[k] = 1.0*len(v)/N
 		inicio = fim
 		fim = fim + N
+		break
 
-		
+	print("Mean: ", np.mean(sacdm))	
 	
 	return sacdm
 
@@ -357,21 +358,28 @@ def plot_SAC_AM_DM_motor_signals():
 
 #taxa de aquisição 45
 #********* Main ********
-file_paths = [#'/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/galvao_original_denoised.csv'
-			  #, '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/galvao_ia_denoised.csv'
-			  '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/lud_original_denoised.csv'
-			  , '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/lud_ia_denoised.csv'
-			  , '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/ivete_original_denoised.csv'
-			  , '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/ivete_ia_denoised.csv'
+file_paths = [#'/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/participante2_audio1_denoised.csv'
+			  #,'/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/participante2_audio2_denoised.csv'
+			  #'/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/participante3_audio1_denoised.csv'
+			  #,'/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/participante3_audio2_denoised.csv'
+			  #,'/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/participante4_audio1_denoised.csv'
+			  #,'/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/participante4_audio2_denoised.csv'
+			  # '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/ivete_original_denoised.csv'
+			  #, '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/ivete_ia_denoised.csv'
+			  #, '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/lud_original_denoised.csv'
+			  #, '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/lud_ia_denoised.csv'
 
+			  '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/f01.csv'
+			  '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/sf01.csv'
+			  '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/f01_denoised.csv'
+			  ,'/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/sf01_denoised.csv'
 
-				
 			]
 
 
 
 file_columns = ['x']
-file_tags = ['P1 - original', 'P1 - ia', 'P2 - original', 'P2 - ia']
+file_tags = ['P1 - áudio 1', 'P1 - áudio2', 'P2 - áudio 1', 'P2 - áudio2', 'P3 - áudio 1', 'P3 - áudio2']
 
 
 

@@ -30,7 +30,9 @@ def wav_to_csv(input_wav_file, output_csv_file):
                 csv_writer.writerow(row_data)
 
 
-input_wav_file = '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/original/galvao_ia.wav'
-output_csv_file = '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/data/galvao_ia.csv'
+
+
+input_wav_file = '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/original/sf01.wav'
+output_csv_file = '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/data/sf01.csv'
 wav_to_csv(input_wav_file, output_csv_file)
 
