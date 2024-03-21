@@ -1,16 +1,36 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import DeviceService from "../../app/services/devices";
+import AccelerometerService from "../../app/services/accelerometer";
+import { CircularProgress } from "@mui/material";
+import { Container } from "./styles";
 
 export const Home = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     loadDevices();
+    // loadAccelerometers();
   }, []);
 
   const loadDevices = async () => {
+    setIsLoading(true);
     try {
       await DeviceService.getDevices();
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadAccelerometers = async () => {
+    setIsLoading(true);
+    try {
+      await AccelerometerService.getAccelerometers();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -24,8 +44,14 @@ export const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Home</h1>
-    </div>
+    <Container>
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <h1>Home</h1>
+        </>
+      )}
+    </Container>
   );
 };
