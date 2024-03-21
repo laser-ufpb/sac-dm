@@ -4,7 +4,7 @@ import { Home } from "../../pages/Home";
 export const Routes = () => {
   return (
     <AppRoutes>
-      <Route path="/" element={<Home />} />
+      <Route path="/dashboard" element={<Home />} />
     </AppRoutes>
   );
 };

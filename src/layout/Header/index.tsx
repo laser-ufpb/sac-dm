@@ -1,11 +1,15 @@
-import { NavigationMenuDesktop } from "./components/NavigationMenuDesktop";
-import { Container, MenuIconBox } from "./styles";
+import { useNavigate } from "react-router-dom";
+import { isMenuItemActive } from "../../app/utils/isMenuItemActive";
+import { Container, NavigationButton } from "./styles";
 import { useEffect, useState } from "react";
+import { Dashboard, Menu } from "@mui/icons-material";
 
 export const Header = () => {
   const [isDesktop, setIsDesktop] = useState(() => {
     return window.innerWidth > 768 ? true : false;
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -19,16 +23,20 @@ export const Header = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   return (
     <Container>
       {isDesktop ? (
-        <div className="menu-desktop">
-          <MenuIconBox>
-            <NavigationMenuDesktop />
-          </MenuIconBox>
-        </div>
+        <NavigationButton
+          isActive={isMenuItemActive("/dashboard")}
+          onClick={() => navigate("/dashboard")}
+        >
+          <Dashboard />
+        </NavigationButton>
       ) : (
-        <div className="menu-mobile">MOBILE</div>
+        <NavigationButton>
+          <Menu />
+        </NavigationButton>
       )}
     </Container>
   );
