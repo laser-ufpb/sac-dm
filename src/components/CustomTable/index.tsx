@@ -34,15 +34,18 @@ export const CustomTable: React.FC<CustomTableProps> = ({
             </StyledTableCell>
           </StyledTableRow>
         ) : (
-          data.map((row, index) => (
-            <StyledTableRow key={index} className="custom-row">
-              {columns.map((column) => (
-                <StyledTableCell key={column.id}>
-                  {row[column.id]}
-                </StyledTableCell>
-              ))}
-            </StyledTableRow>
-          ))
+          (() => {
+            const reversedData = [...data].reverse();
+            return reversedData.map((row, index) => (
+              <StyledTableRow key={index} className="custom-row">
+                {columns.map((column) => (
+                  <StyledTableCell key={column.id}>
+                    {row[column.id]}
+                  </StyledTableCell>
+                ))}
+              </StyledTableRow>
+            ));
+          })()
         )}
       </StyledTableBody>
     </StyledTable>

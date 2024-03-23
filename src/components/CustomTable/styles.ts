@@ -35,5 +35,8 @@ export const StyledTableBody = styled(TableBody)`
 `;
 
 export const StyledTableCell = styled(TableCell).attrs({
-  style: { color: theme.text },
+  style: {
+    color: theme.text,
+    fontWeight: 600,
+  },
 })``;
