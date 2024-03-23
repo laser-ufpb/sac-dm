@@ -5,32 +5,12 @@ import { CircularProgress } from "@mui/material";
 import { Container } from "./styles";
 
 export const Home = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadDevices();
-    // loadAccelerometers();
-  }, []);
-
-  const loadDevices = async () => {
-    setIsLoading(true);
-    try {
-      await DeviceService.getDevices();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const loadAccelerometers = async () => {
-    setIsLoading(true);
     try {
       await AccelerometerService.getAccelerometers();
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false);
     }
   };
 
@@ -45,13 +25,7 @@ export const Home = () => {
 
   return (
     <Container>
-      {isLoading ? (
-        <CircularProgress />
-      ) : (
-        <>
-          <h1>Home</h1>
-        </>
-      )}
+      <h1>Home</h1>
     </Container>
   );
 };
