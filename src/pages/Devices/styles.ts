@@ -4,8 +4,18 @@ export const Container = styled.div`
   padding: 0 16px;
 `;
 
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  > button {
+    background-color: ${({ theme }) => theme.lighterBlue};
+  }
+`;
+
 export const TableBox = styled.div`
-  margin-top: 16px;
   border-radius: 8px;
   overflow: hidden;
   max-height: calc(100vh - 200px);

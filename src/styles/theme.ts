@@ -23,4 +23,5 @@ export const theme = {
   gray800: "#424242", // Grey - Background escuro
   gray900: "#212121", // Grey - Background escuro
   blackEerie: "#1C1C1C", // Dark Grey - Background escuro
+  lighterBlue: "#1E88E5", // Blue - Background claro
 };

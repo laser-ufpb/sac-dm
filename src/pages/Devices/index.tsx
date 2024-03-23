@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import DeviceService from "../../app/services/devices";
 import { DeviceProps } from "./types";
-import { Container, TableBox } from "./styles";
+import { Container, Header, TableBox } from "./styles";
 import formatDate from "../../app/utils/formatDate";
 import { CustomTable } from "../../components/CustomTable";
+import { Button } from "@mui/material";
+import { AddCircle } from "@mui/icons-material";
 
 export const Devices = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -38,7 +40,12 @@ export const Devices = () => {
 
   return (
     <Container>
-      <h1>Dispositivos</h1>
+      <Header>
+        <h1>Dispositivos</h1>
+        <Button variant="contained" startIcon={<AddCircle />}>
+          <p>Novo Dispositivo</p>
+        </Button>
+      </Header>
       <TableBox>
         <CustomTable
           columns={columns}
