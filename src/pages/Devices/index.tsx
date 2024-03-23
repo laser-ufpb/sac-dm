@@ -11,6 +11,7 @@ import {
   TableBox,
 } from "./styles";
 import { CircularProgress } from "@mui/material";
+import formatDate from "../../app/utils/formatDate";
 
 export const Devices = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,14 +35,14 @@ export const Devices = () => {
 
   return (
     <Container>
-      <h1>Devices</h1>
+      <h1>Dispositivos</h1>
       <TableBox>
         <StyledTable>
           <StyledTableHead>
             <StyledTableRow>
               <StyledTableCell>ID</StyledTableCell>
-              <StyledTableCell>Device Code</StyledTableCell>
-              <StyledTableCell>Timestamp</StyledTableCell>
+              <StyledTableCell>Código do Dispositivo</StyledTableCell>
+              <StyledTableCell>Última Atualização</StyledTableCell>
             </StyledTableRow>
           </StyledTableHead>
           <StyledTableBody>
@@ -52,7 +53,9 @@ export const Devices = () => {
                 <StyledTableRow key={device.id} className="custom-row">
                   <StyledTableCell>{device.id}</StyledTableCell>
                   <StyledTableCell>{device.device_code}</StyledTableCell>
-                  <StyledTableCell>{device.timestamp}</StyledTableCell>
+                  <StyledTableCell>
+                    {formatDate(device.timestamp)}
+                  </StyledTableCell>
                 </StyledTableRow>
               ))
             )}
