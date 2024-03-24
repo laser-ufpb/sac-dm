@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { theme } from "../../styles/theme";
+import { ArrowUpward } from "@mui/icons-material";
 
 export const StyledTable = styled(Table)`
   &&& {
@@ -22,6 +23,35 @@ export const StyledTableHead = styled(TableHead).attrs({
     borderRadius: "8px",
   },
 })``;
+
+export const StyledTableCellHeader = styled(TableCell).attrs({
+  style: {
+    color: theme.text,
+    fontWeight: 600,
+  },
+})`
+  cursor: pointer;
+`;
+
+export const HeaderCell = styled.div`
+  display: flex;
+  padding: 16px;
+  gap: 8px;
+
+  .icons {
+    display: flex;
+    align-items: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &:hover {
+    background-color: ${theme.blackEerie};
+  }
+`;
 
 export const StyledTableRow = styled(TableRow)``;
 
@@ -40,3 +70,14 @@ export const StyledTableCell = styled(TableCell).attrs({
     fontWeight: 600,
   },
 })``;
+
+interface ArrowProps {
+  active: boolean;
+  orderDirection: "asc" | "desc";
+}
+
+export const ArrowStyled = styled(ArrowUpward)<ArrowProps>`
+  color: ${({ active }) => (active ? theme.primary : theme.gray800)};
+  transform: ${({ active, orderDirection }) =>
+    active && orderDirection === "asc" ? "rotate(180deg)" : "rotate(0deg)"};
+`;
