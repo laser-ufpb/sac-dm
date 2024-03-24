@@ -6,10 +6,12 @@ import formatDate from "../../app/utils/formatDate";
 import { CustomTable } from "../../components/CustomTable";
 import { Button } from "@mui/material";
 import { AddCircle } from "@mui/icons-material";
+import { AddDevice } from "./components/AddDevice";
 
 export const Devices = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
+  const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
 
   useEffect(() => {
     loadDevices();
@@ -39,20 +41,31 @@ export const Devices = () => {
   }));
 
   return (
-    <Container>
-      <Header>
-        <h1>Dispositivos</h1>
-        <Button variant="contained" startIcon={<AddCircle />}>
-          <p>Novo Dispositivo</p>
-        </Button>
-      </Header>
-      <TableBox>
-        <CustomTable
-          columns={columns}
-          data={formattedData}
-          isLoading={isLoading}
-        />
-      </TableBox>
-    </Container>
+    <>
+      <AddDevice
+        open={openAddDeviceModal}
+        onClose={() => setOpenAddDeviceModal(false)}
+        onSubmitted={loadDevices}
+      />
+      <Container>
+        <Header>
+          <h1>Dispositivos</h1>
+          <Button
+            variant="contained"
+            startIcon={<AddCircle />}
+            onClick={() => setOpenAddDeviceModal(true)}
+          >
+            <p>Novo Dispositivo</p>
+          </Button>
+        </Header>
+        <TableBox>
+          <CustomTable
+            columns={columns}
+            data={formattedData}
+            isLoading={isLoading}
+          />
+        </TableBox>
+      </Container>
+    </>
   );
 };
