@@ -7,7 +7,6 @@ import {
   ModalFooter,
   ModalHeader,
 } from "../../../../components/CustomModal/styles";
-import { ModalProps } from "../../../../components/CustomModal/types";
 import { Close } from "@mui/icons-material";
 import { DefaultForm } from "../../../../components/forms/DefaultForm";
 import { FormGroup } from "../../../../components/forms/FormGroup";
@@ -17,11 +16,7 @@ import DeviceService from "../../../../app/services/devices";
 import { AddDeviceProps } from "./types";
 
 export const AddDevice = ({ open, onClose, onSubmitted }: AddDeviceProps) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<DeviceFormData>({
+  const { control, handleSubmit } = useForm<DeviceFormData>({
     resolver: zodResolver(deviceSchema),
   });
 

@@ -2,25 +2,24 @@ import { api } from "..";
 import { DevicePayload } from "./types";
 
 class DeviceService {
-  constructor() {}
-
-  getDevices = async () => {
+  async getDevices() {
     try {
       const response = await api.get("/device");
       return response.data;
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
-  postDevices = async (payload: DevicePayload) => {
+  async postDevices(payload: DevicePayload) {
     try {
       const response = await api.post("/device", payload);
       console.log(response);
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 }
 
-export default new DeviceService();
+const deviceService = new DeviceService();
+export default deviceService;
