@@ -9,7 +9,7 @@ import { AddCircle } from "@mui/icons-material";
 import { AddDevice } from "./components/AddDevice";
 import { useNavigate } from "react-router-dom";
 
-export const Devices = () => {
+export const DeviceList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
