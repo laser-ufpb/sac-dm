@@ -11,4 +11,5 @@ export interface CustomTableProps {
   columns: TableColumn[];
   data: TableData[];
   isLoading?: boolean;
+  onCellClick?: (id: number) => void;
 }

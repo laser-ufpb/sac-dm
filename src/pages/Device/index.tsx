@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Container } from "./styles";
+import { useEffect, useState } from "react";
+import { SacDmProps } from "../SacDm/types";
 import sacDmService from "../../app/services/sac_dm";
-import { SacDmProps } from "./types";
 import { CustomTable } from "../../components/CustomTable";
 
-export const SacDm = () => {
+export const Device = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
+  const [deviceData, setDeviceData] = useState<SacDmProps[]>([]);
+
+  const { id } = useParams();
+  const numericId = Number(id);
 
   useEffect(() => {
     loadSacDm();
@@ -16,7 +20,10 @@ export const SacDm = () => {
     setIsLoading(true);
     try {
       const response = await sacDmService.getSacDm();
-      setSacDm(response);
+      const filteredData = response.filter(
+        (item: SacDmProps) => item.device_id === numericId
+      );
+      setDeviceData(filteredData);
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,12 +40,8 @@ export const SacDm = () => {
 
   return (
     <Container>
-      <h1>SacDm</h1>
-      <CustomTable
-        columns={columns}
-        data={sacDm}
-        isLoading={isLoading}
-      />
+      <h1>Device {id}</h1>
+      <CustomTable columns={columns} data={deviceData} isLoading={isLoading} />
     </Container>
   );
 };

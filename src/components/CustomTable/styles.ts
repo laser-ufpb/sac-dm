@@ -58,9 +58,19 @@ export const StyledTableRow = styled(TableRow)``;
 export const StyledTableBody = styled(TableBody)`
   .custom-row:nth-child(odd) {
     background-color: ${theme.gray900};
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: ${theme.gray600};
+    }
   }
   .custom-row:nth-child(even) {
     background-color: ${theme.blackEerie};
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: ${theme.gray600};
+    }
   }
 `;
 
@@ -68,6 +78,7 @@ export const StyledTableCell = styled(TableCell).attrs({
   style: {
     color: theme.text,
     fontWeight: 600,
+    cursor: "pointer",
   },
 })``;
 

@@ -14,6 +14,7 @@ export const CustomTable: React.FC<CustomTableProps> = ({
   columns,
   data,
   isLoading,
+  onCellClick,
 }) => {
   const [orderDirection, setOrderDirection] = useState<"asc" | "desc">("desc");
   const [orderBy, setOrderBy] = useState<string>("id");
@@ -73,7 +74,10 @@ export const CustomTable: React.FC<CustomTableProps> = ({
           sortedData.map((row, index) => (
             <StyledTableRow key={index} className="custom-row">
               {columns.map((column) => (
-                <StyledTableCell key={column.id}>
+                <StyledTableCell
+                  key={column.id}
+                  onClick={() => onCellClick && onCellClick(row.id)}
+                >
                   {row[column.id]}
                 </StyledTableCell>
               ))}

@@ -7,11 +7,14 @@ import { CustomTable } from "../../components/CustomTable";
 import { Button } from "@mui/material";
 import { AddCircle } from "@mui/icons-material";
 import { AddDevice } from "./components/AddDevice";
+import { useNavigate } from "react-router-dom";
 
 export const Devices = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadDevices();
@@ -40,6 +43,11 @@ export const Devices = () => {
     timestamp: formatDate(device.timestamp),
   }));
 
+  const handleCellClick = (deviceId: number) => {
+    console.log(deviceId);
+    navigate(`/device/${deviceId}`);
+  };
+
   return (
     <>
       <AddDevice
@@ -63,6 +71,7 @@ export const Devices = () => {
             columns={columns}
             data={formattedData}
             isLoading={isLoading}
+            onCellClick={handleCellClick}
           />
         </TableBox>
       </Container>
