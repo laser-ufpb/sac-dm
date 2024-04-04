@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Container } from "./styles";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SacDmProps } from "../SacDm/types";
 import sacDmService from "../../app/services/sac_dm";
 import { CustomTable } from "../../components/CustomTable";
@@ -12,11 +12,7 @@ export const Device = () => {
   const { id } = useParams();
   const numericId = Number(id);
 
-  useEffect(() => {
-    loadSacDm();
-  }, []);
-
-  const loadSacDm = async () => {
+  const loadSacDm = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await sacDmService.getSacDm();
@@ -29,7 +25,11 @@ export const Device = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [numericId]);
+
+  useEffect(() => {
+    loadSacDm();
+  }, [loadSacDm]);
 
   const columns = [
     { id: "id", label: "ID" },
