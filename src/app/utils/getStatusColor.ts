@@ -1,14 +1,14 @@
 export const getStatusColor = (
-  status: "HEALTHY" | "WARNING" | "CRITICAL" | "OFFLINE"
+  status: "Saudável" | "Alerta" | "Crítico" | "Offline"
 ) => {
   switch (status) {
-    case "HEALTHY":
+    case "Saudável":
       return "#35F33D";
-    case "WARNING":
+    case "Alerta":
       return "#E8FF5D";
-    case "CRITICAL":
+    case "Crítico":
       return "#FF0000";
-    case "OFFLINE":
+    case "Offline":
       return "#9AA0A6";
     default:
       return "#9AA0A6";
