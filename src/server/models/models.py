@@ -36,11 +36,11 @@ class AccelerometerAcquisition(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     device_id = Column(Integer, ForeignKey('device.id'), nullable=False)
-    label = Column(String, nullable=True)
     ACx = Column(Float, nullable=False)
     ACy = Column(Float, nullable=False)
     ACz = Column(Float, nullable=False)
     timestamp = Column(String, nullable=True)
+    label = Column(String, nullable=True)
 
 class User(Base):
     __tablename__= "user"
