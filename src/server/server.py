@@ -2,7 +2,7 @@ import sqlite3
 import datetime
 import json
 import random
-from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User
+from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User, Status
 from models.users import authenticate_user, get_current_user
 from models.token import create_access_token
 from schemas.device import DeviceSchema
@@ -21,7 +21,7 @@ from uuid import uuid4
 from controllers.device import create_device, get_all_devices, delete_a_device, change_device_status
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
 from controllers.accelerometer import *
-from controllers.status import create_status
+from controllers.status import create_status, get_all_status
 from database import (get_db, Session)
 from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
 
@@ -76,6 +76,12 @@ def update_device_status(device: DeviceSchema, db: Session=Depends(get_db)):
 @app.post("/status")
 def new_status(status: StatusSchema, db: Session=Depends(get_db)):
     return create_status(status, db)
+
+# Route to get all data from status table
+@app.get("/status")
+def get_devices(db: Session=Depends(get_db)):
+    banco_dados: List[Status] = get_all_status(db)
+    return banco_dados
 
 
 # Route to get all data from sac_dm table

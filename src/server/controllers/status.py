@@ -17,4 +17,6 @@ def create_status(status_schema: StatusSchema, db: Session):
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content="Failed to create status!")
-    
+
+def get_all_status(db: Session):
+    return db.query(Status).all()
