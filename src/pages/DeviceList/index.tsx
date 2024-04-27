@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import DeviceService from "../../app/services/devices";
 import { DeviceProps } from "./types";
-import { Container, DeviceItem, DevicesList, Header } from "./styles";
+import {
+  Container,
+  DeviceItem,
+  DevicesList,
+  Header,
+  NoDevicesMessage,
+} from "./styles";
 import { Button, CircularProgress } from "@mui/material";
 import {
   AddCircle,
@@ -62,6 +68,10 @@ export const DeviceList = () => {
     navigate(`/device/${deviceId}`);
   };
 
+  const filteredDevices = devices.filter((device) =>
+    filterStatus.length > 0 ? filterStatus.includes(device.status) : true
+  );
+
   return (
     <>
       <AddDevice
@@ -90,35 +100,35 @@ export const DeviceList = () => {
 
         {isLoading && <CircularProgress />}
         {!isLoading && (
-          <DevicesList>
-            {devices
-              .filter((device) =>
-                filterStatus.length > 0
-                  ? filterStatus.includes(device.status)
-                  : true
-              )
-              .map((device) => (
-                <DeviceItem
-                  key={device.id}
-                  onClick={() => handleCellClick(device.id)}
-                >
-                  {device.status !== "Offline" ? (
-                    <AirplanemodeActive
-                      sx={{
-                        color: getStatusColor(device.status),
-                      }}
-                    />
-                  ) : (
-                    <AirplanemodeInactive
-                      sx={{
-                        color: getStatusColor(device.status),
-                      }}
-                    />
-                  )}
-                  <h3>{device.device_code}</h3>
-                </DeviceItem>
-              ))}
-          </DevicesList>
+          <>
+            {filteredDevices.length > 0 ? (
+              <DevicesList>
+                {filteredDevices.map((device) => (
+                  <DeviceItem
+                    key={device.id}
+                    onClick={() => handleCellClick(device.id)}
+                  >
+                    {device.status !== "Offline" ? (
+                      <AirplanemodeActive
+                        sx={{
+                          color: getStatusColor(device.status),
+                        }}
+                      />
+                    ) : (
+                      <AirplanemodeInactive
+                        sx={{
+                          color: getStatusColor(device.status),
+                        }}
+                      />
+                    )}
+                    <h3>{device.device_code}</h3>
+                  </DeviceItem>
+                ))}
+              </DevicesList>
+            ) : (
+              <NoDevicesMessage>Nenhum dispositivo encontrado</NoDevicesMessage>
+            )}
+          </>
         )}
       </Container>
     </>

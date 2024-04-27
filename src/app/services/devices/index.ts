@@ -13,7 +13,10 @@ class DeviceService {
 
   async postDevices(payload: DevicePayload) {
     try {
-      const response = await api.post("/device", payload);
+      const response = await api.post("/device", {
+        ...payload,
+        status_id: 0,
+      });
       console.log(response);
     } catch (error) {
       console.error(error);

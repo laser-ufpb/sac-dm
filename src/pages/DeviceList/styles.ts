@@ -51,3 +51,12 @@ export const DeviceItem = styled.li`
     color: ${({ theme }) => theme.text};
   }
 `;
+
+export const NoDevicesMessage = styled.div`
+  text-align: center;
+  color: ${({ theme }) => theme.text};
+  font-size: 24px;
+  font-weight: normal;
+  margin-top: 48px;
+  opacity: 0.5;
+`;
