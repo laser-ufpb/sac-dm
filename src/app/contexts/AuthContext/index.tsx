@@ -6,6 +6,7 @@ import { api } from "../../services";
 export const AuthContext = createContext({} as AuthContextData);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [user, setUser] = useState<UserProps | null>(() => {
     const user = JSON.parse(localStorage.getItem("user") || "null");
 
@@ -13,12 +14,15 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   });
 
   const [token] = useState<string>(() => {
-    const token = localStorage.getItem("@controlit:token");
+    const token = localStorage.getItem("token");
 
     return token || "";
   });
 
   const navigate = useNavigate();
+
+  const showLoginModal = () => setIsLoginModalVisible(true);
+  const hideLoginModal = () => setIsLoginModalVisible(false);
 
   async function signIn(username: string, password: string) {
     try {
@@ -29,7 +33,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
       const { token, user } = response.data;
 
-      localStorage.setItem("@controlit:token", token);
+      localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
       setUser(user);
@@ -39,7 +43,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   function signOut() {
-    localStorage.removeItem("@controlit:token");
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     setUser(null);
@@ -69,8 +73,28 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   const memoizedValues = useMemo(
-    () => ({ user, setUser, signIn, signOut, signUp, updateUser }),
-    [user, setUser, signIn, signOut, signUp, updateUser]
+    () => ({
+      user,
+      setUser,
+      signIn,
+      signOut,
+      signUp,
+      updateUser,
+      isLoginModalVisible,
+      showLoginModal,
+      hideLoginModal,
+    }),
+    [
+      user,
+      setUser,
+      signIn,
+      signOut,
+      signUp,
+      updateUser,
+      isLoginModalVisible,
+      showLoginModal,
+      hideLoginModal,
+    ]
   );
 
   return (

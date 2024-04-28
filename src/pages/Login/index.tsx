@@ -1,27 +1,20 @@
-import { useContext, useEffect, useState } from "react";
-import { Container, FormContainer, HeaderContent } from "./styles";
+import { useContext, useState } from "react";
+import { FormContainer, HeaderContent } from "./styles";
 import { AuthContext } from "../../app/contexts/AuthContext";
-import { useNavigate } from "react-router";
 import { FormGroup } from "../../components/forms/FormGroup";
 import { DefaultInput } from "../../components/forms/DefaultInput";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { theme } from "../../styles/theme";
 import { Button } from "@mui/material";
+import { CustomModal } from "../../components/CustomModal";
 
 export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { isLoginModalVisible, hideLoginModal, signIn } =
+    useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const { user, signIn } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, []);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -39,7 +32,7 @@ export const Login = () => {
   };
 
   return (
-    <Container>
+    <CustomModal open={isLoginModalVisible} onClose={hideLoginModal} size="sm">
       <FormContainer
         onKeyDown={(event: React.KeyboardEvent) => {
           if (event.key === "Enter") {
@@ -100,6 +93,6 @@ export const Login = () => {
           {isLoading ? "Carregando..." : "Entrar"}
         </Button>
       </FormContainer>
-    </Container>
+    </CustomModal>
   );
 };

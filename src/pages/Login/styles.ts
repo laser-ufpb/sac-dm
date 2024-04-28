@@ -13,18 +13,10 @@ export const FormContainer = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
   width: 100%;
-  max-width: 500px;
-  margin: 0 12px;
   gap: 24px;
 
-  background-color: 
-  backdrop-filter: blur(10px);
-  border: 1px solid ${({ theme }) => theme.gray500};
   padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.9);
 
   .flex {
     display: flex;

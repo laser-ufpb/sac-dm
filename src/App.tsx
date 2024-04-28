@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Routes } from "./app/router";
 import { Footer } from "./layout/Footer";
 import { AuthProvider } from "./app/contexts/AuthContext";
+import { Login } from "./pages/Login";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <AuthProvider>
           <Header />
+          <Login />
           <Routes />
           <Footer />
         </AuthProvider>

@@ -5,6 +5,9 @@ export interface AuthContextData {
   signUp: (user: CreateUserPayload) => Promise<void>;
   setUser: (user: UserProps) => void;
   updateUser: (user: UserProps) => void;
+  isLoginModalVisible: boolean;
+  showLoginModal: () => void;
+  hideLoginModal: () => void;
 }
 
 export interface UserProps {
