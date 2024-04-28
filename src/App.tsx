@@ -5,14 +5,17 @@ import { Header } from "./layout/Header";
 import { BrowserRouter } from "react-router-dom";
 import { Routes } from "./app/router";
 import { Footer } from "./layout/Footer";
+import { AuthProvider } from "./app/contexts/AuthContext";
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <Header />
-        <Routes />
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <Routes />
+          <Footer />
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

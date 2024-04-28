@@ -3,15 +3,21 @@ import { Home } from "../../pages/Home";
 import { DeviceList } from "../../pages/DeviceList";
 import { SacDm } from "../../pages/SacDm";
 import { Device } from "../../pages/Device";
+import { Login } from "../../pages/Login";
+import AuthGuard from "./guards/authGuard";
 
 export const Routes = () => {
   return (
     <AppRoutes>
-      <Route path="/" element={<Navigate replace to="/dashboard" />} />
-      <Route path="/dashboard" element={<Home />} />
-      <Route path="/devices" element={<DeviceList />} />
-      <Route path="/device/:id" element={<Device />} />
-      <Route path="/sac_dm" element={<SacDm />} />
+      <Route path="/login" element={<Login />} />
+
+      <Route element={<AuthGuard />}>
+        <Route path="/" element={<Navigate replace to="/dashboard" />} />
+        <Route path="/dashboard" element={<Home />} />
+        <Route path="/devices" element={<DeviceList />} />
+        <Route path="/device/:id" element={<Device />} />
+        <Route path="/sac_dm" element={<SacDm />} />
+      </Route>
     </AppRoutes>
   );
 };
