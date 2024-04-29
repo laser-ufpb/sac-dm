@@ -1,4 +1,10 @@
-import { createContext, PropsWithChildren, useMemo, useState } from "react";
+import {
+  createContext,
+  PropsWithChildren,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 import { AuthContextData, CreateUserPayload, UserProps } from "./types";
 import { useNavigate } from "react-router";
 import { api } from "../../services";
@@ -8,50 +14,44 @@ export const AuthContext = createContext({} as AuthContextData);
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [user, setUser] = useState<UserProps | null>(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-
-    return user;
+    return JSON.parse(localStorage.getItem("user") || "null");
   });
 
-  const [token] = useState<string>(() => {
-    const token = localStorage.getItem("token");
-
-    return token || "";
-  });
+  // const [token] = useState<string>(() => localStorage.getItem("token") || "");
 
   const navigate = useNavigate();
 
-  const showLoginModal = () => setIsLoginModalVisible(true);
-  const hideLoginModal = () => setIsLoginModalVisible(false);
+  const showLoginModal = useCallback(() => setIsLoginModalVisible(true), []);
+  const hideLoginModal = useCallback(() => setIsLoginModalVisible(false), []);
 
-  async function signIn(username: string, password: string) {
-    try {
-      const response = await api.post("/login", {
-        username,
-        password,
-      });
+  const signIn = useCallback(
+    async (username: string, password: string) => {
+      try {
+        // const response = await api.post("/login", {
+        //   username,
+        //   password,
+        // });
+        // const { token, user } = response.data;
 
-      const { token, user } = response.data;
+        // localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(username));
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [user]
+  );
 
-      setUser(user);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function signOut() {
+  const signOut = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
     setUser(null);
-
     navigate("/login");
-  }
+  }, [navigate]);
 
-  async function signUp(user: CreateUserPayload) {
+  const signUp = useCallback(async (user: CreateUserPayload) => {
     try {
       const response = await api.post("/user", {
         ...user,
@@ -61,16 +61,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     } catch (error) {
       console.error(error);
     }
-  }
+  }, []);
 
-  async function updateUser(user: UserProps) {
+  const updateUser = useCallback(async (user: UserProps) => {
     try {
       const response = await api.put(`/user/${user.id}`, user);
       console.log(response);
     } catch (error) {
       console.error(error);
     }
-  }
+  }, []);
 
   const memoizedValues = useMemo(
     () => ({
@@ -86,7 +86,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }),
     [
       user,
-      setUser,
       signIn,
       signOut,
       signUp,
