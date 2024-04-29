@@ -17,8 +17,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     return JSON.parse(localStorage.getItem("user") || "null");
   });
 
-  // const [token] = useState<string>(() => localStorage.getItem("token") || "");
-
   const navigate = useNavigate();
 
   const showLoginModal = useCallback(() => setIsLoginModalVisible(true), []);
@@ -30,7 +28,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       //   username,
       //   password,
       // });
-      // const { token, user } = response.data;
+      // const { user } = response.data;
 
       // localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(username));
@@ -42,7 +40,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
     navigate("/login");
@@ -50,11 +47,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signUp = useCallback(async (user: CreateUserPayload) => {
     try {
-      const response = await api.post("/user", {
+      await api.post("/user", {
         ...user,
         status_id: 0,
       });
-      console.log(response);
+
+      localStorage.setItem("user", JSON.stringify(user.email));
+
+      setUser(JSON.parse(localStorage.getItem("user") || "null"));
     } catch (error) {
       console.error(error);
     }
