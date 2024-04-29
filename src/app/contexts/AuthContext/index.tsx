@@ -24,25 +24,22 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const showLoginModal = useCallback(() => setIsLoginModalVisible(true), []);
   const hideLoginModal = useCallback(() => setIsLoginModalVisible(false), []);
 
-  const signIn = useCallback(
-    async (username: string, password: string) => {
-      try {
-        // const response = await api.post("/login", {
-        //   username,
-        //   password,
-        // });
-        // const { token, user } = response.data;
+  const signIn = useCallback(async (username: string, password: string) => {
+    try {
+      // const response = await api.post("/login", {
+      //   username,
+      //   password,
+      // });
+      // const { token, user } = response.data;
 
-        // localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(username));
+      // localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(username));
 
-        setUser(user);
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    [user]
-  );
+      // setUser(user);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const signOut = useCallback(() => {
     localStorage.removeItem("token");

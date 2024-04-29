@@ -4,6 +4,7 @@ import { DeviceList } from "../../pages/DeviceList";
 import { SacDm } from "../../pages/SacDm";
 import { Device } from "../../pages/Device";
 import AuthGuard from "./guards/authGuard";
+import { Account } from "../../pages/Account";
 
 export const Routes = () => {
   return (
@@ -14,6 +15,7 @@ export const Routes = () => {
         <Route path="/devices" element={<DeviceList />} />
         <Route path="/device/:id" element={<Device />} />
         <Route path="/sac_dm" element={<SacDm />} />
+        <Route path="/account" element={<Account />} />
       </Route>
     </AppRoutes>
   );

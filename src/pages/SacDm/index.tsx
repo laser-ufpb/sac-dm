@@ -32,7 +32,6 @@ export const SacDm = () => {
 
   return (
     <>
-      <h1>SacDm</h1>
       <CustomTable columns={columns} data={sacDm} isLoading={isLoading} />
     </>
   );

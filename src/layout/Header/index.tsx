@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { isMenuItemActive } from "../../app/utils/isMenuItemActive";
 import { Container, NavigationButton } from "./styles";
 import { useEffect, useState } from "react";
-import { Dashboard, Devices, Equalizer } from "@mui/icons-material";
+import { Dashboard, Devices, Equalizer, Person } from "@mui/icons-material";
 
 export const Header = () => {
   const [isDesktop, setIsDesktop] = useState(() => {
@@ -44,6 +44,17 @@ export const Header = () => {
             onClick={() => navigate("/sac_dm")}
           >
             <Equalizer />
+          </NavigationButton>
+
+          <NavigationButton
+            isActive={isMenuItemActive("/account")}
+            onClick={() => navigate("/account")}
+            style={{
+              position: "absolute",
+              right: "8px",
+            }}
+          >
+            <Person />
           </NavigationButton>
         </>
       ) : (
