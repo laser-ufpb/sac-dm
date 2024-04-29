@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Container } from "./styles";
 import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
 import { CustomTable } from "../../components/CustomTable";
@@ -32,13 +31,9 @@ export const SacDm = () => {
   ];
 
   return (
-    <Container>
+    <>
       <h1>SacDm</h1>
-      <CustomTable
-        columns={columns}
-        data={sacDm}
-        isLoading={isLoading}
-      />
-    </Container>
+      <CustomTable columns={columns} data={sacDm} isLoading={isLoading} />
+    </>
   );
 };

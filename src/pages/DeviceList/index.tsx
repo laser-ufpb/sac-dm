@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import DeviceService from "../../app/services/devices";
 import { DeviceProps } from "./types";
-import {
-  Container,
-  DeviceItem,
-  DevicesList,
-  Header,
-  NoDevicesMessage,
-} from "./styles";
+import { DeviceItem, DevicesList, Header, NoDevicesMessage } from "./styles";
 import { Button, CircularProgress } from "@mui/material";
 import {
   AddCircle,
@@ -79,58 +73,56 @@ export const DeviceList = () => {
         onClose={() => setOpenAddDeviceModal(false)}
         onSubmitted={loadDevices}
       />
-      <Container>
-        <Header>
-          <h2>Lista de Dispositivos</h2>
+      <Header>
+        <h2>Lista de Dispositivos</h2>
 
-          <FilterStatus
-            statusOptions={statusOptions}
-            filterStatus={filterStatus}
-            setFilterStatus={setFilterStatus}
-          />
+        <FilterStatus
+          statusOptions={statusOptions}
+          filterStatus={filterStatus}
+          setFilterStatus={setFilterStatus}
+        />
 
-          <Button
-            variant="contained"
-            startIcon={<AddCircle />}
-            onClick={() => setOpenAddDeviceModal(true)}
-          >
-            <p>Novo Dispositivo</p>
-          </Button>
-        </Header>
+        <Button
+          variant="contained"
+          startIcon={<AddCircle />}
+          onClick={() => setOpenAddDeviceModal(true)}
+        >
+          <p>Novo Dispositivo</p>
+        </Button>
+      </Header>
 
-        {isLoading && <CircularProgress />}
-        {!isLoading && (
-          <>
-            {filteredDevices.length > 0 ? (
-              <DevicesList>
-                {filteredDevices.map((device) => (
-                  <DeviceItem
-                    key={device.id}
-                    onClick={() => handleCellClick(device.id)}
-                  >
-                    {device.status !== "Offline" ? (
-                      <AirplanemodeActive
-                        sx={{
-                          color: getStatusColor(device.status),
-                        }}
-                      />
-                    ) : (
-                      <AirplanemodeInactive
-                        sx={{
-                          color: getStatusColor(device.status),
-                        }}
-                      />
-                    )}
-                    <h3>{device.device_code}</h3>
-                  </DeviceItem>
-                ))}
-              </DevicesList>
-            ) : (
-              <NoDevicesMessage>Nenhum dispositivo encontrado</NoDevicesMessage>
-            )}
-          </>
-        )}
-      </Container>
+      {isLoading && <CircularProgress />}
+      {!isLoading && (
+        <>
+          {filteredDevices.length > 0 ? (
+            <DevicesList>
+              {filteredDevices.map((device) => (
+                <DeviceItem
+                  key={device.id}
+                  onClick={() => handleCellClick(device.id)}
+                >
+                  {device.status !== "Offline" ? (
+                    <AirplanemodeActive
+                      sx={{
+                        color: getStatusColor(device.status),
+                      }}
+                    />
+                  ) : (
+                    <AirplanemodeInactive
+                      sx={{
+                        color: getStatusColor(device.status),
+                      }}
+                    />
+                  )}
+                  <h3>{device.device_code}</h3>
+                </DeviceItem>
+              ))}
+            </DevicesList>
+          ) : (
+            <NoDevicesMessage>Nenhum dispositivo encontrado</NoDevicesMessage>
+          )}
+        </>
+      )}
     </>
   );
 };

@@ -15,7 +15,9 @@ function App() {
         <AuthProvider>
           <Header />
           <Login />
-          <Routes />
+          <div className="container">
+            <Routes />
+          </div>
           <Footer />
         </AuthProvider>
       </ThemeProvider>

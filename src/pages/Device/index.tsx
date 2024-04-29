@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { Container } from "./styles";
 import { useCallback, useEffect, useState } from "react";
 import { SacDmProps } from "../SacDm/types";
 import sacDmService from "../../app/services/sac_dm";
@@ -39,9 +38,9 @@ export const Device = () => {
   ];
 
   return (
-    <Container>
+    <>
       <h1>Device {id}</h1>
       <CustomTable columns={columns} data={deviceData} isLoading={isLoading} />
-    </Container>
+    </>
   );
 };
