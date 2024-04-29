@@ -18,5 +18,8 @@ export interface UserProps {
 
 export interface CreateUserPayload {
   username: string;
-  password: string;
+  email: string;
+  full_name: string;
+  disabled: boolean;
+  hashed_password: string;
 }
