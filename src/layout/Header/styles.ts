@@ -11,7 +11,7 @@ export const Container = styled.header`
   z-index: 9;
   background-color: ${({ theme }) => theme.headerBackground};
   backdrop-filter: blur(10px);
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   height: 100%;
 `;
 

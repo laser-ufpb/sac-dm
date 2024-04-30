@@ -1,9 +1,17 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import accountService from "../../app/services/account";
 import { AuthContext } from "../../app/contexts/AuthContext";
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { UserProps } from "./types";
-import { Container, InfoCard } from "./styles";
+import {
+  AccountDetails,
+  Container,
+  ExitButton,
+  Header,
+  InfoCard,
+} from "./styles";
+import { BackPage } from "../../components/BackPage";
+import { ExitToApp } from "@mui/icons-material";
 
 export const Account = () => {
   const { user } = useContext(AuthContext);
@@ -23,25 +31,63 @@ export const Account = () => {
     }
   }, [user]);
 
+  const logout = useCallback(() => {
+    localStorage.clear();
+    window.location.reload();
+  }, []);
+
   useEffect(() => {
     getUser();
   }, [getUser]);
 
   return (
-    <>
+    <Container>
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <Container>
-          <h1>Olá {userData?.full_name}</h1>
+        <>
+          <Header>
+            <BackPage />
+
+            <h1>Minha Conta</h1>
+          </Header>
+
+          <AccountDetails>
+            <img
+              src="https://avatars.githubusercontent.com/u/14032497?v=4"
+              alt="Avatar"
+            />
+            <h2>{userData?.full_name}</h2>
+          </AccountDetails>
 
           <InfoCard>
-            <h2>Dados cadastrados:</h2>
-            <p>Email: {userData?.email}</p>
-            <p>Username: {userData?.username}</p>
+            <h3>Dados pessoais</h3>
+            <div>
+              <strong>Nome:</strong>
+              <p>{userData?.full_name}</p>
+            </div>
+            <div>
+              <strong>Usuário:</strong>
+              <p>{userData?.username}</p>
+            </div>
+            <div>
+              <strong>Email:</strong>
+              <p>{userData?.email}</p>
+            </div>
           </InfoCard>
-        </Container>
+
+          <ExitButton>
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<ExitToApp />}
+              onClick={logout}
+            >
+              Sair
+            </Button>
+          </ExitButton>
+        </>
       )}
-    </>
+    </Container>
   );
 };
