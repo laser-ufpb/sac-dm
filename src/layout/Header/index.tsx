@@ -27,12 +27,12 @@ export const Header = () => {
     <Container>
       {isDesktop ? (
         <>
-          <NavigationButton
+          {/* <NavigationButton
             isActive={isMenuItemActive("/dashboard")}
             onClick={() => navigate("/dashboard")}
           >
             <Dashboard />
-          </NavigationButton>
+          </NavigationButton> */}
           <NavigationButton
             isActive={isMenuItemActive("/devices")}
             onClick={() => navigate("/devices")}
