@@ -14,7 +14,7 @@ export const Login = () => {
   };
 
   return (
-    <CustomModal open={isLoginModalVisible} onClose={hideLoginModal} size="md">
+    <CustomModal open={isLoginModalVisible} onClose={hideLoginModal} size="sm">
       {showSignIn ? (
         <>
           <SignIn />

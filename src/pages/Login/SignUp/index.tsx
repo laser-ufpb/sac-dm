@@ -138,6 +138,7 @@ export const SignUp = () => {
         onClick={handleSignUp}
         disabled={isLoading}
         style={{ marginTop: "10px" }}
+        variant="contained"
       >
         {isLoading ? "Carregando..." : "Cadastrar"}
       </Button>
