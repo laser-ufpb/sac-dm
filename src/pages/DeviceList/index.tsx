@@ -32,10 +32,9 @@ export const DeviceList = () => {
     try {
       let response = await DeviceService.getDevices();
       response = response.map((device: DeviceProps) => ({
-        ...device,
-        status: ["Saudável", "Alerta", "Crítico", "Offline"][
-          Math.floor(Math.random() * 4)
-        ],
+        id: device.id,
+        device_code: device.device_code,
+        status: device.status,
       }));
 
       const statusPriority = {
@@ -91,37 +90,30 @@ export const DeviceList = () => {
         </Button>
       </Header>
 
-      {isLoading && <CircularProgress />}
-      {!isLoading && (
-        <>
-          {filteredDevices.length > 0 ? (
-            <DevicesList>
-              {filteredDevices.map((device) => (
-                <DeviceItem
-                  key={device.id}
-                  onClick={() => handleCellClick(device.id)}
-                >
-                  {device.status !== "Offline" ? (
-                    <AirplanemodeActive
-                      sx={{
-                        color: getStatusColor(device.status),
-                      }}
-                    />
-                  ) : (
-                    <AirplanemodeInactive
-                      sx={{
-                        color: getStatusColor(device.status),
-                      }}
-                    />
-                  )}
-                  <h3>{device.device_code}</h3>
-                </DeviceItem>
-              ))}
-            </DevicesList>
-          ) : (
-            <NoDevicesMessage>Nenhum dispositivo encontrado</NoDevicesMessage>
-          )}
-        </>
+      {isLoading ? (
+        <CircularProgress />
+      ) : filteredDevices.length > 0 ? (
+        <DevicesList>
+          {filteredDevices.map((device) => (
+            <DeviceItem
+              key={device.id}
+              onClick={() => handleCellClick(device.id)}
+            >
+              {device.status !== "Offline" ? (
+                <AirplanemodeActive
+                  sx={{ color: getStatusColor(device.status) }}
+                />
+              ) : (
+                <AirplanemodeInactive
+                  sx={{ color: getStatusColor(device.status) }}
+                />
+              )}
+              <h3>{device.device_code}</h3>
+            </DeviceItem>
+          ))}
+        </DevicesList>
+      ) : (
+        <NoDevicesMessage>Nenhum dispositivo encontrado</NoDevicesMessage>
       )}
     </>
   );
