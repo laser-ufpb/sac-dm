@@ -6,13 +6,13 @@ export const Container = styled.header`
   display: flex;
   align-items: center;
   border-bottom: 1.5px solid ${({ theme }) => theme.border};
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 4px ${({ theme }) => theme.blackEerie};
   padding: 4px 8px;
   z-index: 9;
   background-color: ${({ theme }) => theme.headerBackground};
   backdrop-filter: blur(10px);
   margin-bottom: 24px;
-  height: 100%;
+  height: 64px;
 `;
 
 interface NavigationButtonProps {

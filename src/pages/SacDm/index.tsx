@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
 import { CustomTable } from "../../components/CustomTable";
+import formatDate from "../../app/utils/formatDate";
 
 export const SacDm = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +16,11 @@ export const SacDm = () => {
     setIsLoading(true);
     try {
       const response = await sacDmService.getSacDm();
-      setSacDm(response);
+      const formattedResponse = response.map((item: SacDmProps) => ({
+        ...item,
+        timestamp: formatDate(item.timestamp),
+      }));
+      setSacDm(formattedResponse);
     } catch (error) {
       console.error(error);
     } finally {

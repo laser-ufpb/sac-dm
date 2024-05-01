@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { SacDmProps } from "../SacDm/types";
 import sacDmService from "../../app/services/sac_dm";
 import { CustomTable } from "../../components/CustomTable";
+import formatDate from "../../app/utils/formatDate";
 
 export const Device = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,9 +16,12 @@ export const Device = () => {
     setIsLoading(true);
     try {
       const response = await sacDmService.getSacDm();
-      const filteredData = response.filter(
-        (item: SacDmProps) => item.device_id === numericId
-      );
+      const filteredData = response
+        .filter((item: SacDmProps) => item.device_id === numericId)
+        .map((item: SacDmProps) => ({
+          ...item,
+          timestamp: formatDate(item.timestamp),
+        }));
       setDeviceData(filteredData);
     } catch (error) {
       console.error(error);
