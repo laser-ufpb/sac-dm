@@ -18,7 +18,6 @@
     "apexcharts": "^3.48.0",
     "axios": "^1.6.8",
     "react": "^18.2.0",
-    "react-apexcharts": "^1.4.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.1",
     "react-router-dom": "^6.22.3",
@@ -54,6 +53,7 @@
   "description": "Guia passo a passo para configurar e iniciar o projeto de front-end de aviação usando React e TypeScript.",
   "main": "index.js",
   "devDependencies": {
+    "react-apexcharts": "^1.4.1",
     "typescript": "^4.9.5"
   },
   "keywords": [],

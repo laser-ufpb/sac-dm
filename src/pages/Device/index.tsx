@@ -2,8 +2,9 @@ import { useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { SacDmProps } from "../SacDm/types";
 import sacDmService from "../../app/services/sac_dm";
-import { CustomTable } from "../../components/CustomTable";
-import formatDate from "../../app/utils/formatDate";
+import Chart from "react-apexcharts";
+import { theme } from "../../styles/theme";
+import { Description } from "./styles";
 
 export const Device = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,17 +35,54 @@ export const Device = () => {
     loadSacDm();
   }, [loadSacDm]);
 
-  const columns = [
-    { id: "id", label: "ID" },
-    { id: "device_id", label: "ID do Dispositivo" },
-    { id: "value", label: "Valor" },
-    { id: "timestamp", label: "Data" },
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
+
+  const optionsChart: ApexCharts.ApexOptions = {
+    chart: {
+      id: "basic-bar",
+    },
+    xaxis: {
+      categories: deviceData.map((item) => item.timestamp),
+      labels: {
+        style: {
+          colors: theme.text,
+        },
+        rotate: -45,
+        rotateAlways: true,
+      },
+    },
+    tooltip: {
+      theme: "dark",
+    },
+  };
+
+  const seriesChart: ApexCharts.ApexOptions["series"] = [
+    {
+      name: "Valor",
+      data: deviceData.map((item) => item.value),
+    },
   ];
 
   return (
     <>
       <h1>Device {id}</h1>
-      <CustomTable columns={columns} data={deviceData} isLoading={isLoading} />
+      <Description>
+        Visualização detalhada das métricas do dispositivo.
+      </Description>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <Chart options={optionsChart} series={seriesChart} type="line" />
+      )}
     </>
   );
 };
