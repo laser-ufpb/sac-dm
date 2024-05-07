@@ -10,14 +10,14 @@ import { Button } from "@mui/material";
 export const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     setIsLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(username, password);
     } catch (error) {
       console.log({ error });
     } finally {
@@ -44,11 +44,11 @@ export const SignIn = () => {
       </HeaderContent>
 
       <FormGroup>
-        <label htmlFor="email">E-mail</label>
+        <label htmlFor="username">E-mail</label>
         <DefaultInput
           placeholder="Digite seu e-mail"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
         />
       </FormGroup>
 
