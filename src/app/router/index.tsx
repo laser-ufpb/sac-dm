@@ -10,7 +10,7 @@ export const Routes = () => {
   return (
     <AppRoutes>
       <Route element={<AuthGuard />}>
-        <Route path="/" element={<Navigate replace to="/dashboard" />} />
+        <Route path="/" element={<Navigate replace to="/devices" />} />
         <Route path="/dashboard" element={<Home />} />
         <Route path="/devices" element={<DeviceList />} />
         <Route path="/device/:id" element={<Device />} />
