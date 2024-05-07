@@ -1,6 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import accountService from "../../app/services/account";
-import { AuthContext } from "../../app/contexts/AuthContext";
 import { Button, CircularProgress } from "@mui/material";
 import { UserProps } from "./types";
 import {
@@ -14,22 +13,23 @@ import { BackPage } from "../../components/BackPage";
 import { ExitToApp } from "@mui/icons-material";
 
 export const Account = () => {
-  const { user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserProps | null>(null);
 
   const getUser = useCallback(async () => {
-    if (!user) return;
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) return;
 
+    const parsedUser = JSON.parse(storedUser);
     try {
-      const response = await accountService.getAccount("jvpedrosa"); //TODO
+      const response = await accountService.getAccount(parsedUser); // Assuming username is saved in local storage
       setUserData(response);
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, []);
 
   const logout = useCallback(() => {
     localStorage.clear();
