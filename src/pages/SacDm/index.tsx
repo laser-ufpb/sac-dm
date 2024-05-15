@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
 import Chart from "react-apexcharts";
-import formatDate from "../../app/utils/formatDate";
 import { Checkbox } from "@mui/material";
 import { DeviceProps } from "../DeviceList/types";
 import DeviceService from "../../app/services/devices";
@@ -13,6 +12,14 @@ import {
 } from "../DeviceList/components/FilterStatus/styles";
 import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
+
+const formatTime = (dateString: string) => {
+  const date = new Date(dateString);
+  return `${date.getHours().toString().padStart(2, "0")}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+};
 
 export const SacDm = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +53,7 @@ export const SacDm = () => {
       const response = await sacDmService.getSacDm();
       const formattedResponse = response.map((item: SacDmProps) => ({
         ...item,
-        timestamp: formatDate(item.timestamp),
+        timestamp: formatTime(item.timestamp),
       }));
       setSacDm(formattedResponse);
       if (formattedResponse.length > 0 && !selectedDeviceId) {
