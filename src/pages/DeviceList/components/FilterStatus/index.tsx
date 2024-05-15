@@ -1,5 +1,10 @@
 import { ArrowDropDown } from "@mui/icons-material";
-import { Container, StyledOptions, StyledSelect } from "./styles";
+import {
+  Container,
+  SelectContainer,
+  StyledOptions,
+  StyledSelect,
+} from "./styles";
 import { useState } from "react";
 import { Checkbox } from "@mui/material";
 
@@ -28,28 +33,30 @@ export const FilterStatus: React.FC<FilterStatusProps> = ({
 
   return (
     <Container>
-      <StyledSelect
-        onClick={() => setOpen(!open)}
-        style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
-      >
-        Filtrar
-        <ArrowDropDown />
-      </StyledSelect>
+      <SelectContainer>
+        <StyledSelect
+          onClick={() => setOpen(!open)}
+          style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
+        >
+          Filtrar
+          <ArrowDropDown />
+        </StyledSelect>
 
-      {open && (
-        <StyledOptions>
-          {statusOptions.map((status: string) => (
-            <div key={status}>
-              <Checkbox
-                color="primary"
-                checked={filterStatus.includes(status)}
-                onChange={(e) => handleStatusChange(status, e.target.checked)}
-              />
-              {status}
-            </div>
-          ))}
-        </StyledOptions>
-      )}
+        {open && (
+          <StyledOptions>
+            {statusOptions.map((status: string) => (
+              <div key={status}>
+                <Checkbox
+                  color="primary"
+                  checked={filterStatus.includes(status)}
+                  onChange={(e) => handleStatusChange(status, e.target.checked)}
+                />
+                {status}
+              </div>
+            ))}
+          </StyledOptions>
+        )}
+      </SelectContainer>
     </Container>
   );
 };
