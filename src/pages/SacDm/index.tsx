@@ -12,6 +12,7 @@ import {
 } from "../DeviceList/components/FilterStatus/styles";
 import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
+import { EmptyData } from "../../components/EmptyData";
 
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
@@ -39,7 +40,9 @@ export const SacDm = () => {
     try {
       const response = await DeviceService.getDevices();
       setDevices(response);
-      setSelectedDeviceId(response[0].id);
+      if (response.length > 0) {
+        setSelectedDeviceId(response[0].id);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -56,9 +59,6 @@ export const SacDm = () => {
         timestamp: formatTime(item.timestamp),
       }));
       setSacDm(formattedResponse);
-      if (formattedResponse.length > 0 && !selectedDeviceId) {
-        setSelectedDeviceId(formattedResponse[0].device_id.toString());
-      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -131,13 +131,15 @@ export const SacDm = () => {
         </SelectContainer>
       </Container>
       <div style={{ zIndex: 0 }}>
-        {selectedDeviceId && !isLoading && (
+        {selectedDeviceId && !isLoading && deviceData.length > 0 ? (
           <Chart
             options={optionsChart}
             series={seriesChart}
             type="line"
             height={350}
           />
+        ) : (
+          <EmptyData message="Nenhum dado encontrado para o dispositivo selecionado" />
         )}
       </div>
     </>
