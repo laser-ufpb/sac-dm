@@ -29,7 +29,9 @@ const formatTime = (dateString: string) => {
 export const SacDm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState(0);
+  const [selectedDeviceId, setSelectedDeviceId] = useState(
+    mocksacdm[0].device_id
+  );
   const [deviceData, setDeviceData] = useState<SacDmProps[]>([]);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [open, setOpen] = useState(false);
@@ -39,12 +41,18 @@ export const SacDm = () => {
     loadSacDm();
   }, []);
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      loadSacDm();
+      loadDevices();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   const loadDevices = async () => {
     setIsLoading(true);
     setDevices(mockdevices as DeviceProps[]);
-    if (mockdevices.length > 0) {
-      setSelectedDeviceId(mockdevices[0].id);
-    }
     setIsLoading(false);
 
     // try {
@@ -97,7 +105,7 @@ export const SacDm = () => {
       categories: deviceData.map((item) => item.timestamp),
       labels: {
         show: false,
-      }
+      },
     },
     tooltip: {
       theme: "dark",

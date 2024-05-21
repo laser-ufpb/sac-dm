@@ -64,5 +64,83 @@
     "value": 24,
     "timestamp": "2024-05-21T14:45:00Z",
     "id": 10
+  },
+  {
+    "device_id": 1,
+    "value": 26,
+    "timestamp": "2024-05-21T14:50:00Z",
+    "id": 11
+  },
+  {
+    "device_id": 1,
+    "value": 30,
+    "timestamp": "2024-05-21T14:55:00Z",
+    "id": 12
+  },
+  {
+    "device_id": 1,
+    "value": 32,
+    "timestamp": "2024-05-21T15:00:00Z",
+    "id": 13
+  },
+  {
+    "device_id": 3,
+    "value": 34,
+    "timestamp": "2024-05-21T15:05:00Z",
+    "id": 14
+  },
+  {
+    "device_id": 3,
+    "value": 36,
+    "timestamp": "2024-05-21T15:10:00Z",
+    "id": 15
+  },
+  {
+    "device_id": 3,
+    "value": 38,
+    "timestamp": "2024-05-21T15:15:00Z",
+    "id": 16
+  },
+  {
+    "device_id": 3,
+    "value": 40,
+    "timestamp": "2024-05-21T15:20:00Z",
+    "id": 17
+  },
+  {
+    "device_id":3,
+    "value": 42,
+    "timestamp": "2024-05-21T15:25:00Z",
+    "id": 18
+  },
+  {
+    "device_id": 3,
+    "value": 44,
+    "timestamp": "2024-05-21T15:30:00Z",
+    "id": 19
+  },
+  {
+    "device_id": 3,
+    "value": 46,
+    "timestamp": "2024-05-21T15:35:00Z",
+    "id": 20
+  },
+  {
+    "device_id": 3,
+    "value": 48,
+    "timestamp": "2024-05-21T15:40:00Z",
+    "id": 21
+  },
+  {
+    "device_id": 3,
+    "value": 50,
+    "timestamp": "2024-05-21T15:45:00Z",
+    "id": 22
+  },
+  {
+    "device_id": 3,
+    "value": 45,
+    "timestamp": "2024-05-21T15:50:00Z",
+    "id": 23
   }
 ]
