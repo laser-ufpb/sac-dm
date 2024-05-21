@@ -18,10 +18,12 @@ import mocksacdm from "../../mock/sacdm.json";
 
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
-  return `${date.getHours().toString().padStart(2, "0")}:${date
-    .getMinutes()
+  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
     .toString()
-    .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+    .padStart(2, "0")}/${date.getFullYear().toString().slice(-2)} às ${date
+    .getHours()
+    .toString()
+    .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
 };
 
 export const SacDm = () => {
@@ -33,8 +35,8 @@ export const SacDm = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    loadSacDm();
     loadDevices();
+    loadSacDm();
   }, []);
 
   const loadDevices = async () => {
@@ -65,7 +67,6 @@ export const SacDm = () => {
       timestamp: formatTime(item.timestamp),
     }));
     setSacDm(formattedResponse);
-    console.log(formattedResponse);
     setIsLoading(false);
     // try {
     //   const response = await sacDmService.getSacDm();
@@ -82,12 +83,10 @@ export const SacDm = () => {
   };
 
   useEffect(() => {
-    if (selectedDeviceId) {
-      const filteredData = sacDm.filter(
-        (item) => item.device_id === selectedDeviceId
-      );
-      setDeviceData(filteredData);
-    }
+    const filteredData = sacDm.filter(
+      (item) => item.device_id === selectedDeviceId
+    );
+    setDeviceData(filteredData);
   }, [selectedDeviceId, sacDm]);
 
   const optionsChart = {
@@ -110,9 +109,8 @@ export const SacDm = () => {
   ];
 
   const handleChange = (deviceId: number, isChecked: boolean) => {
-    if (isChecked) {
+    if (isChecked && deviceId !== selectedDeviceId) {
       setSelectedDeviceId(deviceId);
-      loadSacDm();
     }
     setOpen(false);
   };
