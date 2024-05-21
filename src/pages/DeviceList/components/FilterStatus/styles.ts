@@ -6,7 +6,6 @@ export const Container = styled.div`
 `;
 
 export const SelectContainer = styled.div`
-  width: 128px;
   position: relative;
   z-index: 1;
 `;
