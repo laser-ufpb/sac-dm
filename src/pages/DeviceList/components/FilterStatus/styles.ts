@@ -20,7 +20,6 @@ export const StyledSelect = styled.div`
   color: ${({ theme }) => theme.text};
   cursor: pointer;
   transition: background-color 0.2s;
-  width: max-content;
 
   &:hover {
     background-color: ${({ theme }) => theme.gray600};
@@ -38,6 +37,15 @@ export const StyledOptions = styled.div`
   cursor: pointer;
   transition: background-color 0.2s;
   border-radius: 0 0 8px 8px;
+
+  span {
+    padding: 0;
+    margin-right: 8px;
+  }
+
+  svg {
+    color: ${({ theme }) => theme.text};
+  }
 
   div {
     display: flex;
