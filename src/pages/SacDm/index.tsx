@@ -10,7 +10,7 @@ import {
   StyledOptions,
   StyledSelect,
 } from "../DeviceList/components/FilterStatus/styles";
-import { ArrowDropDown } from "@mui/icons-material";
+import { ArrowDropDown, CheckBox } from "@mui/icons-material";
 import { Container } from "./styles";
 import { EmptyData } from "../../components/EmptyData";
 import mockdevices from "../../mock/devices.json";
@@ -125,7 +125,11 @@ export const SacDm = () => {
             onClick={() => setOpen(!open)}
             style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
           >
-            Filtrar
+            <CheckBox />
+            {
+              devices.find((device) => device.id === selectedDeviceId)
+                ?.device_code
+            }
             <ArrowDropDown />
           </StyledSelect>
 

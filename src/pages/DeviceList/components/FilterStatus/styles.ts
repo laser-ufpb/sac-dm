@@ -21,7 +21,7 @@ export const StyledSelect = styled.div`
   color: ${({ theme }) => theme.text};
   cursor: pointer;
   transition: background-color 0.2s;
-  width: 128px;
+  width: max-content;
 
   &:hover {
     background-color: ${({ theme }) => theme.gray600};
