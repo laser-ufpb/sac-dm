@@ -95,6 +95,9 @@ export const SacDm = () => {
     },
     xaxis: {
       categories: deviceData.map((item) => item.timestamp),
+      labels: {
+        show: false,
+      }
     },
     tooltip: {
       theme: "dark",

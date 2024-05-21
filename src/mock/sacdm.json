@@ -18,6 +18,12 @@
     "id": 3
   },
   {
+    "device_id": 1,
+    "value": 60,
+    "timestamp": "2024-05-21T14:15:00Z",
+    "id": 45614
+  },
+  {
     "device_id": 2,
     "value": 56,
     "timestamp": "2024-05-21T14:15:00Z",
@@ -37,20 +43,26 @@
   },
   {
     "device_id": 3,
-    "value": 68,
+    "value": 28,
     "timestamp": "2024-05-21T14:30:00Z",
     "id": 7
   },
   {
     "device_id": 3,
-    "value": 82,
+    "value": 22,
     "timestamp": "2024-05-21T14:35:00Z",
     "id": 8
   },
   {
     "device_id": 3,
-    "value": 70,
+    "value": 20,
     "timestamp": "2024-05-21T14:40:00Z",
     "id": 9
+  },
+  {
+    "device_id": 3,
+    "value": 24,
+    "timestamp": "2024-05-21T14:45:00Z",
+    "id": 10
   }
 ]
