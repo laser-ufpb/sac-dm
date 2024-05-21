@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { isMenuItemActive } from "../../app/utils/isMenuItemActive";
 import { Container, NavigationButton } from "./styles";
 import { useEffect, useState } from "react";
-import { Dashboard, Devices, Equalizer, Person } from "@mui/icons-material";
+import { Devices, Equalizer, Person } from "@mui/icons-material";
 
 export const Header = () => {
   const [isDesktop, setIsDesktop] = useState(() => {

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import accountService from "../../app/services/account";
 import { Button, CircularProgress } from "@mui/material";
 import { UserProps } from "./types";
