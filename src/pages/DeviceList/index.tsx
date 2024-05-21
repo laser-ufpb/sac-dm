@@ -12,6 +12,7 @@ import { AddDevice } from "./components/AddDevice";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../app/utils/getStatusColor";
 import { FilterStatus } from "./components/FilterStatus";
+import mockdevices from "../../mock/devices.json";
 
 const statusOptions = ["Crítico", "Alerta", "Saudável", "Offline"];
 
@@ -52,6 +53,7 @@ export const DeviceList = () => {
       setDevices(response);
     } catch (error) {
       console.error(error);
+      setDevices(mockdevices as DeviceProps[]);
     } finally {
       setIsLoading(false);
     }
