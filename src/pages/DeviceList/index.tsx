@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import DeviceService from "../../app/services/devices";
+// import DeviceService from "../../app/services/devices";
 import { DeviceProps } from "./types";
 import { DeviceItem, DevicesList, Header, NoDevicesMessage } from "./styles";
 import { Button, CircularProgress } from "@mui/material";
@@ -30,33 +30,35 @@ export const DeviceList = () => {
 
   const loadDevices = async () => {
     setIsLoading(true);
-    try {
-      let response = await DeviceService.getDevices();
-      response = response.map((device: DeviceProps) => ({
-        id: device.id,
-        device_code: device.device_code,
-        status: device.status,
-      }));
+    setDevices(mockdevices as DeviceProps[]);
+    setIsLoading(false);
+    // try {
+    //   let response = await DeviceService.getDevices();
+    //   response = response.map((device: DeviceProps) => ({
+    //     id: device.id,
+    //     device_code: device.device_code,
+    //     status: device.status,
+    //   }));
 
-      const statusPriority = {
-        Crítico: 1,
-        Alerta: 2,
-        Saudável: 3,
-        Offline: 4,
-      };
+    //   const statusPriority = {
+    //     Crítico: 1,
+    //     Alerta: 2,
+    //     Saudável: 3,
+    //     Offline: 4,
+    //   };
 
-      response.sort(
-        (a: DeviceProps, b: DeviceProps) =>
-          statusPriority[a.status] - statusPriority[b.status]
-      );
+    //   response.sort(
+    //     (a: DeviceProps, b: DeviceProps) =>
+    //       statusPriority[a.status] - statusPriority[b.status]
+    //   );
 
-      setDevices(response);
-    } catch (error) {
-      console.error(error);
-      setDevices(mockdevices as DeviceProps[]);
-    } finally {
-      setIsLoading(false);
-    }
+    //   setDevices(response);
+    // } catch (error) {
+    //   console.error(error);
+    //   setDevices(mockdevices as DeviceProps[]);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   const handleCellClick = (deviceId: number) => {

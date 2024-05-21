@@ -1,0 +1,56 @@
+[
+  {
+    "device_id": 1,
+    "value": 68,
+    "timestamp": "2024-05-21T14:00:00Z",
+    "id": 1
+  },
+  {
+    "device_id": 1,
+    "value": 82,
+    "timestamp": "2024-05-21T14:05:00Z",
+    "id": 2
+  },
+  {
+    "device_id": 1,
+    "value": 70,
+    "timestamp": "2024-05-21T14:10:00Z",
+    "id": 3
+  },
+  {
+    "device_id": 2,
+    "value": 56,
+    "timestamp": "2024-05-21T14:15:00Z",
+    "id": 4
+  },
+  {
+    "device_id": 2,
+    "value": 90,
+    "timestamp": "2024-05-21T14:20:00Z",
+    "id": 5
+  },
+  {
+    "device_id": 2,
+    "value": 78,
+    "timestamp": "2024-05-21T14:25:00Z",
+    "id": 6
+  },
+  {
+    "device_id": 3,
+    "value": 68,
+    "timestamp": "2024-05-21T14:30:00Z",
+    "id": 7
+  },
+  {
+    "device_id": 3,
+    "value": 82,
+    "timestamp": "2024-05-21T14:35:00Z",
+    "id": 8
+  },
+  {
+    "device_id": 3,
+    "value": 70,
+    "timestamp": "2024-05-21T14:40:00Z",
+    "id": 9
+  }
+]

@@ -13,19 +13,18 @@ export const SelectContainer = styled.div`
 
 export const StyledSelect = styled.div`
   padding: 8px 16px;
-  background-color: ${({ theme }) => theme.gray100};
+  background-color: ${({ theme }) => theme.gray700};
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: #333;
+  color: ${({ theme }) => theme.text};
   cursor: pointer;
   transition: background-color 0.2s;
-  index: 1000;
   width: 128px;
 
   &:hover {
-    background-color: #e0e0e0;
+    background-color: ${({ theme }) => theme.gray600};
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
   }
 `;
@@ -33,13 +32,17 @@ export const StyledSelect = styled.div`
 export const StyledOptions = styled.div`
   width: 100%;
   position: absolute;
-  background-color: ${({ theme }) => theme.gray100};
+  background-color: ${({ theme }) => theme.gray700};
   display: flex;
   flex-direction: column;
-  color: #333;
+  color: ${({ theme }) => theme.text};
   cursor: pointer;
   transition: background-color 0.2s;
   border-radius: 0 0 8px 8px;
+
+  svg {
+    color: ${({ theme }) => theme.text};
+  }
 
   div {
     display: flex;
@@ -48,8 +51,11 @@ export const StyledOptions = styled.div`
     transition: background-color 0.2s;
 
     &:hover {
-      background-color: ${({ theme }) => theme.gray300};
-      border-radius: 8px;
+      background-color: ${({ theme }) => theme.gray600};
+    }
+
+    &:last-child {
+      border-radius: 0 0 8px 8px;
     }
   }
 `;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import sacDmService from "../../app/services/sac_dm";
+// import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
 import Chart from "react-apexcharts";
 import { Checkbox } from "@mui/material";
 import { DeviceProps } from "../DeviceList/types";
-import DeviceService from "../../app/services/devices";
+// import DeviceService from "../../app/services/devices";
 import {
   SelectContainer,
   StyledOptions,
@@ -13,6 +13,8 @@ import {
 import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
 import { EmptyData } from "../../components/EmptyData";
+import mockdevices from "../../mock/devices.json";
+import mocksacdm from "../../mock/sacdm.json";
 
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
@@ -37,33 +39,46 @@ export const SacDm = () => {
 
   const loadDevices = async () => {
     setIsLoading(true);
-    try {
-      const response = await DeviceService.getDevices();
-      setDevices(response);
-      if (response.length > 0) {
-        setSelectedDeviceId(response[0].id);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+    setDevices(mockdevices as DeviceProps[]);
+    if (mockdevices.length > 0) {
+      setSelectedDeviceId(mockdevices[0].id);
     }
+    setIsLoading(false);
+
+    // try {
+    //   const response = await DeviceService.getDevices();
+    //   setDevices(response);
+    //   if (response.length > 0) {
+    //     setSelectedDeviceId(response[0].id);
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   const loadSacDm = async () => {
     setIsLoading(true);
-    try {
-      const response = await sacDmService.getSacDm();
-      const formattedResponse = response.map((item: SacDmProps) => ({
-        ...item,
-        timestamp: formatTime(item.timestamp),
-      }));
-      setSacDm(formattedResponse);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    const formattedResponse = mocksacdm.map((item: SacDmProps) => ({
+      ...item,
+      timestamp: formatTime(item.timestamp),
+    }));
+    setSacDm(formattedResponse);
+    console.log(formattedResponse);
+    setIsLoading(false);
+    // try {
+    //   const response = await sacDmService.getSacDm();
+    //   const formattedResponse = response.map((item: SacDmProps) => ({
+    //     ...item,
+    //     timestamp: formatTime(item.timestamp),
+    //   }));
+    //   setSacDm(formattedResponse);
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   useEffect(() => {
