@@ -39,15 +39,12 @@ export const StyledOptions = styled.div`
   transition: background-color 0.2s;
   border-radius: 0 0 8px 8px;
 
-  svg {
-    color: ${({ theme }) => theme.text};
-  }
-
   div {
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 8px 16px;
     transition: background-color 0.2s;
+    border-top: 1px solid ${({ theme }) => theme.gray600};
 
     &:hover {
       background-color: ${({ theme }) => theme.gray600};

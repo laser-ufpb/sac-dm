@@ -119,10 +119,8 @@ export const SacDm = () => {
     },
   ];
 
-  const handleChange = (deviceId: number, isChecked: boolean) => {
-    if (isChecked && deviceId !== selectedDeviceId) {
-      setSelectedDeviceId(deviceId);
-    }
+  const handleSelectDevice = (deviceId: number) => {
+    setSelectedDeviceId(deviceId);
     setOpen(false);
   };
 
@@ -134,7 +132,6 @@ export const SacDm = () => {
             onClick={() => setOpen(!open)}
             style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
           >
-            <CheckBox />
             {
               devices.find((device) => device.id === selectedDeviceId)
                 ?.device_code
@@ -145,12 +142,11 @@ export const SacDm = () => {
           {open && (
             <StyledOptions>
               {devices.map((device: DeviceProps) => (
-                <div key={device.id}>
-                  <Checkbox
-                    color="primary"
-                    checked={device.id === selectedDeviceId}
-                    onChange={(e) => handleChange(device.id, e.target.checked)}
-                  />
+                <div
+                  key={device.id}
+                  onClick={() => handleSelectDevice(device.id)}
+                  style={{ cursor: "pointer" }}
+                >
                   {device.device_code}
                 </div>
               ))}
