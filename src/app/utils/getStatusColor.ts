@@ -5,7 +5,7 @@ export const getStatusColor = (
     case "Saudável":
       return "#35F33D";
     case "Alerta":
-      return "#E8FF5D";
+      return "#FFA500";
     case "Crítico":
       return "#FF0000";
     case "Offline":
