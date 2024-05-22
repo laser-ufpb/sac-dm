@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 // import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
-import Chart from "react-apexcharts";
 import { DeviceProps } from "../DeviceList/types";
 // import DeviceService from "../../app/services/devices";
 import {
@@ -11,19 +10,10 @@ import {
 } from "../DeviceList/components/FilterStatus/styles";
 import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
-import { EmptyData } from "../../components/EmptyData";
 import mockdevices from "../../mock/devices.json";
 import mocksacdm from "../../mock/sacdm.json";
-
-const formatTime = (dateString: string) => {
-  const date = new Date(dateString);
-  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}/${date.getFullYear().toString().slice(-2)} às ${date
-    .getHours()
-    .toString()
-    .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
-};
+import { SacDmDevice } from "../Device/components/SacDmDevice";
+import { formatTime } from "../../utils/formatTime";
 
 export const SacDm = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -96,28 +86,6 @@ export const SacDm = () => {
     setDeviceData(filteredData);
   }, [selectedDeviceId, sacDm]);
 
-  const optionsChart = {
-    chart: {
-      id: "device-metrics",
-    },
-    xaxis: {
-      categories: deviceData.map((item) => item.timestamp),
-      labels: {
-        show: false,
-      },
-    },
-    tooltip: {
-      theme: "dark",
-    },
-  };
-
-  const seriesChart = [
-    {
-      name: "Valor",
-      data: deviceData.map((item) => item.value),
-    },
-  ];
-
   const handleSelectDevice = (deviceId: number) => {
     setSelectedDeviceId(deviceId);
     setOpen(false);
@@ -153,18 +121,11 @@ export const SacDm = () => {
           )}
         </SelectContainer>
       </Container>
-      <div style={{ zIndex: 0 }}>
-        {selectedDeviceId && !isLoading && deviceData.length > 0 ? (
-          <Chart
-            options={optionsChart}
-            series={seriesChart}
-            type="line"
-            height={350}
-          />
-        ) : (
-          <EmptyData message="Nenhum dado encontrado para o dispositivo selecionado" />
-        )}
-      </div>
+      <SacDmDevice
+        deviceId={selectedDeviceId}
+        deviceData={deviceData}
+        isLoading={isLoading}
+      />
     </>
   );
 };

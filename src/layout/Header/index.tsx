@@ -14,7 +14,7 @@ export const Header = () => {
             <Dashboard />
           </NavigationButton> */}
       <NavigationButton
-        isActive={isMenuItemActive("/devices")}
+        isActive={isMenuItemActive("/devices") || isMenuItemActive("/device")}
         onClick={() => navigate("/devices")}
       >
         <Devices />
