@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
 import { DeviceProps } from "../DeviceList/types";
@@ -10,25 +10,61 @@ import {
 } from "../DeviceList/components/FilterStatus/styles";
 import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
-import mockdevices from "../../mock/devices.json";
-import mocksacdm from "../../mock/sacdm.json";
+import deviceService from "../../app/services/devices";
+import sacDmService from "../../app/services/sac_dm";
 import { SacDmDevice } from "../Device/components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
 
 export const SacDm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState(
-    mocksacdm[0].device_id
-  );
+  const [selectedDeviceId, setSelectedDeviceId] = useState(1);
   const [sacDmFiltered, setSacDmFiltered] = useState<SacDmProps[]>([]);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [open, setOpen] = useState(false);
 
+  const loadDevices = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await deviceService.getDevices();
+      setDevices(response);
+      if (response.length > 0) {
+        setSelectedDeviceId(response[0].id);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const loadSacDm = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await sacDmService.getSacDm();
+      const formattedResponse = response.map((item: SacDmProps) => ({
+        ...item,
+        timestamp: formatTime(item.timestamp),
+      }));
+      setSacDm(formattedResponse);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const filteredData = sacDm.filter(
+      (item) => item.device_id === selectedDeviceId
+    );
+    setSacDmFiltered(filteredData);
+  }, [selectedDeviceId, sacDm]);
+
   useEffect(() => {
     loadDevices();
     loadSacDm();
-  }, []);
+  }, [loadDevices, loadSacDm]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -37,54 +73,7 @@ export const SacDm = () => {
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, []);
-
-  const loadDevices = async () => {
-    setIsLoading(true);
-    setDevices(mockdevices as DeviceProps[]);
-    setIsLoading(false);
-
-    // try {
-    //   const response = await DeviceService.getDevices();
-    //   setDevices(response);
-    //   if (response.length > 0) {
-    //     setSelectedDeviceId(response[0].id);
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   setIsLoading(false);
-    // }
-  };
-
-  const loadSacDm = async () => {
-    setIsLoading(true);
-    const formattedResponse = mocksacdm.map((item: SacDmProps) => ({
-      ...item,
-      timestamp: formatTime(item.timestamp),
-    }));
-    setSacDm(formattedResponse);
-    setIsLoading(false);
-    // try {
-    //   const response = await sacDmService.getSacDm();
-    //   const formattedResponse = response.map((item: SacDmProps) => ({
-    //     ...item,
-    //     timestamp: formatTime(item.timestamp),
-    //   }));
-    //   setSacDm(formattedResponse);
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   setIsLoading(false);
-    // }
-  };
-
-  useEffect(() => {
-    const filteredData = sacDm.filter(
-      (item) => item.device_id === selectedDeviceId
-    );
-    setSacDmFiltered(filteredData);
-  }, [selectedDeviceId, sacDm]);
+  }, [loadSacDm, loadDevices]);
 
   const handleSelectDevice = (deviceId: number) => {
     setSelectedDeviceId(deviceId);

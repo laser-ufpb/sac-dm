@@ -12,7 +12,7 @@ import { AddDevice } from "./components/AddDevice";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../app/utils/getStatusColor";
 import { FilterStatus } from "./components/FilterStatus";
-import mockdevices from "../../mock/devices.json";
+import deviceService from "../../app/services/devices";
 
 const statusOptions = ["Crítico", "Alerta", "Saudável", "Offline"];
 
@@ -30,35 +30,32 @@ export const DeviceList = () => {
 
   const loadDevices = async () => {
     setIsLoading(true);
-    setDevices(mockdevices as DeviceProps[]);
-    setIsLoading(false);
-    // try {
-    //   let response = await DeviceService.getDevices();
-    //   response = response.map((device: DeviceProps) => ({
-    //     id: device.id,
-    //     device_code: device.device_code,
-    //     status: device.status,
-    //   }));
+    try {
+      let response = await deviceService.getDevices();
+      response = response.map((device: DeviceProps) => ({
+        id: device.id,
+        device_code: device.device_code,
+        status: device.status,
+      }));
 
-    //   const statusPriority = {
-    //     Crítico: 1,
-    //     Alerta: 2,
-    //     Saudável: 3,
-    //     Offline: 4,
-    //   };
+      const statusPriority = {
+        Crítico: 1,
+        Alerta: 2,
+        Saudável: 3,
+        Offline: 4,
+      };
 
-    //   response.sort(
-    //     (a: DeviceProps, b: DeviceProps) =>
-    //       statusPriority[a.status] - statusPriority[b.status]
-    //   );
+      response.sort(
+        (a: DeviceProps, b: DeviceProps) =>
+          statusPriority[a.status] - statusPriority[b.status]
+      );
 
-    //   setDevices(response);
-    // } catch (error) {
-    //   console.error(error);
-    //   setDevices(mockdevices as DeviceProps[]);
-    // } finally {
-    //   setIsLoading(false);
-    // }
+      setDevices(response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCellClick = (deviceId: number) => {

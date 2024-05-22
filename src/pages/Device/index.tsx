@@ -3,13 +3,13 @@ import { useEffect, useState, useCallback } from "react";
 import { SacDmProps } from "../SacDm/types";
 import { Description } from "./styles";
 import { SacDmDevice } from "./components/SacDmDevice";
-import mocksacdm from "../../mock/sacdm.json";
-import mockdevices from "../../mock/devices.json";
 import { formatTime } from "../../utils/formatTime";
 import { BackPage } from "../../components/BackPage";
 import { AirplanemodeActive } from "@mui/icons-material";
 import { getStatusColor } from "../../app/utils/getStatusColor";
 import { DeviceProps } from "../DeviceList/types";
+import sacDmService from "../../app/services/sac_dm";
+import deviceService from "../../app/services/devices";
 
 export const Device = () => {
   const { id } = useParams();
@@ -17,26 +17,47 @@ export const Device = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
-  const [device] = useState<DeviceProps>(
-    mockdevices.find((item) => item.id === numericId) as DeviceProps
-  );
+  const [device, setDevice] = useState<DeviceProps>();
 
   const loadSacDm = useCallback(async () => {
+    if (!numericId) return;
     setIsLoading(true);
-    const formattedResponse = mocksacdm.map((item: SacDmProps) => ({
-      ...item,
-      timestamp: formatTime(item.timestamp),
-    }));
-    const filteredData = formattedResponse.filter(
-      (item) => item.device_id === numericId
-    );
-    setSacDm(filteredData);
-    setIsLoading(false);
+    try {
+      const response = await sacDmService.getSacDm();
+      const formattedResponse = response.map((item: SacDmProps) => ({
+        ...item,
+        timestamp: formatTime(item.timestamp),
+      }));
+      const filteredData = formattedResponse.filter(
+        (item: SacDmProps) => item.device_id === numericId
+      );
+      setSacDm(filteredData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [numericId]);
+
+  const loadDevices = useCallback(async () => {
+    try {
+      const response = await deviceService.getDevices();
+      if (response.length > 0) {
+        setDevice(
+          response.find((device: DeviceProps) => device.id === numericId)
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [numericId]);
 
   useEffect(() => {
     loadSacDm();
-  }, [loadSacDm]);
+    loadDevices();
+  }, [loadSacDm, loadDevices]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -49,21 +70,23 @@ export const Device = () => {
   return (
     <>
       <BackPage />
-      <Description>
-        <h1>
-          <AirplanemodeActive
-            sx={{
-              color: getStatusColor(device.status),
-            }}
-          />
-          Device {device.device_code}
-        </h1>
-        <p>Visualização detalhada das métricas do dispositivo.</p>
-        <p>
-          Última atualização:{" "}
-          {sacDm.length > 0 ? sacDm[sacDm.length - 1].timestamp : "N/A"}
-        </p>
-      </Description>
+      {device && (
+        <Description>
+          <h1>
+            <AirplanemodeActive
+              sx={{
+                color: getStatusColor(device.status),
+              }}
+            />
+            Device {device.device_code}
+          </h1>
+          <p>Visualização detalhada das métricas do dispositivo.</p>
+          <p>
+            Última atualização:{" "}
+            {sacDm.length > 0 ? sacDm[sacDm.length - 1].timestamp : "N/A"}
+          </p>
+        </Description>
+      )}
       {isLoading ? (
         <p>Loading...</p>
       ) : (
