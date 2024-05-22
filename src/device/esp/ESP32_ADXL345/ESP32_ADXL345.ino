@@ -54,36 +54,6 @@ void task2(void *pvParameters) {
   }
 }
 
-void stopClean()
-{
-  int i = 0;
-  Serial.println("=== stopClean() ===");
-  while (i == 0)
-    {
-      Serial.println("Waiting for a exit command...");
-      delay(5000);
-      if(Serial.available() > 0) {
-        i = Serial.parseInt();   
-        }
-    }
-    
-}
-
-void stop()
-{
-  int i = 0;
-  Serial.println("=== stop() ===");
-  while (i == 0)
-    {
-      Serial.println("Waiting for a exit command...");
-      delay(5000);
-      if(Serial.available() > 0) {
-        i = Serial.parseInt();   
-        }
-    }
-    
-}
-
 void setup() {
   Serial.begin(921600);
   //Serial.begin(230400);  
