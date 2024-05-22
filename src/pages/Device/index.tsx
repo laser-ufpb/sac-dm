@@ -4,16 +4,22 @@ import { SacDmProps } from "../SacDm/types";
 import { Description } from "./styles";
 import { SacDmDevice } from "./components/SacDmDevice";
 import mocksacdm from "../../mock/sacdm.json";
+import mockdevices from "../../mock/devices.json";
 import { formatTime } from "../../utils/formatTime";
 import { BackPage } from "../../components/BackPage";
 import { AirplanemodeActive } from "@mui/icons-material";
+import { getStatusColor } from "../../app/utils/getStatusColor";
+import { DeviceProps } from "../DeviceList/types";
 
 export const Device = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
-
   const { id } = useParams();
   const numericId = Number(id);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
+  const [device] = useState<DeviceProps>(
+    mockdevices.find((item) => item.id === numericId) as DeviceProps
+  );
 
   const loadSacDm = useCallback(async () => {
     setIsLoading(true);
@@ -45,10 +51,18 @@ export const Device = () => {
       <BackPage />
       <Description>
         <h1>
-          <AirplanemodeActive />
-          Device {id}
+          <AirplanemodeActive
+            sx={{
+              color: getStatusColor(device.status),
+            }}
+          />
+          Device {device.device_code}
         </h1>
         <p>Visualização detalhada das métricas do dispositivo.</p>
+        <p>
+          Última atualização:{" "}
+          {sacDm.length > 0 ? sacDm[sacDm.length - 1].timestamp : "N/A"}
+        </p>
       </Description>
       {isLoading ? (
         <p>Loading...</p>

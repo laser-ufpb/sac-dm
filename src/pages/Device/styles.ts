@@ -12,7 +12,6 @@ export const Description = styled.div`
     color: ${theme.text};
     font-size: 16px;
     margin-top: 8px;
-    margin-bottom: 20px;
   }
 `;
 
