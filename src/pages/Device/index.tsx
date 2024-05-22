@@ -6,10 +6,11 @@ import { SacDmDevice } from "./components/SacDmDevice";
 import mocksacdm from "../../mock/sacdm.json";
 import { formatTime } from "../../utils/formatTime";
 import { BackPage } from "../../components/BackPage";
+import { AirplanemodeActive } from "@mui/icons-material";
 
 export const Device = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [deviceData, setDeviceData] = useState<SacDmProps[]>([]);
+  const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
 
   const { id } = useParams();
   const numericId = Number(id);
@@ -23,7 +24,7 @@ export const Device = () => {
     const filteredData = formattedResponse.filter(
       (item) => item.device_id === numericId
     );
-    setDeviceData(filteredData);
+    setSacDm(filteredData);
     setIsLoading(false);
   }, [numericId]);
 
@@ -43,17 +44,16 @@ export const Device = () => {
     <>
       <BackPage />
       <Description>
-        <h1>Device {id}</h1>
+        <h1>
+          <AirplanemodeActive />
+          Device {id}
+        </h1>
         <p>Visualização detalhada das métricas do dispositivo.</p>
       </Description>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <SacDmDevice
-          deviceId={numericId}
-          deviceData={deviceData}
-          isLoading={isLoading}
-        />
+        <SacDmDevice deviceId={numericId} sacDm={sacDm} isLoading={isLoading} />
       )}
     </>
   );

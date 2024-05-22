@@ -21,7 +21,7 @@ export const SacDm = () => {
   const [selectedDeviceId, setSelectedDeviceId] = useState(
     mocksacdm[0].device_id
   );
-  const [deviceData, setDeviceData] = useState<SacDmProps[]>([]);
+  const [sacDmFiltered, setSacDmFiltered] = useState<SacDmProps[]>([]);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -83,7 +83,7 @@ export const SacDm = () => {
     const filteredData = sacDm.filter(
       (item) => item.device_id === selectedDeviceId
     );
-    setDeviceData(filteredData);
+    setSacDmFiltered(filteredData);
   }, [selectedDeviceId, sacDm]);
 
   const handleSelectDevice = (deviceId: number) => {
@@ -123,7 +123,7 @@ export const SacDm = () => {
       </Container>
       <SacDmDevice
         deviceId={selectedDeviceId}
-        deviceData={deviceData}
+        sacDm={sacDmFiltered}
         isLoading={isLoading}
       />
     </>

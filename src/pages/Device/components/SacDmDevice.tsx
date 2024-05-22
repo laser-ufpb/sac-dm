@@ -4,11 +4,11 @@ import { EmptyData } from "../../../components/EmptyData";
 
 export const SacDmDevice = ({
   deviceId,
-  deviceData,
+  sacDm,
   isLoading,
 }: {
   deviceId: number | null;
-  deviceData: SacDmProps[];
+  sacDm: SacDmProps[];
   isLoading: boolean;
 }) => {
   if (!deviceId) {
@@ -20,7 +20,7 @@ export const SacDmDevice = ({
       id: "device-metrics",
     },
     xaxis: {
-      categories: deviceData.map((item) => item.timestamp),
+      categories: sacDm.map((item) => item.timestamp),
       labels: {
         show: false,
       },
@@ -33,13 +33,13 @@ export const SacDmDevice = ({
   const seriesChart = [
     {
       name: "Valor",
-      data: deviceData.map((item) => item.value),
+      data: sacDm.map((item) => item.value),
     },
   ];
 
   return (
     <div style={{ zIndex: 0 }}>
-      {deviceId && !isLoading && deviceData.length > 0 ? (
+      {deviceId && !isLoading && sacDm.length > 0 ? (
         <Chart
           options={optionsChart}
           series={seriesChart}
