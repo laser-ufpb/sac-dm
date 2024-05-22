@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 // import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
 import Chart from "react-apexcharts";
-import { Checkbox } from "@mui/material";
 import { DeviceProps } from "../DeviceList/types";
 // import DeviceService from "../../app/services/devices";
 import {
@@ -10,7 +9,7 @@ import {
   StyledOptions,
   StyledSelect,
 } from "../DeviceList/components/FilterStatus/styles";
-import { ArrowDropDown, CheckBox } from "@mui/icons-material";
+import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
 import { EmptyData } from "../../components/EmptyData";
 import mockdevices from "../../mock/devices.json";
