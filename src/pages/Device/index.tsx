@@ -5,6 +5,7 @@ import { Description } from "./styles";
 import { SacDmDevice } from "./components/SacDmDevice";
 import mocksacdm from "../../mock/sacdm.json";
 import { formatTime } from "../../utils/formatTime";
+import { BackPage } from "../../components/BackPage";
 
 export const Device = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -40,9 +41,10 @@ export const Device = () => {
 
   return (
     <>
-      <h1>Device {id}</h1>
+      <BackPage />
       <Description>
-        Visualização detalhada das métricas do dispositivo.
+        <h1>Device {id}</h1>
+        <p>Visualização detalhada das métricas do dispositivo.</p>
       </Description>
       {isLoading ? (
         <p>Loading...</p>
