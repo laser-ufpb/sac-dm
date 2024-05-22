@@ -7,19 +7,21 @@ export const Container = styled.header`
   align-items: center;
   border-bottom: 1.5px solid ${({ theme }) => theme.border};
   box-shadow: 0px 2px 4px ${({ theme }) => theme.blackEerie};
-  padding: 4px 8px;
+  padding: 4px 16px;
   z-index: 9;
   background-color: ${({ theme }) => theme.headerBackground};
   backdrop-filter: blur(10px);
   margin-bottom: 24px;
-  height: 64px;
+  height: 80px;
+  gap: 8px;
 `;
 
 interface NavigationButtonProps {
   isActive?: boolean;
 }
 
-export const NavigationButton = styled(Button)<NavigationButtonProps>`
+export const NavigationButton = styled(Button) <NavigationButtonProps>`
+
   &.MuiButtonBase-root {
     color: ${({ theme }) => theme.text};
   }
@@ -34,7 +36,8 @@ export const NavigationButton = styled(Button)<NavigationButtonProps>`
     `}
 
   svg {
-    width: 32px;
-    height: 32px;
+    height: 36px;
+    width: 36px;
+    margin: 8px;
   }
 `;

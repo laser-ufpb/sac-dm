@@ -31,7 +31,7 @@ export const Header = () => {
         onClick={() => navigate("/account")}
         style={{
           position: "absolute",
-          right: "8px",
+          right: "16px",
         }}
       >
         <Person />
