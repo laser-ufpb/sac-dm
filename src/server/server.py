@@ -130,6 +130,11 @@ def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
     banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_device_id(data, db)
     return banco_dados
 
+# Route to get data from accelerometer table filtered by label
+@app.get("/accelerometer_by_label")
+def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
+    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_label(data, db)
+    return banco_dados
 
 # Route to get data from accelerometer table filtered by datetime
 @app.get("/accelerometer_by_datetime")

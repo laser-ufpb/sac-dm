@@ -30,6 +30,10 @@ def get_accelerometer_record_by_device_id(data: Filter, db: Session):
     if data.device_id:
         return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id).all()
 
+def get_accelerometer_record_by_label(data: Filter, db: Session):
+    print("Data: ", data)
+    if data.label:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.label == data.label).all()
 
 def get_accelerometer_record_by_datetime(data: Filter, db: Session):
     if data.datetime_initial and not data.datetime_final:
