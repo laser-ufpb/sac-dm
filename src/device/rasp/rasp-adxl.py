@@ -69,8 +69,9 @@ def write_log(data, lock):
 
 
 
-url = 'https://enmpf6xid68v.x.pipedream.net/'
-#url = 'http://192.168.0.117:8100/accelerometer/'
+
+#url = 'https://enmpf6xid68v.x.pipedream.net/'
+url = 'http://192.168.0.117:8100/accelerometer/'
 
 ser = serial.Serial("/dev/ttyS0", 921600)
 ser.reset_input_buffer()
