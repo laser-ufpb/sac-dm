@@ -1,5 +1,5 @@
 export const getStatusColor = (
-  status: "Saudável" | "Alerta" | "Crítico" | "Offline"
+  status: string
 ) => {
   switch (status) {
     case "Saudável":

@@ -74,9 +74,9 @@ export const Device = () => {
         <Description>
           <h1>
             <AirplanemodeActive
-              sx={{
-                color: getStatusColor(device.status),
-              }}
+              // sx={{
+              //   color: getStatusColor(device.status_id),
+              // }}
             />
             Device {device.device_code}
           </h1>

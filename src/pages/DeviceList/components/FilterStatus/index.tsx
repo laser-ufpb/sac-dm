@@ -5,23 +5,37 @@ import {
   StyledOptions,
   StyledSelect,
 } from "./styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@mui/material";
+import statusService from "../../../../app/services/status";
+import { StatusProps } from "./types";
 
 interface FilterStatusProps {
-  statusOptions: string[];
-  filterStatus: string[];
-  setFilterStatus: React.Dispatch<React.SetStateAction<string[]>>;
+  filterStatus: number[];
+  setFilterStatus: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export const FilterStatus: React.FC<FilterStatusProps> = ({
-  statusOptions,
   filterStatus,
   setFilterStatus,
 }) => {
   const [open, setOpen] = useState(false);
+  const [statusOptions, setStatusOptions] = useState<StatusProps[]>([]);
 
-  const handleStatusChange = (status: string, isChecked: boolean) => {
+  useEffect(() => {
+    loadStatus();
+  }, []);
+
+  const loadStatus = async () => {
+    try {
+      const response = await statusService.getStatus();
+      setStatusOptions(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleStatusChange = (status: number, isChecked: boolean) => {
     if (isChecked) {
       setFilterStatus((prevStatus) => [...prevStatus, status]);
     } else {
@@ -44,14 +58,14 @@ export const FilterStatus: React.FC<FilterStatusProps> = ({
 
         {open && (
           <StyledOptions>
-            {statusOptions.map((status: string) => (
-              <div key={status}>
+            {statusOptions.map((status: StatusProps) => (
+              <div key={status.id}>
                 <Checkbox
                   color="primary"
-                  checked={filterStatus.includes(status)}
-                  onChange={(e) => handleStatusChange(status, e.target.checked)}
+                  checked={filterStatus.includes(status.id)}
+                  onChange={(e) => handleStatusChange(status.id, e.target.checked)}
                 />
-                {status}
+                {status.description}
               </div>
             ))}
           </StyledOptions>

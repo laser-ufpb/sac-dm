@@ -14,13 +14,11 @@ import { getStatusColor } from "../../app/utils/getStatusColor";
 import { FilterStatus } from "./components/FilterStatus";
 import deviceService from "../../app/services/devices";
 
-const statusOptions = ["Crítico", "Alerta", "Saudável", "Offline"];
-
 export const DeviceList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<string[]>([]);
+  const [filterStatus, setFilterStatus] = useState<number[]>([]);
 
   const navigate = useNavigate();
 
@@ -35,20 +33,20 @@ export const DeviceList = () => {
       response = response.map((device: DeviceProps) => ({
         id: device.id,
         device_code: device.device_code,
-        status: device.status,
+        status_id: device.status_id
       }));
 
-      const statusPriority = {
-        Crítico: 1,
-        Alerta: 2,
-        Saudável: 3,
-        Offline: 4,
-      };
+      // const statusPriority = {
+      //   Crítico: 1,
+      //   Alerta: 2,
+      //   Saudável: 3,
+      //   Offline: 4,
+      // };
 
-      response.sort(
-        (a: DeviceProps, b: DeviceProps) =>
-          statusPriority[a.status] - statusPriority[b.status]
-      );
+      // response.sort(
+      //   (a: DeviceProps, b: DeviceProps) =>
+      //     statusPriority[a.status] - statusPriority[b.status]
+      // );
 
       setDevices(response);
     } catch (error) {
@@ -62,8 +60,13 @@ export const DeviceList = () => {
     navigate(`/device/${deviceId}`);
   };
 
-  const filteredDevices = devices.filter((device) =>
-    filterStatus.length > 0 ? filterStatus.includes(device.status) : true
+  const filteredDevices = devices.filter((device) => {
+    console.log(device.status_id, filterStatus)
+
+    return (
+      filterStatus.length > 0 ? filterStatus.includes(device.status_id) : true
+    )
+  }
   );
 
   return (
@@ -77,7 +80,6 @@ export const DeviceList = () => {
         <h2>Lista de Dispositivos</h2>
 
         <FilterStatus
-          statusOptions={statusOptions}
           filterStatus={filterStatus}
           setFilterStatus={setFilterStatus}
         />
@@ -100,13 +102,13 @@ export const DeviceList = () => {
               key={device.id}
               onClick={() => handleCellClick(device.id)}
             >
-              {device.status !== "Offline" ? (
+              {device.status_id === 4 ? (
                 <AirplanemodeActive
-                  sx={{ color: getStatusColor(device.status) }}
+                  sx={{ color: getStatusColor("Offline") }}
                 />
               ) : (
                 <AirplanemodeInactive
-                  sx={{ color: getStatusColor(device.status) }}
+                  sx={{ color: getStatusColor("a") }}
                 />
               )}
               <h3>{device.device_code}</h3>
