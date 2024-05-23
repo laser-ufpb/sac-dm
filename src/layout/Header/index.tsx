@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { isMenuItemActive } from "../../app/utils/isMenuItemActive";
+import { isMenuItemActive } from "../../utils/isMenuItemActive";
 import { Container, NavigationButton } from "./styles";
 import { Devices, Equalizer, Person } from "@mui/icons-material";
 

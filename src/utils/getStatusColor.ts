@@ -1,6 +1,4 @@
-export const getStatusColor = (
-  status: string
-) => {
+export const getStatusColor = (status: string) => {
   switch (status) {
     case "Saudável":
       return "#35F33D";

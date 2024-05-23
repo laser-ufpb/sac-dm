@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 import { AddDevice } from "./components/AddDevice";
 import { useNavigate } from "react-router-dom";
-import { getStatusColor } from "../../app/utils/getStatusColor";
+import { getStatusColor } from "../../utils/getStatusColor";
 import { FilterStatus } from "./components/FilterStatus";
 import deviceService from "../../app/services/devices";
 
@@ -33,7 +33,7 @@ export const DeviceList = () => {
       response = response.map((device: DeviceProps) => ({
         id: device.id,
         device_code: device.device_code,
-        status_id: device.status_id
+        status_id: device.status_id,
       }));
 
       // const statusPriority = {
@@ -61,13 +61,12 @@ export const DeviceList = () => {
   };
 
   const filteredDevices = devices.filter((device) => {
-    console.log(device.status_id, filterStatus)
+    console.log(device.status_id, filterStatus);
 
-    return (
-      filterStatus.length > 0 ? filterStatus.includes(device.status_id) : true
-    )
-  }
-  );
+    return filterStatus.length > 0
+      ? filterStatus.includes(device.status_id)
+      : true;
+  });
 
   return (
     <>
@@ -103,13 +102,9 @@ export const DeviceList = () => {
               onClick={() => handleCellClick(device.id)}
             >
               {device.status_id === 4 ? (
-                <AirplanemodeActive
-                  sx={{ color: getStatusColor("Offline") }}
-                />
+                <AirplanemodeActive sx={{ color: getStatusColor("Offline") }} />
               ) : (
-                <AirplanemodeInactive
-                  sx={{ color: getStatusColor("a") }}
-                />
+                <AirplanemodeInactive sx={{ color: getStatusColor("a") }} />
               )}
               <h3>{device.device_code}</h3>
             </DeviceItem>
