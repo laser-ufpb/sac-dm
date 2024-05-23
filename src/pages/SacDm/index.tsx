@@ -12,7 +12,7 @@ import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
 import deviceService from "../../app/services/devices";
 import sacDmService from "../../app/services/sac_dm";
-import { SacDmDevice } from "../Device/components/SacDmDevice";
+import { SacDmDevice } from "./components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
 
 export const SacDm = () => {
