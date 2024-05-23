@@ -31,7 +31,10 @@ export const Device = () => {
       const filteredData = formattedResponse.filter(
         (item: SacDmProps) => item.device_id === numericId
       );
-      setSacDm(filteredData);
+
+      if (JSON.stringify(sacDm) !== JSON.stringify(filteredData)) {
+        setSacDm(filteredData);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -74,9 +77,9 @@ export const Device = () => {
         <Description>
           <h1>
             <AirplanemodeActive
-              // sx={{
-              //   color: getStatusColor(device.status_id),
-              // }}
+            // sx={{
+            //   color: getStatusColor(device.status_id),
+            // }}
             />
             Device {device.device_code}
           </h1>
@@ -87,11 +90,11 @@ export const Device = () => {
           </p>
         </Description>
       )}
-      {isLoading ? (
+      {/* {isLoading ? (
         <p>Loading...</p>
-      ) : (
-        <SacDmDevice deviceId={numericId} sacDm={sacDm} isLoading={isLoading} />
-      )}
+      ) : ( */}
+      <SacDmDevice deviceId={numericId} sacDm={sacDm} isLoading={isLoading} />
+      {/* )} */}
     </>
   );
 };
