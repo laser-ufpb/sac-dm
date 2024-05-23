@@ -38,15 +38,14 @@ export const SacDmDevice = ({
   ];
 
   return (
-    <div style={{ zIndex: 0 }}>
-      {deviceId && !isLoading && sacDm.length > 0 ? (
-        <Chart
-          options={optionsChart}
-          series={seriesChart}
-          type="line"
-          height={350}
-        />
-      ) : (
+    <div style={{ zIndex: 0, position: "relative" }}>
+      <Chart
+        options={optionsChart}
+        series={seriesChart}
+        type="line"
+        height={350}
+      />
+      {sacDm.length === 0 && (
         <EmptyData message="Nenhum dado encontrado para o dispositivo selecionado" />
       )}
     </div>
