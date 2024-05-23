@@ -8,6 +8,8 @@ export const Container = styled.div`
 export const SelectContainer = styled.div`
   position: relative;
   z-index: 1;
+  max-width: 156px;
+  width: 100%;
 `;
 
 export const StyledSelect = styled.div`
