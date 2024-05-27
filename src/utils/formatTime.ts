@@ -1,9 +1,5 @@
-export const formatTime = (dateString: string) => {
-  const date = new Date(dateString);
-  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}/${date.getFullYear().toString().slice(-2)} às ${date
-    .getHours()
-    .toString()
-    .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+export const formatTime = (timestamp: string): string => {
+  const correctedTimestamp = timestamp.substring(0, 13); // Pega apenas os 13 primeiros dígitos
+  const date = new Date(Number(correctedTimestamp)); // Converte para Date
+  return date.toLocaleString(); // Retorna a data formatada como string
 };
