@@ -6,7 +6,6 @@ import { SacDmDevice } from "../SacDm/components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
 import { BackPage } from "../../components/BackPage";
 import { AirplanemodeActive } from "@mui/icons-material";
-import { getStatusColor } from "../../utils/getStatusColor";
 import { DeviceProps } from "../DeviceList/types";
 import sacDmService from "../../app/services/sac_dm";
 import deviceService from "../../app/services/devices";
@@ -40,7 +39,7 @@ export const Device = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [numericId]);
+  }, [numericId, sacDm]);
 
   const loadDevices = useCallback(async () => {
     try {
