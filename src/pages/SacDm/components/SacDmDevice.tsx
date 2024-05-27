@@ -33,7 +33,7 @@ export const SacDmDevice = ({
   const seriesChart = [
     {
       name: "Valor",
-      data: sacDm.map((item) => +item.value.toFixed(2)),
+      data: sacDm.map((item) => +item.value.toFixed(8)),
     },
   ];
 
