@@ -2,15 +2,16 @@ import sqlite3
 import datetime
 import json
 import random
-from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User, Status
+from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User, Status, Vehicle
 from models.users import authenticate_user, get_current_user
 from models.token import create_access_token
-from schemas.device import DeviceSchema
-from schemas.sacdm import SACDMSchema
 from schemas.accelerometer import AccelerometerSchema
+from schemas.device import DeviceSchema
 from schemas.filter import Filter
+from schemas.sacdm import SACDMSchema
 from schemas.status import StatusSchema
 from schemas.user import UserSchema
+from schemas.vehicle import VehicleSchema
 from fastapi import Depends, FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -18,10 +19,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import List, Optional
 from typing_extensions import Annotated
 from uuid import uuid4
+from controllers.accelerometer import *
 from controllers.device import create_device, get_all_devices, delete_a_device, change_device_status
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
-from controllers.accelerometer import *
 from controllers.status import create_status, get_all_status
+from controllers.vehicle import *
 from database import (get_db, Session)
 from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
 
@@ -45,8 +47,8 @@ def show_devices():
 # Route to get all data from device table
 @app.get("/device")
 def get_devices(db: Session=Depends(get_db)):
-    banco_dados: List[Device] = get_all_devices(db)
-    return banco_dados
+    data: List[Device] = get_all_devices(db)
+    return data
 
 
 # Route to insert a new data into the devices table
@@ -68,8 +70,24 @@ def delete_device(device: DeviceSchema, db: Session=Depends(get_db)):
 
 # Route to update status_id from a device
 @app.put("/device")
-def update_device_status(device: DeviceSchema, db: Session=Depends(get_db)):
+def update_device_status(device: DeviceSchema, db: Session = Depends(get_db)):
     return change_device_status(device, db)
+
+# Route to get all data from vehicle table
+@app.get("/vehicle")
+def get_vehicles(db: Session = Depends(get_db)):
+    data: List[Vehicle] = get_all_vehicles(db)
+    return data
+
+
+# Route to insert a new data into the devices table
+@app.post("/vehicle")
+def new_vehicle(vehicle: VehicleSchema, db: Session = Depends(get_db)):
+    if (str(vehicle.model).strip() and str(vehicle.manufacturer).strip()):
+        return create_vehicle(vehicle, db)
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content="Invalid data!")
 
 
 # Route to insert a new data into the status table
@@ -80,36 +98,36 @@ def new_status(status: StatusSchema, db: Session=Depends(get_db)):
 # Route to get all data from status table
 @app.get("/status")
 def get_devices(db: Session=Depends(get_db)):
-    banco_dados: List[Status] = get_all_status(db)
-    return banco_dados
+    data: List[Status] = get_all_status(db)
+    return data
 
 
 # Route to get all data from sac_dm table
 @app.get("/sac_dm")
 def get_sacdm(db: Session=Depends(get_db)):
-    banco_dados: List[SACDM] = get_all_sacdm(db)
-    return banco_dados
+    data: List[SACDM] = get_all_sacdm(db)
+    return data
 
 
 # Route to get data from sac_dm table filtered by id
-@app.get("/sac_dm_by_device_id")
-def sacdm_by_device_id(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[SACDM] = get_sacdm_by_device_id(data, db)
-    return banco_dados
+@app.get("/sac_dm_by_device_id/{device_id}")
+def sacdm_by_device_id(data: int, db: Session=Depends(get_db)):
+    data: List[SACDM] = get_sacdm_by_device_id(data, db)
+    return data
 
 
 # Route to get data from sac_dm table filter by datetime
 @app.get("/sac_dm_by_datetime")
 def sacdm_by_datetime(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[SACDM] = get_sacdm_by_datetime(data, db)
-    return banco_dados
+    data: List[SACDM] = get_sacdm_by_datetime(data, db)
+    return data
 
 
 # Route to get data from sac_dm table filtered by device id and datetime
 @app.get("/sac_dm_by_device_id_and_datetime")
 def sacdm_by_device_id_and_datetime(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[SACDM] = get_sacdm_by_device_id_and_datetime(data, db)
-    return banco_dados
+    data: List[SACDM] = get_sacdm_by_device_id_and_datetime(data, db)
+    return data
 
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")
@@ -127,27 +145,22 @@ def get_accelerometter_data(db: Session=Depends(get_db)):
 # Route to get data from accelerometer table filtered by device id
 @app.get("/accelerometer_by_device_id")
 def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_device_id(data, db)
-    return banco_dados
+    data: List[AccelerometerAcquisition] = get_accelerometer_record_by_device_id(data, db)
+    return data
 
-# Route to get data from accelerometer table filtered by label
-@app.get("/accelerometer_by_label")
-def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_label(data, db)
-    return banco_dados
 
 # Route to get data from accelerometer table filtered by datetime
 @app.get("/accelerometer_by_datetime")
 def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_datetime(data, db)
-    return banco_dados
+    data: List[AccelerometerAcquisition] = get_accelerometer_record_by_datetime(data, db)
+    return data
 
 
 # Route to get data from accelerometer table filtered by device id and datetime
 @app.get("/accelerometer_by_device_id_and_datetime")
 def accelerometer_by_device_id(data: Filter, db: Session=Depends(get_db)):
-    banco_dados: List[AccelerometerAcquisition] = get_accelerometer_record_by_device_id_and_datetime(data, db)
-    return banco_dados
+    data: List[AccelerometerAcquisition] = get_accelerometer_record_by_device_id_and_datetime(data, db)
+    return data
 
 
 # Route to insert data into accelerometer table

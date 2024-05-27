@@ -11,7 +11,7 @@ path_db = os.path.join(current_dir, 'tables.db')
 
 
 engine = create_engine(
-    "sqlite:///tables.db", echo=True,
+    "sqlite:///tables.db", echo=True, echo_pool="debug",
     connect_args={"check_same_thread": False}
 )
 

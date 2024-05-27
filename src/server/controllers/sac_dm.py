@@ -27,9 +27,9 @@ def get_all_sacdm(db: Session):
     return db.query(SACDM).all()
 
     
-def get_sacdm_by_device_id(data: Filter, db: Session):
-    if data.device_id:
-        return db.query(SACDM).filter(SACDM.device_id == data.device_id).all()
+def get_sacdm_by_device_id(data: int, db: Session):
+    if data:
+        return db.query(SACDM).filter(SACDM.device_id == data).all()
 
 
 def get_sacdm_by_datetime(data: Filter, db: Session):

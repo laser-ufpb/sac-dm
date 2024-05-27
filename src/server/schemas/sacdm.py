@@ -5,3 +5,4 @@ class SACDMSchema(BaseModel):
     device_id: int
     value: float
     timestamp: str
+    label: str
