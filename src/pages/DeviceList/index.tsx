@@ -61,8 +61,6 @@ export const DeviceList = () => {
   };
 
   const filteredDevices = devices.filter((device) => {
-    console.log(device.status_id, filterStatus);
-
     return filterStatus.length > 0
       ? filterStatus.includes(device.status_id)
       : true;
