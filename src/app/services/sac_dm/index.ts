@@ -11,7 +11,7 @@ class SacDmService {
     }
   }
 
-  async getSacDmByDeviceId(id: string) {
+  async getSacDmByDeviceId(id: number) {
     try {
       const response = await api.get(`/sac_dm_by_device_id`, {
         params: {
