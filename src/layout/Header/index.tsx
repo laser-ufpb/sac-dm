@@ -14,20 +14,20 @@ export const Header = () => {
             <Dashboard />
           </NavigationButton> */}
       <NavigationButton
-        isActive={isMenuItemActive("/devices") || isMenuItemActive("/device")}
+        className={isMenuItemActive("/devices") || isMenuItemActive("/device") ? "active" : ""}
         onClick={() => navigate("/devices")}
       >
         <Devices />
       </NavigationButton>
       <NavigationButton
-        isActive={isMenuItemActive("/sac_dm")}
+        className={isMenuItemActive("/sac_dm") ? "active" : ""}
         onClick={() => navigate("/sac_dm")}
       >
         <Equalizer />
       </NavigationButton>
 
       <NavigationButton
-        isActive={isMenuItemActive("/account")}
+        className={isMenuItemActive("/account") ? "active" : ""}
         onClick={() => navigate("/account")}
         style={{
           position: "absolute",

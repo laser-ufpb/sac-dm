@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export const Container = styled.header`
   width: 100%;
@@ -16,24 +16,15 @@ export const Container = styled.header`
   gap: 8px;
 `;
 
-interface NavigationButtonProps {
-  isActive?: boolean;
-}
-
-export const NavigationButton = styled(Button) <NavigationButtonProps>`
-
+export const NavigationButton = styled(Button)`
   &.MuiButtonBase-root {
     color: ${({ theme }) => theme.text};
-  }
 
-  ${({ isActive }) =>
-    isActive &&
-    css`
-      &.MuiButtonBase-root {
-        color: ${({ theme }) => theme.primary};
-        background-color: ${({ theme }) => `${theme.information}23`};
-      }
-    `}
+    &.active {
+      color: ${({ theme }) => theme.primary};
+      background-color: ${({ theme }) => `${theme.information}23`};
+    }
+  }
 
   svg {
     height: 36px;
