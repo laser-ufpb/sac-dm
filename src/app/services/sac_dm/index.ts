@@ -4,7 +4,8 @@ class SacDmService {
   async getSacDm() {
     try {
       const response = await api.get("/sac_dm");
-      return response.data;
+      const filteredResponse = response.data.slice(13);
+      return filteredResponse;
     } catch (error) {
       console.error(error);
     }
