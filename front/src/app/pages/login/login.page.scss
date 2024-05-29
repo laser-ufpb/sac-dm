@@ -1,0 +1,19 @@
+ion-card-header
+{
+    text-align: center;
+}
+
+ion-card
+{
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-container
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    --ion-content-padding: 100px;
+}
