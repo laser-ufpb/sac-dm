@@ -2,8 +2,9 @@ import datetime
 from models.models import SACDM
 from schemas.sacdm import SACDMSchema
 from schemas.filter import Filter
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from fastapi import status
 from fastapi.responses import JSONResponse
 
@@ -23,8 +24,11 @@ def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
         content="Successfully entered data!")
 
 
-def get_all_sacdm(db: Session):
-    return db.query(SACDM).all()
+def get_all_sacdm(db: Session, limit: Optional[int] = None):
+    query = db.query(SACDM).order_by(desc(SACDM.timestamp))
+    if limit:
+        query = query.limit(limit)
+    return query.all()
 
     
 def get_sacdm_by_device_id(data: int, db: Session):

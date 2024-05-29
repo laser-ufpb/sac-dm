@@ -12,7 +12,7 @@ from schemas.sacdm import SACDMSchema
 from schemas.status import StatusSchema
 from schemas.user import UserSchema
 from schemas.vehicle import VehicleSchema
-from fastapi import Depends, FastAPI, Response, status
+from fastapi import Depends, FastAPI, Query, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -102,10 +102,10 @@ def get_devices(db: Session=Depends(get_db)):
     return data
 
 
-# Route to get all data from sac_dm table
+# Route to get data from sac_dm table with an optional limit
 @app.get("/sac_dm")
-def get_sacdm(db: Session=Depends(get_db)):
-    data: List[SACDM] = get_all_sacdm(db)
+def get_sacdm(db: Session=Depends(get_db), limit: Optional[int] = Query(None, description="Limit the number of records returned")):
+    data: List[SACDM] = get_all_sacdm(db,  limit)
     return data
 
 
