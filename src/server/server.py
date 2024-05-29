@@ -21,7 +21,7 @@ from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.accelerometer import *
 from controllers.device import create_device, get_all_devices, get_device, delete_a_device, change_device_status
-from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
+from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime, get_sacdm_by_filter
 from controllers.status import create_status, get_all_status
 from controllers.vehicle import *
 from database import (get_db, Session)
@@ -52,7 +52,7 @@ def get_devices(db: Session=Depends(get_db)):
     return data
 
 
-# Route to get vehicle by id
+# Route to get device by device_code
 @app.get("/device_by_code/{code}")
 def get_device_by_code(code: str, db: Session=Depends(get_db)):
     data: Device = get_device(code, db)
@@ -63,7 +63,6 @@ def get_device_by_code(code: str, db: Session=Depends(get_db)):
 @app.post("/device")
 def new_device(device: DeviceSchema, db: Session=Depends(get_db)):
     if (str(device.device_code).strip()):
-        print(device.device_code)
         return create_device(device, db)
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -96,7 +95,7 @@ def get_vehicle_by_id(id: int, db: Session=Depends(get_db)):
     return data
 
 
-# Route to insert a new data into the devices table
+# Route to insert a new data into the vehicle table
 @app.post("/vehicle")
 def new_vehicle(vehicle: VehicleSchema, db: Session=Depends(get_db)):
     if (str(vehicle.model).strip() and str(vehicle.manufacturer).strip()):
@@ -125,25 +124,41 @@ def get_sacdm(db: Session=Depends(get_db), limit: Optional[int] = Query(None, de
     return data
 
 
-# Route to get data from sac_dm table filtered by id
+# Route to get data from sac_dm table filtered by device_id
 @app.get("/sac_dm_by_device_id/{device_id}")
-def sacdm_by_device_id(data: int, db: Session=Depends(get_db)):
-    data: List[SACDM] = get_sacdm_by_device_id(data, db)
+def sacdm_by_device_id(device_id: int, db: Session=Depends(get_db)):
+    data: List[SACDM] = get_sacdm_by_device_id(device_id, db)
     return data
 
 
 # Route to get data from sac_dm table filter by datetime
 @app.get("/sac_dm_by_datetime")
-def sacdm_by_datetime(data: Filter, db: Session=Depends(get_db)):
-    data: List[SACDM] = get_sacdm_by_datetime(data, db)
+def sacdm_by_datetime(datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
+                      datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                      db: Session=Depends(get_db)):
+    data: List[SACDM] = get_sacdm_by_datetime(datetime_initial, datetime_final, db)
     return data
 
 
 # Route to get data from sac_dm table filtered by device id and datetime
 @app.get("/sac_dm_by_device_id_and_datetime")
-def sacdm_by_device_id_and_datetime(data: Filter, db: Session=Depends(get_db)):
-    data: List[SACDM] = get_sacdm_by_device_id_and_datetime(data, db)
+def sacdm_by_device_id_and_datetime(device_id: Optional[int] = Query(None, description="Optional device id for filter"),
+                                    datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
+                                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                                    db: Session=Depends(get_db)):
+    data: List[SACDM] = get_sacdm_by_device_id_and_datetime(device_id, datetime_initial, datetime_final, db)
     return data
+
+
+# Route to get data from sac_dm table filtered by anything
+# @app.get("/sac_dm_by_filter")
+# def sacdm_by_device_id_and_datetime(device_id: Optional[int] = Query(None, description="Optional device id for filter"),
+#                                     datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
+#                                     datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+#                                     db: Session=Depends(get_db)):
+#     data: List[SACDM] = get_sacdm_by_filter(device_id, datetime_initial, datetime_final, db)
+#     return data
+
 
 # Route to insert a new data into the sac_dm table
 @app.post("/sac_dm")

@@ -12,8 +12,7 @@ class Device(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     device_code = Column(String, nullable=False, unique=True)
     timestamp = Column(String, nullable=True)
-    status_id = Column(Integer, ForeignKey(
-        'status_description.id'), nullable=True)
+    status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
     vehicle_id = Column(Integer, ForeignKey('vehicle.id'), nullable=True)
 
     status = relationship("Status")
