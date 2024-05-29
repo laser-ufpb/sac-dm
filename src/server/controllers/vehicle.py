@@ -17,3 +17,8 @@ def create_vehicle(vehicle_schema: VehicleSchema, db: Session):
 
 def get_all_vehicles(db: Session):
     return db.query(Vehicle).all()
+
+
+def get_vehicle(id: int, db: Session):
+    if id:
+        return db.query(Vehicle).filter(Vehicle.id == id).first()

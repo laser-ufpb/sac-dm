@@ -19,6 +19,10 @@ def create_device(device_schema: DeviceSchema, db: Session):
 def get_all_devices(db: Session):
     return db.query(Device).all()
 
+def get_device(device_code: str, db: Session):
+    if id:
+        return db.query(Device).filter(Device.device_code == device_code).first()
+
 
 def delete_a_device(device_schema: DeviceSchema, db: Session):
     device = Device(**device_schema.dict())

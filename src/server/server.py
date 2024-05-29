@@ -20,7 +20,7 @@ from typing import List, Optional
 from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.accelerometer import *
-from controllers.device import create_device, get_all_devices, delete_a_device, change_device_status
+from controllers.device import create_device, get_all_devices, get_device, delete_a_device, change_device_status
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_device_id, get_sacdm_by_datetime, get_sacdm_by_device_id_and_datetime
 from controllers.status import create_status, get_all_status
 from controllers.vehicle import *
@@ -44,10 +44,18 @@ app.add_middleware(
 def show_devices():
     return {"SUCCESS"}
 
+
 # Route to get all data from device table
 @app.get("/device")
 def get_devices(db: Session=Depends(get_db)):
     data: List[Device] = get_all_devices(db)
+    return data
+
+
+# Route to get vehicle by id
+@app.get("/device_by_code/{code}")
+def get_device_by_code(code: str, db: Session=Depends(get_db)):
+    data: Device = get_device(code, db)
     return data
 
 
@@ -70,19 +78,27 @@ def delete_device(device: DeviceSchema, db: Session=Depends(get_db)):
 
 # Route to update status_id from a device
 @app.put("/device")
-def update_device_status(device: DeviceSchema, db: Session = Depends(get_db)):
+def update_device_status(device: DeviceSchema, db: Session=Depends(get_db)):
     return change_device_status(device, db)
+
 
 # Route to get all data from vehicle table
 @app.get("/vehicle")
-def get_vehicles(db: Session = Depends(get_db)):
+def get_vehicles(db: Session=Depends(get_db)):
     data: List[Vehicle] = get_all_vehicles(db)
+    return data
+
+
+# Route to get vehicle by id
+@app.get("/vehicle_by_id/{id}")
+def get_vehicle_by_id(id: int, db: Session=Depends(get_db)):
+    data: Vehicle = get_vehicle(id, db)
     return data
 
 
 # Route to insert a new data into the devices table
 @app.post("/vehicle")
-def new_vehicle(vehicle: VehicleSchema, db: Session = Depends(get_db)):
+def new_vehicle(vehicle: VehicleSchema, db: Session=Depends(get_db)):
     if (str(vehicle.model).strip() and str(vehicle.manufacturer).strip()):
         return create_vehicle(vehicle, db)
     return JSONResponse(
@@ -97,7 +113,7 @@ def new_status(status: StatusSchema, db: Session=Depends(get_db)):
 
 # Route to get all data from status table
 @app.get("/status")
-def get_devices(db: Session=Depends(get_db)):
+def get_status(db: Session=Depends(get_db)):
     data: List[Status] = get_all_status(db)
     return data
 
