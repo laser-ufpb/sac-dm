@@ -25,29 +25,29 @@ def create_accelerometer_record(accelerometer_schema: List[AccelerometerSchema],
 def get_all_accelerometer_records(db: Session):
     return db.query(AccelerometerAcquisition).all()
 
-    
-def get_accelerometer_record_by_device_id(data: Filter, db: Session):
-    if data.device_id:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id).all()
 
 def get_accelerometer_record_by_label(data: Filter, db: Session):
     print("Data: ", data)
     if data.label:
         return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.label == data.label).all()
 
-def get_accelerometer_record_by_datetime(data: Filter, db: Session):
-    if data.datetime_initial and not data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= data.datetime_initial).all()
-    elif data.datetime_initial and data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= data.datetime_initial, AccelerometerAcquisition.timestamp <= data.datetime_final).all()
-    
 
-def get_accelerometer_record_by_device_id_and_datetime(data: Filter, db: Session):
-    if data.device_id and data.datetime_initial and not data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp >= data.datetime_initial).all()
-    elif data.device_id and data.datetime_initial and data.datetime_final:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == data.device_id, AccelerometerAcquisition.timestamp >= data.datetime_initial, AccelerometerAcquisition.timestamp <= data.datetime_final).all()
- 
+def get_accelerometer_by_filter(device_id: int, datetime_initial: str, datetime_final: str, db: Session):
+    if device_id and not datetime_initial and not datetime_final:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == device_id).all()
+    elif device_id and datetime_initial and not datetime_final:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == device_id, AccelerometerAcquisition.timestamp >= datetime_initial).all()
+    elif device_id and datetime_final and not datetime_initial:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == device_id, AccelerometerAcquisition.timestamp <= datetime_final).all()
+    elif device_id and datetime_initial and datetime_final:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == device_id, AccelerometerAcquisition.timestamp >= datetime_initial, AccelerometerAcquisition.timestamp <= datetime_final ).all()
+    elif datetime_initial and not datetime_final and not device_id:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= datetime_initial).all()
+    elif datetime_final and not datetime_initial and not device_id:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp <= datetime_final).all()
+    elif datetime_initial and datetime_final and not device_id:
+        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= datetime_initial, AccelerometerAcquisition.timestamp <= datetime_final ).all()
+
 
 def delete_accelerometer_records_by_device_id(device_id_filter: Filter, db: Session):
     try:
