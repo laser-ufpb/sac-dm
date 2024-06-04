@@ -69,10 +69,19 @@ class Vehicle(Base):
     manufacture_year = Column(Integer, nullable=True)
     engine_type = Column(String, nullable=True)  # e.g., piston, turboprop, jet
     number_of_engines = Column(Integer, nullable=True)
-    status_id = Column(Integer, ForeignKey(
-        'status_description.id'), nullable=True)
+    status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
 
-    status = relationship("Status")
+
+class SACDMDefault(Base):
+    __tablename__ = "sacdm_default"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    vehicle_id = Column(Integer, ForeignKey('vehicle.id'), nullable=True)
+    x_mean = Column(Float, nullable=False)
+    x_standard_deviation = Column(Float, nullable=False)
+    y_mean = Column(Float, nullable=False)
+    y_standard_deviation = Column(Float, nullable=False)
+    z_mean = Column(Float, nullable=False)
+    z_standard_deviation = Column(Float, nullable=False)
 
 
 Base.metadata.create_all(bind=engine)

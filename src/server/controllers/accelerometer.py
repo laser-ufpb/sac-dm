@@ -1,7 +1,6 @@
 import datetime
 from models.models import AccelerometerAcquisition
 from schemas.accelerometer import AccelerometerSchema
-from schemas.filter import Filter
 from sqlalchemy.orm import Session
 from typing import List
 from fastapi import status
@@ -26,10 +25,10 @@ def get_all_accelerometer_records(db: Session):
     return db.query(AccelerometerAcquisition).all()
 
 
-def get_accelerometer_record_by_label(data: Filter, db: Session):
-    print("Data: ", data)
-    if data.label:
-        return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.label == data.label).all()
+# def get_accelerometer_record_by_label(data: Filter, db: Session):
+#     print("Data: ", data)
+#     if data.label:
+#         return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.label == data.label).all()
 
 
 def get_accelerometer_by_filter(device_id: int, datetime_initial: str, datetime_final: str, db: Session):
@@ -49,9 +48,9 @@ def get_accelerometer_by_filter(device_id: int, datetime_initial: str, datetime_
         return db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= datetime_initial, AccelerometerAcquisition.timestamp <= datetime_final ).all()
 
 
-def delete_accelerometer_records_by_device_id(device_id_filter: Filter, db: Session):
+def delete_accelerometer_records_by_device_id(device_id: int, db: Session):
     try:
-        records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == device_id_filter.device_id).all()
+        records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.device_id == device_id).all()
         if(not records):
             return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -68,10 +67,10 @@ def delete_accelerometer_records_by_device_id(device_id_filter: Filter, db: Sess
             content="Delete failed!")
     
 
-def delete_accelerometer_records_by_datetime(device_datetime_filter: Filter, db: Session):
-    if device_datetime_filter.datetime_initial and not device_datetime_filter.datetime_final:
+def delete_accelerometer_records_by_datetime(datetime_initial: str, datetime_final: str, db: Session):
+    if datetime_initial and not datetime_final:
         try:
-            records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= device_datetime_filter.datetime_initial).all()
+            records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= datetime_initial).all()
             if(not records):
                 return JSONResponse(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -86,9 +85,9 @@ def delete_accelerometer_records_by_datetime(device_datetime_filter: Filter, db:
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content="Delete failed!")
-    elif device_datetime_filter.datetime_initial and device_datetime_filter.datetime_final:
+    elif datetime_initial and datetime_final:
         try:
-            records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= device_datetime_filter.datetime_initial, AccelerometerAcquisition.timestamp <= device_datetime_filter.datetime_final).all()
+            records = db.query(AccelerometerAcquisition).filter(AccelerometerAcquisition.timestamp >= datetime_initial, AccelerometerAcquisition.timestamp <= datetime_final).all()
             if(not records):
                 return JSONResponse(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
