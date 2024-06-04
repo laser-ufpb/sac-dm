@@ -30,22 +30,19 @@ def get_all_sacdm(db: Session, limit: Optional[int] = None):
         query = query.limit(limit)
     return query.all()
 
-    
-def get_sacdm_by_device_id(data: int, db: Session):
-    if data:
-        return db.query(SACDM).filter(SACDM.device_id == data).all()
 
-
-def get_sacdm_by_datetime(data: Filter, db: Session):
-    if data.datetime_initial and not data.datetime_final:
-        return db.query(SACDM).filter(SACDM.timestamp >= data.datetime_initial).all()
-    elif data.datetime_initial and data.datetime_final:
-        return db.query(SACDM).filter(SACDM.timestamp >= data.datetime_initial, SACDM.timestamp <= data.datetime_final ).all()
-    
-    
-def get_sacdm_by_device_id_and_datetime(data: Filter, db: Session):
-    if data.device_id and data.datetime_initial and not data.datetime_final:
-        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp >= data.datetime_initial).all()
-    elif data.device_id and data.datetime_initial and data.datetime_final:
-        return db.query(SACDM).filter(SACDM.device_id == data.device_id, SACDM.timestamp >= data.datetime_initial, SACDM.timestamp <= data.datetime_final ).all()
-    
+def get_sacdm_by_filter(device_id: int, datetime_initial: str, datetime_final: str, db: Session):
+    if device_id and not datetime_initial and not datetime_final:
+        return db.query(SACDM).filter(SACDM.device_id == device_id).all()
+    elif device_id and datetime_initial and not datetime_final:
+        return db.query(SACDM).filter(SACDM.device_id == device_id, SACDM.timestamp >= datetime_initial).all()
+    elif device_id and datetime_final and not datetime_initial:
+        return db.query(SACDM).filter(SACDM.device_id == device_id, SACDM.timestamp <= datetime_final).all()
+    elif device_id and datetime_initial and datetime_final:
+        return db.query(SACDM).filter(SACDM.device_id == device_id, SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
+    elif datetime_initial and not datetime_final and not device_id:
+        return db.query(SACDM).filter(SACDM.timestamp >= datetime_initial).all()
+    elif datetime_final and not datetime_initial and not device_id:
+        return db.query(SACDM).filter(SACDM.timestamp <= datetime_final).all()
+    elif datetime_initial and datetime_final and not device_id:
+        return db.query(SACDM).filter(SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
