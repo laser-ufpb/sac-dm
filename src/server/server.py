@@ -2,16 +2,16 @@ import sqlite3
 import datetime
 import json
 import random
-from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User, Status, Vehicle
+from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User, Status, Vehicle, SACDMDefault
 from models.users import authenticate_user, get_current_user
 from models.token import create_access_token
 from schemas.accelerometer import AccelerometerSchema
 from schemas.device import DeviceSchema
-from schemas.filter import Filter
 from schemas.sacdm import SACDMSchema
 from schemas.status import StatusSchema
 from schemas.user import UserSchema
 from schemas.vehicle import VehicleSchema
+from schemas.sacdm_default import SACDMDefaultSchema
 from fastapi import Depends, FastAPI, Query, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -24,6 +24,7 @@ from controllers.device import create_device, get_all_devices, get_device, delet
 from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_filter
 from controllers.status import create_status, get_all_status
 from controllers.vehicle import *
+from controllers.sacdm_default import *
 from database import (get_db, Session)
 from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
 
@@ -165,14 +166,29 @@ def new_accelerometer_record(accelerometer_data: List[AccelerometerSchema], db: 
 
 # Route to delete data from accelerometer table by device_id
 @app.delete("/accelerometer_by_device_id")
-def delete_device(filter_delete: Filter, db: Session=Depends(get_db)):
-    return delete_accelerometer_records_by_device_id(filter_delete, db)
+def delete_accelerometer_by_device_id(device_id: Optional[int] = Query(None, description="Optional device id for filter"), db: Session=Depends(get_db)):
+    return delete_accelerometer_records_by_device_id(device_id, db)
 
 
 # Route to delete data from accelerometer table by datetime
 @app.delete("/accelerometer_by_datetime")
-def delete_device(filter_delete: Filter, db: Session=Depends(get_db)):
-    return delete_accelerometer_records_by_datetime(filter_delete, db)
+def delete_accelerometer_by_datetime(datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
+                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                    db: Session=Depends(get_db)):
+    return delete_accelerometer_records_by_datetime(datetime_initial, datetime_final, db)
+
+
+# Route to get all data from SACDMDefault table
+@app.get("/sacdm_default")
+def all_sacdm_default(vehicle_id: Optional[int] = Query(None, description="vehicle_id to filter"), db: Session=Depends(get_db)):
+    data: List[SACDMDefault] = get_all_sacdm_default(vehicle_id, db)
+    return data
+
+
+# Route to insert a new data into SACDMFedault table
+@app.post("/sacdm_default")
+def new_sacdm_default(data: SACDMDefaultSchema, db: Session = Depends(get_db)):
+    return create_sacdm_default(data, db)
 
 
 # Route to insert a new data into users table

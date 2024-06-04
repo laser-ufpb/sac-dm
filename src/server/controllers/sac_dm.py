@@ -1,7 +1,6 @@
 import datetime
 from models.models import SACDM
 from schemas.sacdm import SACDMSchema
-from schemas.filter import Filter
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from typing import List, Optional
