@@ -15,9 +15,6 @@ class Device(Base):
     status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
     vehicle_id = Column(Integer, ForeignKey('vehicle.id'), nullable=True)
 
-    status = relationship("Status")
-    vehicle = relationship("Vehicle")
-
 
 class Status(Base):
     __tablename__ = "status_description"
