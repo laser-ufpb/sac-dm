@@ -7,14 +7,13 @@ from typing import List, Optional
 from fastapi import status
 from fastapi.responses import JSONResponse
 
-def get_all_sacdm_default(db: Session, limit: Optional[int] = None):
-    data = db.query(SACDMDefault).all()
+def get_all_sacdm_default(vehicle_id: int, db: Session, limit: Optional[int] = None):
+    data = db.query(SACDMDefault).filter(SACDMDefault.vehicle_id == vehicle_id).all()
     return data
 
 
 def create_sacdm_default(sacdm_default_schema: SACDMDefaultSchema, db: Session):
     try:
-        print(sacdm_default_schema)
         data = SACDMDefault(**sacdm_default_schema.dict())
         db.add(data)
         db.commit()
