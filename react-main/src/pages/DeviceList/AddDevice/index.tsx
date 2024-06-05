@@ -1,18 +1,18 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, IconButton } from "@mui/material";
-import { CustomModal } from "../../../../components/CustomModal";
+import { CustomModal } from "../../../components/CustomModal";
 import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "../../../../components/CustomModal/styles";
+} from "../../../components/CustomModal/styles";
 import { Close } from "@mui/icons-material";
-import { DefaultForm } from "../../../../components/forms/DefaultForm";
-import { FormGroup } from "../../../../components/forms/FormGroup";
-import { DefaultInput } from "../../../../components/forms/DefaultInput";
+import { DefaultForm } from "../../../components/forms/DefaultForm";
+import { FormGroup } from "../../../components/forms/FormGroup";
+import { DefaultInput } from "../../../components/forms/DefaultInput";
 import { DeviceFormData, deviceSchema } from "./schema";
-import DeviceService from "../../../../app/services/devices";
+import DeviceService from "../../../app/services/devices";
 import { AddDeviceProps } from "./types";
 
 export const AddDevice = ({ open, onClose, onSubmitted }: AddDeviceProps) => {

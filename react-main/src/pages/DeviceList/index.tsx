@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DeviceProps, VehicleProps } from "../../types";
+import { DeviceProps, VehicleProps, StatusProps } from "../../types";
 import {
   DeviceItem,
   DevicesList,
@@ -15,11 +15,12 @@ import {
   AirplanemodeInactive,
   DirectionsCarFilled,
 } from "@mui/icons-material";
-import { AddDevice } from "./components/AddDevice";
+import { AddDevice } from "./AddDevice";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../utils/getStatusColor";
-import { FilterStatus } from "./components/FilterStatus";
+import { CustomSelect } from "../../components/CustomSelect";
 import deviceService from "../../app/services/devices";
+import statusService from "../../app/services/status";
 import vehicleService from "../../app/services/vehicle";
 
 export const DeviceList = () => {
@@ -27,12 +28,14 @@ export const DeviceList = () => {
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<number[]>([]);
+  const [filterStatus, setFilterStatus] = useState<number | null>(null);
+  const [statusOptions, setStatusOptions] = useState<StatusProps[]>([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     loadItems();
+    loadStatusOptions();
   }, []);
 
   const loadItems = async () => {
@@ -52,14 +55,21 @@ export const DeviceList = () => {
     }
   };
 
+  const loadStatusOptions = async () => {
+    try {
+      const response = await statusService.getStatus();
+      setStatusOptions(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCellClick = (id: number, type: string) => {
     navigate(`/${type}/${id}`);
   };
 
   const filteredDevices = devices.filter((device) => {
-    return filterStatus.length > 0
-      ? filterStatus.includes(device.status_id)
-      : true;
+    return filterStatus !== null ? device.status_id === filterStatus : true;
   });
 
   return (
@@ -86,9 +96,14 @@ export const DeviceList = () => {
         <>
           <SectionTitle>Dispositivos:</SectionTitle>
           <FilterContainer>
-            <FilterStatus
-              filterStatus={filterStatus}
-              setFilterStatus={setFilterStatus}
+            <CustomSelect
+              label="Filtrar Status"
+              options={statusOptions.map((status: StatusProps) => ({
+                id: status.id,
+                description: status.description,
+              }))}
+              selectedOption={filterStatus}
+              setSelectedOption={setFilterStatus}
             />
           </FilterContainer>
           {filteredDevices.length > 0 ? (
