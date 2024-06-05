@@ -127,7 +127,7 @@ def get_sacdm(db: Session=Depends(get_db), limit: Optional[int] = Query(None, de
 
 # Route to get data from sac_dm table filtered by anything
 @app.get("/sac_dm_by_filter")
-def sacdm_by_filter(device_id: Optional[int] = Query(None, description="Optional device id for filter"),
+def sacdm_by_filter(vehicle_id: Optional[int] = Query(None, description="Optional device id for filter"),
                                     datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
                                     datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
                                     db: Session=Depends(get_db)):
@@ -178,9 +178,9 @@ def delete_accelerometer_by_datetime(datetime_initial: Optional[str] = Query(Non
     return delete_accelerometer_records_by_datetime(datetime_initial, datetime_final, db)
 
 
-# Route to get all data from SACDMDefault table
+# Route to get a data from SACDMDefault table by vehicle id
 @app.get("/sacdm_default")
-def all_sacdm_default(vehicle_id: Optional[int] = Query(None, description="vehicle_id to filter"), db: Session=Depends(get_db)):
+def sacdm_default(vehicle_id: Optional[int] = Query(None, description="vehicle_id to filter"), db: Session=Depends(get_db)):
     data: List[SACDMDefault] = get_all_sacdm_default(vehicle_id, db)
     return data
 
