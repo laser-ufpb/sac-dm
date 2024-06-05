@@ -1,0 +1,32 @@
+[
+  {
+    "device_code": "DEV001",
+    "id": 1,
+    "timestamp": "2024-05-21T12:00:00Z",
+    "status": "Saudável"
+  },
+  {
+    "device_code": "DEV002",
+    "id": 2,
+    "timestamp": "2024-05-21T12:05:00Z",
+    "status": "Alerta"
+  },
+  {
+    "device_code": "DEV003",
+    "id": 3,
+    "timestamp": "2024-05-21T12:10:00Z",
+    "status": "Crítico"
+  },
+  {
+    "device_code": "DEV004",
+    "id": 4,
+    "timestamp": "2024-05-21T12:15:00Z",
+    "status": "Offline"
+  },
+  {
+    "device_code": "DEV005",
+    "id": 5,
+    "timestamp": "2024-05-21T12:20:00Z",
+    "status": "Saudável"
+  }
+]
