@@ -1,6 +1,7 @@
 import Chart from "react-apexcharts";
 import { SacDmProps } from "../../SacDm/types";
 import { EmptyData } from "../../../components/EmptyData";
+import React from "react";
 
 export const SacDmDevice = ({
   deviceId,
@@ -81,3 +82,10 @@ export const SacDmDevice = ({
     </div>
   );
 };
+
+export default React.memo(SacDmDevice, (prevProps, nextProps) => {
+  return (
+    prevProps.deviceId === nextProps.deviceId &&
+    JSON.stringify(prevProps.sacDm) === JSON.stringify(nextProps.sacDm)
+  );
+});

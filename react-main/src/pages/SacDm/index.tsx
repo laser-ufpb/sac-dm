@@ -10,16 +10,16 @@ import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
 import deviceService from "../../app/services/devices";
 import sacDmService from "../../app/services/sac_dm";
-import { SacDmDevice } from "./components/SacDmDevice";
+import SacDmDevice from "./components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
-import DataCountSelect from "../../components/DataCountSelect";
+// import DataCountSelect from "../../components/DataCountSelect";
 
 export const SacDm = () => {
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState(1);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [open, setOpen] = useState(false);
-  const [dataCount, setDataCount] = useState(100);
+  const [dataCount] = useState(100);
 
   const loadDevices = useCallback(async () => {
     try {
@@ -45,11 +45,15 @@ export const SacDm = () => {
         ...item,
         timestamp: formatTime(item.timestamp),
       }));
-      setSacDm(formattedResponse);
+
+      // Verificação simples para mudanças nos dados
+      if (JSON.stringify(sacDm) !== JSON.stringify(formattedResponse)) {
+        setSacDm(formattedResponse);
+      }
     } catch (error) {
       console.error(error);
     }
-  }, [selectedDeviceId, dataCount]);
+  }, [selectedDeviceId, dataCount, sacDm]);
 
   useEffect(() => {
     loadDevices();
@@ -102,7 +106,11 @@ export const SacDm = () => {
       </Container>
 
       {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
-      <SacDmDevice deviceId={selectedDeviceId} sacDm={sacDm} />
+      <SacDmDevice
+        key={selectedDeviceId}
+        deviceId={selectedDeviceId}
+        sacDm={sacDm}
+      />
     </>
   );
 };
