@@ -22,30 +22,29 @@ export const Device = () => {
   const loadSacDm = useCallback(async () => {
     if (!numericId) return;
     try {
-      const response = await sacDmService.getSacDm(dataCount);
+      const response = await sacDmService.getSacDmByFilter({
+        deviceId: numericId,
+        limit: dataCount,
+      });
       const formattedResponse = response.map((item: SacDmProps) => ({
         ...item,
         timestamp: formatTime(item.timestamp),
       }));
-      const filteredData = formattedResponse.filter(
-        (item: SacDmProps) => item.device_id === numericId
-      );
 
-      if (JSON.stringify(sacDm) !== JSON.stringify(filteredData)) {
-        setSacDm(filteredData);
-      }
+      setSacDm(formattedResponse);
     } catch (error) {
       console.error(error);
     }
-  }, [numericId, sacDm, dataCount]);
+  }, [numericId, dataCount]);
 
   const loadDevices = useCallback(async () => {
     try {
       const response = await deviceService.getDevices();
-      if (response.length > 0) {
-        setDevice(
-          response.find((device: DeviceProps) => device.id === numericId)
-        );
+      const foundDevice = response.find(
+        (device: DeviceProps) => device.id === numericId
+      );
+      if (foundDevice) {
+        setDevice(foundDevice);
       }
     } catch (error) {
       console.error(error);
@@ -86,7 +85,7 @@ export const Device = () => {
         </Description>
       )}
 
-      <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} />
+      {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
       <SacDmDevice deviceId={numericId} sacDm={sacDm} />
     </>
   );

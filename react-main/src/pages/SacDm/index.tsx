@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-// import sacDmService from "../../app/services/sac_dm";
 import { SacDmProps } from "./types";
 import { DeviceProps } from "../DeviceList/types";
-// import DeviceService from "../../app/services/devices";
 import {
   SelectContainer,
   StyledOptions,
@@ -19,7 +17,6 @@ import DataCountSelect from "../../components/DataCountSelect";
 export const SacDm = () => {
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState(1);
-  const [sacDmFiltered, setSacDmFiltered] = useState<SacDmProps[]>([]);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [open, setOpen] = useState(false);
   const [dataCount, setDataCount] = useState(100);
@@ -28,17 +25,22 @@ export const SacDm = () => {
     try {
       const response = await deviceService.getDevices();
       setDevices(response);
-      if (response.length > 0) {
+      const deviceIds = response.map((device: DeviceProps) => device.id);
+      if (!deviceIds.includes(selectedDeviceId) && response.length > 0) {
         setSelectedDeviceId(response[0].id);
       }
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [selectedDeviceId]);
 
   const loadSacDm = useCallback(async () => {
+    if (!selectedDeviceId) return;
     try {
-      const response = await sacDmService.getSacDm(dataCount);
+      const response = await sacDmService.getSacDmByFilter({
+        deviceId: selectedDeviceId,
+        limit: dataCount,
+      });
       const formattedResponse = response.map((item: SacDmProps) => ({
         ...item,
         timestamp: formatTime(item.timestamp),
@@ -47,14 +49,7 @@ export const SacDm = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [dataCount]);
-
-  useEffect(() => {
-    const filteredData = sacDm.filter(
-      (item) => item.device_id === selectedDeviceId
-    );
-    setSacDmFiltered(filteredData);
-  }, [selectedDeviceId, sacDm]);
+  }, [selectedDeviceId, dataCount]);
 
   useEffect(() => {
     loadDevices();
@@ -106,8 +101,8 @@ export const SacDm = () => {
         </SelectContainer>
       </Container>
 
-      <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} />
-      <SacDmDevice deviceId={selectedDeviceId} sacDm={sacDmFiltered} />
+      {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
+      <SacDmDevice deviceId={selectedDeviceId} sacDm={sacDm} />
     </>
   );
 };

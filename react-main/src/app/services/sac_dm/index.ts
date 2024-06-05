@@ -1,5 +1,12 @@
 import { api } from "..";
 
+interface SacDmFilterOptions {
+  deviceId?: number;
+  datetimeInitial?: string;
+  datetimeFinal?: string;
+  limit?: number;
+}
+
 class SacDmService {
   async getSacDm(limit?: number) {
     try {
@@ -14,15 +21,19 @@ class SacDmService {
     }
   }
 
-  async getSacDmByDeviceId(id: number, limit?: number) {
+  async getSacDmByFilter(options: SacDmFilterOptions = {}) {
+    const { deviceId, datetimeInitial, datetimeFinal, limit = 1000 } = options;
+
     try {
-      const response = await api.get(`/sac_dm_by_device_id`, {
+      const response = await api.get(`/sac_dm_by_filter`, {
         params: {
-          device_id: id,
-          limit: limit || 1000,
+          limit: limit,
+          device_id: deviceId,
+          datetime_initial: datetimeInitial,
+          datetime_final: datetimeFinal,
         },
       });
-      return response.data.reverse();
+      return response.data;
     } catch (error) {
       console.error(error);
     }

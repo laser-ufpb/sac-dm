@@ -13,17 +13,17 @@ export const SacDmDevice = ({
     return null;
   }
 
-  // Calcular média e desvio padrão
-  const values = sacDm.map((item: SacDmProps) => +item.value.toFixed(8));
-  const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
-  const stdDev = Math.sqrt(
-    values.reduce((acc, value) => acc + (value - mean) ** 2, 0) / values.length
-  );
+  // // Calcular média e desvio padrão
+  // const values = sacDm.map((item: SacDmProps) => +item.value.toFixed(8));
+  // const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
+  // const stdDev = Math.sqrt(
+  //   values.reduce((acc, value) => acc + (value - mean) ** 2, 0) / values.length
+  // );
 
-  // Criar séries para média e desvio padrão
-  const meanSeries = Array(values.length).fill(mean);
-  const stdDevUpper = meanSeries.map((m) => m + stdDev);
-  const stdDevLower = meanSeries.map((m) => m - stdDev);
+  // // Criar séries para média e desvio padrão
+  // const meanSeries = Array(values.length).fill(mean);
+  // const stdDevUpper = meanSeries.map((m) => m + stdDev);
+  // const stdDevLower = meanSeries.map((m) => m - stdDev);
 
   const optionsChart = {
     chart: {
@@ -51,20 +51,20 @@ export const SacDmDevice = ({
   const seriesChart = [
     {
       name: "Valor",
-      data: values,
+      data: sacDm.map((item: SacDmProps) => +item.value.toFixed(8)),
     },
-    {
-      name: "Média",
-      data: meanSeries.map((value) => parseFloat(value.toFixed(8))), // Garantindo a precisão de 8 casas decimais
-    },
-    {
-      name: "Desvio Padrão Superior",
-      data: stdDevUpper.map((value) => parseFloat(value.toFixed(8))),
-    },
-    {
-      name: "Desvio Padrão Inferior",
-      data: stdDevLower.map((value) => parseFloat(value.toFixed(8))),
-    },
+    // {
+    //   name: "Média",
+    //   data: meanSeries.map((value) => parseFloat(value.toFixed(8))), // Garantindo a precisão de 8 casas decimais
+    // },
+    // {
+    //   name: "Desvio Padrão Superior",
+    //   data: stdDevUpper.map((value) => parseFloat(value.toFixed(8))),
+    // },
+    // {
+    //   name: "Desvio Padrão Inferior",
+    //   data: stdDevLower.map((value) => parseFloat(value.toFixed(8))),
+    // },
   ];
 
   return (
