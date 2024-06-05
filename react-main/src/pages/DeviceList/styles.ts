@@ -17,6 +17,7 @@ export const DevicesList = styled.ul`
   gap: 20px;
   padding: 0;
   list-style: none;
+  margin-bottom: 32px;
 `;
 
 export const DeviceItem = styled.li`
