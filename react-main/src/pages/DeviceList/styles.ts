@@ -56,3 +56,22 @@ export const NoDevicesMessage = styled.div`
   margin-top: 48px;
   opacity: 0.5;
 `;
+
+export const SectionTitle = styled.h2`
+  font-size: 18px;
+  color: ${({ theme }) => theme.text};
+  margin-bottom: 10px;
+  padding-left: 15px;
+  border-left: 4px solid ${({ theme }) => theme.primaryColor};
+`;
+
+export const FilterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-left: 15px;
+
+  > * {
+    margin-right: 12px; // Espaçamento entre controles de filtro se houver mais de um
+  }
+`;
