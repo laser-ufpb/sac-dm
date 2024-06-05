@@ -54,7 +54,7 @@ export const StyledOptions = styled.div`
     align-items: center;
     padding: 8px 16px;
     transition: background-color 0.2s;
-    border-top: 1px solid ${({ theme }) => theme.gray600};
+    border-top: 1px solid ${({ theme }) => theme.gray100};
 
     &:hover {
       background-color: ${({ theme }) => theme.gray600};
