@@ -6,7 +6,7 @@ import { SacDmDevice } from "../SacDm/components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
 import { BackPage } from "../../components/BackPage";
 import { AirplanemodeActive } from "@mui/icons-material";
-import { DeviceProps } from "../DeviceList/types";
+import { DeviceProps } from "../../types";
 import sacDmService from "../../app/services/sac_dm";
 import deviceService from "../../app/services/devices";
 import DataCountSelect from "../../components/DataCountSelect";

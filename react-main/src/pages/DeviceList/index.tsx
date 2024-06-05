@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { DeviceProps } from "./types";
-import { VehicleProps } from "../../types";
+import { DeviceProps, VehicleProps } from "../../types";
 import {
   DeviceItem,
   DevicesList,

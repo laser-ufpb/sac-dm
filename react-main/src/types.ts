@@ -7,3 +7,10 @@ export interface VehicleProps {
   manufacture_year: number;
   number_of_engines: number;
 }
+
+export interface DeviceProps {
+  device_code: string;
+  id: number;
+  timestamp: string;
+  status_id: number;
+}

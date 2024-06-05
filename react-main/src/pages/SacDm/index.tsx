@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { SacDmProps } from "./types";
-import { DeviceProps } from "../DeviceList/types";
+import { DeviceProps } from "../../types";
 import {
   SelectContainer,
   StyledOptions,
