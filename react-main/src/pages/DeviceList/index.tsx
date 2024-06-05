@@ -18,7 +18,7 @@ import {
 import { AddDevice } from "./AddDevice";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../utils/getStatusColor";
-import { CustomSelect } from "../../components/CustomSelect";
+import { MultiSelect } from "../../components/MultiSelect"; // Updated import
 import deviceService from "../../app/services/devices";
 import statusService from "../../app/services/status";
 import vehicleService from "../../app/services/vehicle";
@@ -28,7 +28,7 @@ export const DeviceList = () => {
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<number | null>(null);
+  const [filterStatus, setFilterStatus] = useState<number[]>([]);
   const [statusOptions, setStatusOptions] = useState<StatusProps[]>([]);
 
   const navigate = useNavigate();
@@ -69,7 +69,9 @@ export const DeviceList = () => {
   };
 
   const filteredDevices = devices.filter((device) => {
-    return filterStatus !== null ? device.status_id === filterStatus : true;
+    return filterStatus.length > 0
+      ? filterStatus.includes(device.status_id)
+      : true;
   });
 
   return (
@@ -96,14 +98,14 @@ export const DeviceList = () => {
         <>
           <SectionTitle>Dispositivos:</SectionTitle>
           <FilterContainer>
-            <CustomSelect
-              label="Filtrar Status"
+            <MultiSelect
+              label="Filtrar"
               options={statusOptions.map((status: StatusProps) => ({
                 id: status.id,
                 description: status.description,
               }))}
-              selectedOption={filterStatus}
-              setSelectedOption={setFilterStatus}
+              selectedOptions={filterStatus}
+              setSelectedOptions={setFilterStatus}
             />
           </FilterContainer>
           {filteredDevices.length > 0 ? (

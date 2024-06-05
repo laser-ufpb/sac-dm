@@ -36,6 +36,10 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
+  const handleSelectNone = () => {
+    setSelectedOptions([]);
+  };
+
   return (
     <Container>
       <SelectContainer>
@@ -49,6 +53,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
 
         {open && (
           <StyledOptions>
+            <div onClick={handleSelectNone} style={{ cursor: "pointer" }}>
+              <Checkbox
+                color="primary"
+                checked={selectedOptions.length === 0}
+                onChange={() => handleSelectNone()}
+              />
+              Nenhum
+            </div>
             {options.map((option) => (
               <div key={option.id}>
                 <Checkbox
