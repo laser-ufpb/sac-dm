@@ -1,24 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { SacDmProps } from "./types";
 import { DeviceProps } from "../../types";
-import {
-  SelectContainer,
-  StyledOptions,
-  StyledSelect,
-} from "../DeviceList/components/FilterStatus/styles";
-import { ArrowDropDown } from "@mui/icons-material";
 import { Container } from "./styles";
 import deviceService from "../../app/services/devices";
 import sacDmService from "../../app/services/sac_dm";
 import SacDmDevice from "./components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
 // import DataCountSelect from "../../components/DataCountSelect";
+import { CustomSelect } from "../../components/CustomSelect";
 
 export const SacDm = () => {
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState(1);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<number | null>(1);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
-  const [open, setOpen] = useState(false);
   const [dataCount] = useState(100);
 
   const loadDevices = useCallback(async () => {
@@ -35,7 +29,7 @@ export const SacDm = () => {
   }, [selectedDeviceId]);
 
   const loadSacDm = useCallback(async () => {
-    if (!selectedDeviceId) return;
+    if (selectedDeviceId === null) return;
     try {
       const response = await sacDmService.getSacDmByFilter({
         deviceId: selectedDeviceId,
@@ -69,48 +63,28 @@ export const SacDm = () => {
     return () => clearInterval(intervalId);
   }, [loadSacDm, loadDevices]);
 
-  const handleSelectDevice = (deviceId: number) => {
-    setSelectedDeviceId(deviceId);
-    setOpen(false);
-  };
-
   return (
     <>
       <Container>
-        <SelectContainer>
-          <StyledSelect
-            onClick={() => setOpen(!open)}
-            style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
-          >
-            {
-              devices.find((device) => device.id === selectedDeviceId)
-                ?.device_code
-            }
-            <ArrowDropDown />
-          </StyledSelect>
-
-          {open && (
-            <StyledOptions>
-              {devices.map((device: DeviceProps) => (
-                <div
-                  key={device.id}
-                  onClick={() => handleSelectDevice(device.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {device.device_code}
-                </div>
-              ))}
-            </StyledOptions>
-          )}
-        </SelectContainer>
+        <CustomSelect
+          label="Selecionar Dispositivo"
+          options={devices.map((device) => ({
+            id: device.id,
+            description: device.device_code,
+          }))}
+          selectedOption={selectedDeviceId}
+          setSelectedOption={setSelectedDeviceId}
+        />
       </Container>
 
       {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
-      <SacDmDevice
-        key={selectedDeviceId}
-        deviceId={selectedDeviceId}
-        sacDm={sacDm}
-      />
+      {selectedDeviceId && (
+        <SacDmDevice
+          key={selectedDeviceId}
+          deviceId={selectedDeviceId}
+          sacDm={sacDm}
+        />
+      )}
     </>
   );
 };
