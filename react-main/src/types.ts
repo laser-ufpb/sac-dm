@@ -14,3 +14,8 @@ export interface DeviceProps {
   timestamp: string;
   status_id: number;
 }
+
+export interface StatusProps {
+  description: string;
+  id: number;
+}

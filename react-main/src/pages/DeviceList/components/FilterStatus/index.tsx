@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import statusService from "../../../../app/services/status";
-import { StatusProps } from "./types";
+import { StatusProps } from "../../../../types";
 import { MultiSelect } from "../../../../components/MultiSelect";
 
 interface FilterStatusProps {
