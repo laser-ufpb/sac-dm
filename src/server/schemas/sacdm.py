@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class SACDMSchema(BaseModel):
@@ -6,3 +7,4 @@ class SACDMSchema(BaseModel):
     value: float
     timestamp: str
     label: str
+    vehicle_id: Optional[int]

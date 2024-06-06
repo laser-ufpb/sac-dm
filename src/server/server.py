@@ -127,11 +127,11 @@ def get_sacdm(db: Session=Depends(get_db), limit: Optional[int] = Query(None, de
 
 # Route to get data from sac_dm table filtered by anything
 @app.get("/sac_dm_by_filter")
-def sacdm_by_filter(device_id: Optional[int] = Query(None, description="Optional device id for filter"),
+def sacdm_by_filter(vehicle_id: Optional[int] = Query(None, description="Optional device id for filter"),
                                     datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
                                     datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
                                     db: Session=Depends(get_db)):
-    data: List[SACDM] = get_sacdm_by_filter(device_id, datetime_initial, datetime_final, db)
+    data: List[SACDM] = get_sacdm_by_filter(vehicle_id, datetime_initial, datetime_final, db)
     return data
 
 
@@ -178,9 +178,9 @@ def delete_accelerometer_by_datetime(datetime_initial: Optional[str] = Query(Non
     return delete_accelerometer_records_by_datetime(datetime_initial, datetime_final, db)
 
 
-# Route to get all data from SACDMDefault table
+# Route to get a data from SACDMDefault table by vehicle id
 @app.get("/sacdm_default")
-def all_sacdm_default(vehicle_id: Optional[int] = Query(None, description="vehicle_id to filter"), db: Session=Depends(get_db)):
+def sacdm_default(vehicle_id: Optional[int] = Query(None, description="vehicle_id to filter"), db: Session=Depends(get_db)):
     data: List[SACDMDefault] = get_all_sacdm_default(vehicle_id, db)
     return data
 
@@ -204,7 +204,9 @@ def list_users(db: Session = Depends(get_db)):
 def get_user_by_username_route(username: str, db: Session = Depends(get_db)):
     user = get_user_by_username(username, db)
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content="User not found!")
     return user
 
 

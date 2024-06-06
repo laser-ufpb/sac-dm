@@ -38,7 +38,7 @@ def delete_a_device(device_schema: DeviceSchema, db: Session):
             status_code=status.HTTP_200_OK,
             content="Successfully deleted data!")
     except Exception as e:
-        if "FOREIGN KEY constraint" in str(e):
+        if "foreign key" in str(e):
             return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content="Can't delete a device with registered data!")

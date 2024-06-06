@@ -1,5 +1,5 @@
 import datetime
-from models.models import SACDM
+from models.models import SACDM, Device
 from schemas.sacdm import SACDMSchema
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
@@ -10,7 +10,8 @@ from fastapi.responses import JSONResponse
 
 def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
     try:
-        sac_dm_data = [SACDM(**sac_dm.dict()) for sac_dm in sac_dm_schema]
+        aux = db.query(Device.vehicle_id).filter(Device.id == sac_dm_schema[0].device_id).first()
+        sac_dm_data = [SACDM(**{**sac_dm.dict(), 'vehicle_id' : aux[0]}) for sac_dm in sac_dm_schema]
         db.add_all(sac_dm_data)
         db.commit()
     except Exception:
@@ -30,18 +31,18 @@ def get_all_sacdm(db: Session, limit: Optional[int] = None):
     return query.all()
 
 
-def get_sacdm_by_filter(device_id: int, datetime_initial: str, datetime_final: str, db: Session):
-    if device_id and not datetime_initial and not datetime_final:
-        return db.query(SACDM).filter(SACDM.device_id == device_id).all()
-    elif device_id and datetime_initial and not datetime_final:
-        return db.query(SACDM).filter(SACDM.device_id == device_id, SACDM.timestamp >= datetime_initial).all()
-    elif device_id and datetime_final and not datetime_initial:
-        return db.query(SACDM).filter(SACDM.device_id == device_id, SACDM.timestamp <= datetime_final).all()
-    elif device_id and datetime_initial and datetime_final:
-        return db.query(SACDM).filter(SACDM.device_id == device_id, SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
-    elif datetime_initial and not datetime_final and not device_id:
+def get_sacdm_by_filter(vehicle_id: int, datetime_initial: str, datetime_final: str, db: Session):
+    if vehicle_id and not datetime_initial and not datetime_final:
+        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id).all()
+    elif vehicle_id and datetime_initial and not datetime_final:
+        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id, SACDM.timestamp >= datetime_initial).all()
+    elif vehicle_id and datetime_final and not datetime_initial:
+        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id, SACDM.timestamp <= datetime_final).all()
+    elif vehicle_id and datetime_initial and datetime_final:
+        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id, SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
+    elif datetime_initial and not datetime_final and not vehicle_id:
         return db.query(SACDM).filter(SACDM.timestamp >= datetime_initial).all()
-    elif datetime_final and not datetime_initial and not device_id:
+    elif datetime_final and not datetime_initial and not vehicle_id:
         return db.query(SACDM).filter(SACDM.timestamp <= datetime_final).all()
-    elif datetime_initial and datetime_final and not device_id:
+    elif datetime_initial and datetime_final and not vehicle_id:
         return db.query(SACDM).filter(SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
