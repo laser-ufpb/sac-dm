@@ -204,7 +204,9 @@ def list_users(db: Session = Depends(get_db)):
 def get_user_by_username_route(username: str, db: Session = Depends(get_db)):
     user = get_user_by_username(username, db)
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content="User not found!")
     return user
 
 
