@@ -14,7 +14,7 @@ def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
         sac_dm_data = [SACDM(**{**sac_dm.dict(), 'vehicle_id' : aux[0]}) for sac_dm in sac_dm_schema]
         db.add_all(sac_dm_data)
         db.commit()
-    except Exception as e:
+    except Exception:
         return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"error": "Failed to insert data to the database."}
