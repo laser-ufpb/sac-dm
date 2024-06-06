@@ -131,7 +131,7 @@ def sacdm_by_filter(vehicle_id: Optional[int] = Query(None, description="Optiona
                                     datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
                                     datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
                                     db: Session=Depends(get_db)):
-    data: List[SACDM] = get_sacdm_by_filter(device_id, datetime_initial, datetime_final, db)
+    data: List[SACDM] = get_sacdm_by_filter(vehicle_id, datetime_initial, datetime_final, db)
     return data
 
 
