@@ -44,13 +44,21 @@ export const SacDmDevice = ({
     },
     yaxis: {
       labels: {
-        formatter: (value: number) => (value ? value.toFixed(8) : "0.00000000"), // Ensures that `toFixed()` is only called if `value` is not undefined
+        formatter: (value: number) => (value ? value.toFixed(8) : "0.00000000"),
+        style: {
+          colors: ["#E0E0E0"],
+        },
       },
     },
     tooltip: {
       theme: "dark",
       y: {
-        formatter: (value: number) => (value ? value.toFixed(8) : "0.00000000"), // Ensures that `toFixed()` is only called if `value` is not undefined
+        formatter: (value: number) => (value ? value.toFixed(8) : "0.00000000"),
+      },
+    },
+    legend: {
+      labels: {
+        colors: ["E0E0E0", "E0E0E0", "E0E0E0", "E0E0E0"],
       },
     },
   };
