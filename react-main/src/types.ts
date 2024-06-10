@@ -10,12 +10,24 @@ export interface VehicleProps {
 
 export interface DeviceProps {
   device_code: string;
-  id: number;
-  timestamp: string;
   status_id: number;
+  timestamp: string;
+  vehicle_id: number;
+  id: number;
 }
 
 export interface StatusProps {
   description: string;
   id: number;
+}
+
+export interface SacDmDefaultProps {
+  x_standard_deviation: number;
+  y_standard_deviation: number;
+  z_standard_deviation: number;
+  x_mean: number;
+  y_mean: number;
+  z_mean: number;
+  id: number;
+  vehicle_id: number;
 }

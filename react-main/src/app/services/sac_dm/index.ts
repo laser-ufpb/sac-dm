@@ -22,7 +22,7 @@ class SacDmService {
   }
 
   async getSacDmByFilter(options: SacDmFilterOptions = {}) {
-    const { deviceId, datetimeInitial, datetimeFinal, limit = 1000 } = options;
+    const { deviceId, datetimeInitial, datetimeFinal, limit } = options;
 
     try {
       const response = await api.get(`/sac_dm_by_filter`, {
@@ -33,7 +33,8 @@ class SacDmService {
           datetime_final: datetimeFinal,
         },
       });
-      return response.data;
+
+      return response.data.slice(0, limit);
     } catch (error) {
       console.error(error);
     }

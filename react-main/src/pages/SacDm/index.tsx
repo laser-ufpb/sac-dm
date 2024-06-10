@@ -6,14 +6,14 @@ import deviceService from "../../app/services/devices";
 import sacDmService from "../../app/services/sac_dm";
 import SacDmDevice from "./components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
-// import DataCountSelect from "../../components/DataCountSelect";
+import DataCountSelect from "../../components/DataCountSelect";
 import { CustomSelect } from "../../components/CustomSelect";
 
 export const SacDm = () => {
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState<number | null>(1);
   const [devices, setDevices] = useState<DeviceProps[]>([]);
-  const [dataCount] = useState(100);
+  const [dataCount, setDataCount] = useState(100);
 
   const loadDevices = useCallback(async () => {
     try {
@@ -40,7 +40,6 @@ export const SacDm = () => {
         timestamp: formatTime(item.timestamp),
       }));
 
-      // Verificação simples para mudanças nos dados
       if (JSON.stringify(sacDm) !== JSON.stringify(formattedResponse)) {
         setSacDm(formattedResponse);
       }
@@ -57,11 +56,10 @@ export const SacDm = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       loadSacDm();
-      loadDevices();
     }, 2000);
 
     return () => clearInterval(intervalId);
-  }, [loadSacDm, loadDevices]);
+  }, [loadSacDm]);
 
   return (
     <>
@@ -77,7 +75,7 @@ export const SacDm = () => {
         />
       </Container>
 
-      {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
+      <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} />
       {selectedDeviceId && (
         <SacDmDevice
           key={selectedDeviceId}
