@@ -64,8 +64,10 @@ def change_device_status(device_schema: DeviceSchema, db: Session):
             return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content="Device not exist!")
-        device.status_id = device_schema.status_id
-        device.vehicle_id = device_schema.vehicle_id
+        if device_schema.status_id:
+            device.status_id = device_schema.status_id
+        if device_schema.vehicle_id:
+            device.vehicle_id = device_schema.vehicle_id
         db.commit()
         return JSONResponse(
             status_code=status.HTTP_200_OK,
