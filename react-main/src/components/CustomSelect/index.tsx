@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ArrowDropDown } from "@mui/icons-material";
-import {
-  Container,
-  SelectContainer,
-  StyledOptions,
-  StyledSelect,
-} from "./styles";
+import { SelectContainer, StyledOptions, StyledSelect } from "./styles";
 
 interface OptionProps {
   id: number;
@@ -45,33 +40,31 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   };
 
   return (
-    <Container>
-      <SelectContainer>
-        <StyledSelect
-          onClick={() => setOpen(!open)}
-          style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
-        >
-          {selectedDescription || label}
-          <ArrowDropDown />
-        </StyledSelect>
+    <SelectContainer>
+      <StyledSelect
+        onClick={() => setOpen(!open)}
+        style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
+      >
+        {selectedDescription || label}
+        <ArrowDropDown />
+      </StyledSelect>
 
-        {open && (
-          <StyledOptions>
-            {options.map((option) => (
-              <div
-                key={option.id}
-                onClick={() => handleOptionChange(option.id)}
-                style={{
-                  backgroundColor:
-                    selectedOption === option.id ? "#333" : "transparent",
-                }}
-              >
-                {option.description}
-              </div>
-            ))}
-          </StyledOptions>
-        )}
-      </SelectContainer>
-    </Container>
+      {open && (
+        <StyledOptions>
+          {options.map((option) => (
+            <div
+              key={option.id}
+              onClick={() => handleOptionChange(option.id)}
+              style={{
+                backgroundColor:
+                  selectedOption === option.id ? "#333" : "transparent",
+              }}
+            >
+              {option.description}
+            </div>
+          ))}
+        </StyledOptions>
+      )}
+    </SelectContainer>
   );
 };

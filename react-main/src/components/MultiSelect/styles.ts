@@ -1,15 +1,9 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
-  max-width: 156px;
-  width: 100%;
-`;
-
 export const SelectContainer = styled.div`
   position: relative;
   z-index: 1;
-  max-width: 156px;
-  width: 100%;
+  width: 200px;
 `;
 
 export const StyledSelect = styled.div`
@@ -22,6 +16,7 @@ export const StyledSelect = styled.div`
   color: ${({ theme }) => theme.text};
   cursor: pointer;
   transition: background-color 0.2s;
+  width: 100%;
 
   &:hover {
     background-color: ${({ theme }) => theme.gray600};

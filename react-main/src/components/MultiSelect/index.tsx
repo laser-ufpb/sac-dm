@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { ArrowDropDown } from "@mui/icons-material";
 import { Checkbox } from "@mui/material";
-import {
-  Container,
-  SelectContainer,
-  StyledOptions,
-  StyledSelect,
-} from "./styles";
+import { SelectContainer, StyledOptions, StyledSelect } from "./styles";
 
 interface OptionProps {
   id: number;
@@ -41,41 +36,39 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   return (
-    <Container>
-      <SelectContainer>
-        <StyledSelect
-          onClick={() => setOpen(!open)}
-          style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
-        >
-          {label}
-          <ArrowDropDown />
-        </StyledSelect>
+    <SelectContainer>
+      <StyledSelect
+        onClick={() => setOpen(!open)}
+        style={{ borderRadius: open ? "8px 8px 0 0" : "8px" }}
+      >
+        {label}
+        <ArrowDropDown />
+      </StyledSelect>
 
-        {open && (
-          <StyledOptions>
-            <div onClick={handleSelectNone} style={{ cursor: "pointer" }}>
+      {open && (
+        <StyledOptions>
+          <div onClick={handleSelectNone} style={{ cursor: "pointer" }}>
+            <Checkbox
+              color="primary"
+              checked={selectedOptions.length === 0}
+              onChange={() => handleSelectNone()}
+            />
+            Nenhum
+          </div>
+          {options.map((option) => (
+            <div key={option.id}>
               <Checkbox
                 color="primary"
-                checked={selectedOptions.length === 0}
-                onChange={() => handleSelectNone()}
+                checked={selectedOptions.includes(option.id)}
+                onChange={(e) =>
+                  handleOptionChange(option.id, e.target.checked)
+                }
               />
-              Nenhum
+              {option.description}
             </div>
-            {options.map((option) => (
-              <div key={option.id}>
-                <Checkbox
-                  color="primary"
-                  checked={selectedOptions.includes(option.id)}
-                  onChange={(e) =>
-                    handleOptionChange(option.id, e.target.checked)
-                  }
-                />
-                {option.description}
-              </div>
-            ))}
-          </StyledOptions>
-        )}
-      </SelectContainer>
-    </Container>
+          ))}
+        </StyledOptions>
+      )}
+    </SelectContainer>
   );
 };
