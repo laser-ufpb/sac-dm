@@ -75,7 +75,7 @@ export const SacDm = () => {
         />
       </Container>
 
-      <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} />
+      {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
       {selectedVehicleId && (
         <SacDmDevice
           key={selectedVehicleId}

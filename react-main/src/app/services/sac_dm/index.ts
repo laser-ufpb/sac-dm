@@ -34,7 +34,7 @@ class SacDmService {
         },
       });
 
-      return response.data.slice(0, limit);
+      return response.data;
     } catch (error) {
       console.error(error);
     }

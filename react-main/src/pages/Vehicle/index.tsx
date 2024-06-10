@@ -97,7 +97,7 @@ export const Vehicle = () => {
         </Description>
       )}
 
-      <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} />
+      {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
       <SacDmDevice deviceId={numericId} sacDm={sacDm} />
     </>
   );

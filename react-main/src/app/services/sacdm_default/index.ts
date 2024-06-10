@@ -8,7 +8,7 @@ class SacDmDefault {
           vehicle_id: vehicleId,
         },
       });
-      return response.data[0];
+      return response.data;
     } catch (error) {
       console.error(error);
     }
