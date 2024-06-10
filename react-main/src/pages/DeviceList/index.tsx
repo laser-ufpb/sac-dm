@@ -8,7 +8,7 @@ import {
   SectionTitle,
   FilterContainer,
 } from "./styles";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
 import {
   AddCircle,
   AirplanemodeActive,
@@ -16,6 +16,7 @@ import {
   DirectionsCarFilled,
 } from "@mui/icons-material";
 import { AddDevice } from "./AddDevice";
+import { AddVehicle } from "./AddVehicle";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../utils/getStatusColor";
 import { MultiSelect } from "../../components/MultiSelect";
@@ -28,8 +29,10 @@ export const DeviceList = () => {
   const [devices, setDevices] = useState<DeviceProps[]>([]);
   const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
+  const [openAddVehicleModal, setOpenAddVehicleModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState<number[]>([]);
   const [statusOptions, setStatusOptions] = useState<StatusProps[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const navigate = useNavigate();
 
@@ -74,6 +77,20 @@ export const DeviceList = () => {
       : true;
   });
 
+  const filteredVehicles = vehicles.filter((vehicle) => {
+    return filterStatus.length > 0
+      ? filterStatus.includes(vehicle.status_id)
+      : true;
+  });
+
+  const handleAddClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <AddDevice
@@ -81,22 +98,48 @@ export const DeviceList = () => {
         onClose={() => setOpenAddDeviceModal(false)}
         onSubmitted={loadItems}
       />
+      <AddVehicle
+        open={openAddVehicleModal}
+        onClose={() => setOpenAddVehicleModal(false)}
+        onSubmitted={loadItems}
+      />
       <Header>
         <h2>Gerenciamento de Dispositivos e Veículos</h2>
         <Button
           variant="contained"
           startIcon={<AddCircle />}
-          onClick={() => setOpenAddDeviceModal(true)}
+          onClick={handleAddClick}
         >
           <p>Adicionar Dispositivo/Veículo</p>
         </Button>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem
+            onClick={() => {
+              setOpenAddDeviceModal(true);
+              handleMenuClose();
+            }}
+          >
+            Adicionar Dispositivo
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setOpenAddVehicleModal(true);
+              handleMenuClose();
+            }}
+          >
+            Adicionar Veículo
+          </MenuItem>
+        </Menu>
       </Header>
 
       {isLoading ? (
         <CircularProgress />
       ) : (
         <>
-          <SectionTitle>Dispositivos:</SectionTitle>
           <FilterContainer>
             <MultiSelect
               label="Filtrar"
@@ -108,6 +151,7 @@ export const DeviceList = () => {
               setSelectedOptions={setFilterStatus}
             />
           </FilterContainer>
+          <SectionTitle>Dispositivos:</SectionTitle>
           {filteredDevices.length > 0 ? (
             <DevicesList>
               {filteredDevices.map((device) => (
@@ -115,19 +159,11 @@ export const DeviceList = () => {
                   key={device.id}
                   onClick={() => handleCellClick(device.id, "device")}
                 >
-                  {device.status_id ? (
-                    <AirplanemodeActive
-                      sx={{
-                        color: getStatusColor(device.status_id, statusOptions),
-                      }}
-                    />
-                  ) : (
-                    <AirplanemodeInactive
-                      sx={{
-                        color: getStatusColor(device.status_id, statusOptions),
-                      }}
-                    />
-                  )}
+                  <AirplanemodeActive
+                    sx={{
+                      color: getStatusColor(device.status_id, statusOptions),
+                    }}
+                  />
                   <h3>{device.device_code}</h3>
                 </DeviceItem>
               ))}
@@ -136,9 +172,9 @@ export const DeviceList = () => {
             <NoDevicesMessage>Nenhum dispositivo encontrado</NoDevicesMessage>
           )}
           <SectionTitle>Veículos:</SectionTitle>
-          {vehicles.length > 0 ? (
+          {filteredVehicles.length > 0 ? (
             <DevicesList>
-              {vehicles.map((vehicle) => (
+              {filteredVehicles.map((vehicle) => (
                 <DeviceItem
                   key={vehicle.id}
                   onClick={() => handleCellClick(vehicle.id, "vehicle")}
@@ -149,7 +185,7 @@ export const DeviceList = () => {
                     }}
                   />
                   <h3>
-                    {vehicle.manufacturer} {vehicle.model}
+                    {vehicle.model} - {vehicle.manufacturer}
                   </h3>
                 </DeviceItem>
               ))}

@@ -59,7 +59,7 @@ export const Device = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       loadSacDm();
-    }, 2000);
+    }, 5000);
 
     return () => clearInterval(intervalId);
   }, [loadSacDm]);

@@ -5,6 +5,7 @@ export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  margin-bottom: 16px;
 
   label {
     color: ${({ theme }) => theme.text};
