@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { SacDmProps } from "./types";
-import { DeviceProps } from "../../types";
+import { VehicleProps } from "../../types";
 import { Container } from "./styles";
-import deviceService from "../../app/services/devices";
+import vehicleService from "../../app/services/vehicle";
 import sacDmService from "../../app/services/sac_dm";
 import SacDmDevice from "./components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
@@ -11,28 +11,28 @@ import { CustomSelect } from "../../components/CustomSelect";
 
 export const SacDm = () => {
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState<number | null>(1);
-  const [devices, setDevices] = useState<DeviceProps[]>([]);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<number | null>(1);
+  const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
   const [dataCount, setDataCount] = useState(100);
 
-  const loadDevices = useCallback(async () => {
+  const loadVehicles = useCallback(async () => {
     try {
-      const response = await deviceService.getDevices();
-      setDevices(response);
-      const deviceIds = response.map((device: DeviceProps) => device.id);
-      if (!deviceIds.includes(selectedDeviceId) && response.length > 0) {
-        setSelectedDeviceId(response[0].id);
+      const response = await vehicleService.getVehicles();
+      setVehicles(response);
+      const vehicleIds = response.map((vehicle: VehicleProps) => vehicle.id);
+      if (!vehicleIds.includes(selectedVehicleId) && response.length > 0) {
+        setSelectedVehicleId(response[0].id);
       }
     } catch (error) {
       console.error(error);
     }
-  }, [selectedDeviceId]);
+  }, [selectedVehicleId]);
 
   const loadSacDm = useCallback(async () => {
-    if (selectedDeviceId === null) return;
+    if (selectedVehicleId === null) return;
     try {
       const response = await sacDmService.getSacDmByFilter({
-        deviceId: selectedDeviceId,
+        vehicleId: selectedVehicleId,
         limit: dataCount,
       });
       const formattedResponse = response.map((item: SacDmProps) => ({
@@ -46,12 +46,12 @@ export const SacDm = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [selectedDeviceId, dataCount, sacDm]);
+  }, [selectedVehicleId, dataCount, sacDm]);
 
   useEffect(() => {
-    loadDevices();
+    loadVehicles();
     loadSacDm();
-  }, [loadDevices, loadSacDm]);
+  }, [loadVehicles, loadSacDm]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -65,21 +65,21 @@ export const SacDm = () => {
     <>
       <Container>
         <CustomSelect
-          label="Selecionar Dispositivo"
-          options={devices.map((device) => ({
-            id: device.id,
-            description: device.device_code,
+          label="Selecionar Veículo"
+          options={vehicles.map((vehicle) => ({
+            id: vehicle.id,
+            description: `${vehicle.manufacturer} ${vehicle.model}`,
           }))}
-          selectedOption={selectedDeviceId}
-          setSelectedOption={setSelectedDeviceId}
+          selectedOption={selectedVehicleId}
+          setSelectedOption={setSelectedVehicleId}
         />
       </Container>
 
       <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} />
-      {selectedDeviceId && (
+      {selectedVehicleId && (
         <SacDmDevice
-          key={selectedDeviceId}
-          deviceId={selectedDeviceId}
+          key={selectedVehicleId}
+          deviceId={selectedVehicleId}
           sacDm={sacDm}
         />
       )}

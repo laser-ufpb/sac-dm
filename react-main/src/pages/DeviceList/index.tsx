@@ -157,7 +157,7 @@ export const DeviceList = () => {
               {filteredDevices.map((device) => (
                 <DeviceItem
                   key={device.id}
-                  onClick={() => handleCellClick(device.id, "device")}
+                  // onClick={() => handleCellClick(device.id, "device")}
                 >
                   <AirplanemodeActive
                     sx={{

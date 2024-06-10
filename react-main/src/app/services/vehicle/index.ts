@@ -18,6 +18,15 @@ class VehicleService {
     }
   }
 
+  async getVehicleById(id: number) {
+    try {
+      const response = await api.get(`/vehicle_by_id/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async postVehicle(vehicle: Vehicle) {
     try {
       const response = await api.post("/vehicle", {

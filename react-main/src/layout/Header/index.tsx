@@ -14,7 +14,13 @@ export const Header = () => {
             <Dashboard />
           </NavigationButton> */}
       <NavigationButton
-        className={isMenuItemActive("/devices") || isMenuItemActive("/device") ? "active" : ""}
+        className={
+          isMenuItemActive("/devices") ||
+          isMenuItemActive("/device") ||
+          isMenuItemActive("/vehicle")
+            ? "active"
+            : ""
+        }
         onClick={() => navigate("/devices")}
       >
         <Devices />

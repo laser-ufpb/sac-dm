@@ -1,7 +1,7 @@
 import { api } from "..";
 
 interface SacDmFilterOptions {
-  deviceId?: number;
+  vehicleId?: number;
   datetimeInitial?: string;
   datetimeFinal?: string;
   limit?: number;
@@ -22,13 +22,13 @@ class SacDmService {
   }
 
   async getSacDmByFilter(options: SacDmFilterOptions = {}) {
-    const { deviceId, datetimeInitial, datetimeFinal, limit } = options;
+    const { vehicleId, datetimeInitial, datetimeFinal, limit } = options;
 
     try {
       const response = await api.get(`/sac_dm_by_filter`, {
         params: {
           limit: limit,
-          device_id: deviceId,
+          vehicle_id: vehicleId,
           datetime_initial: datetimeInitial,
           datetime_final: datetimeFinal,
         },
