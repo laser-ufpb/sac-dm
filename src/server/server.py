@@ -71,9 +71,9 @@ def new_device(device: DeviceSchema, db: Session=Depends(get_db)):
 
 
 # Route to delete data from devices table
-@app.delete("/device")
-def delete_device(device: DeviceSchema, db: Session=Depends(get_db)):
-    return delete_a_device(device, db)
+@app.delete("/device/{device_code}")
+def delete_device(device_code: str, db: Session=Depends(get_db)):
+    return delete_a_device(device_code, db)
 
 
 # Route to update status_id from a device
@@ -165,9 +165,9 @@ def new_accelerometer_record(accelerometer_data: List[AccelerometerSchema], db: 
 
 
 # Route to delete data from accelerometer table by device_id
-@app.delete("/accelerometer_by_device_id")
-def delete_accelerometer_by_device_id(device_id: Optional[int] = Query(None, description="Optional device id for filter"), db: Session=Depends(get_db)):
-    return delete_accelerometer_records_by_device_id(device_id, db)
+@app.delete("/accelerometer_by_device_code/{device_code}")
+def delete_accelerometer_by_device_id(device_code: str, db: Session=Depends(get_db)):
+    return delete_accelerometer_records_by_device_code(device_code, db)
 
 
 # Route to delete data from accelerometer table by datetime
