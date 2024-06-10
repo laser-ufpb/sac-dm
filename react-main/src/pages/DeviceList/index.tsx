@@ -18,7 +18,7 @@ import {
 import { AddDevice } from "./AddDevice";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../utils/getStatusColor";
-import { MultiSelect } from "../../components/MultiSelect"; // Updated import
+import { MultiSelect } from "../../components/MultiSelect";
 import deviceService from "../../app/services/devices";
 import statusService from "../../app/services/status";
 import vehicleService from "../../app/services/vehicle";
@@ -115,12 +115,18 @@ export const DeviceList = () => {
                   key={device.id}
                   onClick={() => handleCellClick(device.id, "device")}
                 >
-                  {device.status_id === 4 ? (
+                  {device.status_id ? (
                     <AirplanemodeActive
-                      sx={{ color: getStatusColor("Offline") }}
+                      sx={{
+                        color: getStatusColor(device.status_id, statusOptions),
+                      }}
                     />
                   ) : (
-                    <AirplanemodeInactive sx={{ color: getStatusColor("a") }} />
+                    <AirplanemodeInactive
+                      sx={{
+                        color: getStatusColor(device.status_id, statusOptions),
+                      }}
+                    />
                   )}
                   <h3>{device.device_code}</h3>
                 </DeviceItem>
@@ -138,7 +144,9 @@ export const DeviceList = () => {
                   onClick={() => handleCellClick(vehicle.id, "vehicle")}
                 >
                   <DirectionsCarFilled
-                    sx={{ color: getStatusColor("Active") }}
+                    sx={{
+                      color: getStatusColor(vehicle.status_id, statusOptions),
+                    }}
                   />
                   <h3>
                     {vehicle.manufacturer} {vehicle.model}
