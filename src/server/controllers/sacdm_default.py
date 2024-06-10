@@ -7,8 +7,8 @@ from typing import List, Optional
 from fastapi import status
 from fastapi.responses import JSONResponse
 
-def get_all_sacdm_default(vehicle_id: int, db: Session, limit: Optional[int] = None):
-    data = db.query(SACDMDefault).filter(SACDMDefault.vehicle_id == vehicle_id).all()
+def get_sacdm_default(vehicle_id: int, db: Session, limit: Optional[int] = None):
+    data = db.query(SACDMDefault).filter(SACDMDefault.vehicle_id == vehicle_id).order_by(desc(SACDMDefault.id)).first()
     return data
 
 
