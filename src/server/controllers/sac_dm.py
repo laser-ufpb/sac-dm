@@ -46,3 +46,76 @@ def get_sacdm_by_filter(vehicle_id: int, datetime_initial: str, datetime_final: 
         return db.query(SACDM).filter(SACDM.timestamp <= datetime_final).all()
     elif datetime_initial and datetime_final and not vehicle_id:
         return db.query(SACDM).filter(SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
+    
+
+def delete_sacdm_records_by_vehicle_id(vehicle_id: int, db: Session):
+    try:
+        records = db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id).all()
+        if(not records):
+            return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content="Vehicle don't have logs!")
+        for record in records:
+            db.delete(record)            
+        db.commit()
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content="Successfully deleted data!")
+    except Exception:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Delete failed!")
+    
+
+def delete_sacdm_records_by_datetime(datetime_initial: str, datetime_final: str, db: Session):
+    if datetime_initial and not datetime_final:
+        try:
+            records = db.query(SACDM).filter(SACDM.timestamp >= datetime_initial).all()
+            if(not records):
+                return JSONResponse(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                content="Datetime don't have logs!")
+            for record in records:
+                db.delete(record)            
+            db.commit()
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content="Successfully deleted data!")
+        except Exception:
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content="Delete failed!")
+    elif datetime_final and not datetime_initial:
+        try:
+            records = db.query(SACDM).filter(SACDM.timestamp <= datetime_final).all()
+            if(not records):
+                return JSONResponse(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                content="Datetime don't have logs!")
+            for record in records:
+                db.delete(record)            
+            db.commit()
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content="Successfully deleted data!")
+        except Exception:
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content="Delete failed!")
+    elif datetime_initial and datetime_final:
+        try:
+            records = db.query(SACDM).filter(SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final).all()
+            if(not records):
+                return JSONResponse(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                content="Datetime don't have logs!")
+            for record in records:
+                db.delete(record)            
+            db.commit()
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content="Successfully deleted data!")
+        except Exception:
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content="Delete failed!")
