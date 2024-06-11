@@ -151,13 +151,13 @@ def delete_sacdm_by_vehicle_id(vehicle_id: int, db: Session=Depends(get_db)):
 @app.delete("/sacdm_by_datetime")
 def delete_sacdm_by_datetime(datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
                     datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
-                    db: Session=Depends(get_db)): # type: ignore
+                    db: Session=Depends(get_db)):
     return delete_sacdm_records_by_datetime(datetime_initial, datetime_final, db)
 
 
 # Route to get all data from accelerometer table
 @app.get("/accelerometer")
-def get_accelerometter_data(db: Session=Depends(get_db)): # type: ignore
+def get_accelerometter_data(db: Session=Depends(get_db)):
     registers: List[AccelerometerAcquisition] = get_all_accelerometer_records(db)
     return registers
 
