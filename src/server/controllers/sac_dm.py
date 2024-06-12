@@ -7,6 +7,9 @@ from typing import List, Optional
 from fastapi import status
 from fastapi.responses import JSONResponse
 
+from schemas.log import LogSchema
+from controllers.fault import log_verifier
+
 
 def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
     try:
@@ -19,9 +22,11 @@ def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"error": "Failed to insert data to the database."}
     )
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content="Successfully entered data!")
+    aux1 = LogSchema(device_id=1, vehicle_id=1, status_id=4, timestamp="2024", axis="x")
+    return log_verifier(aux1, sac_dm_schema, db)
+    # return JSONResponse(
+    #     status_code=status.HTTP_200_OK,
+    #     content="Successfully entered data!")
 
 
 def get_all_sacdm(db: Session, limit: Optional[int] = None):
