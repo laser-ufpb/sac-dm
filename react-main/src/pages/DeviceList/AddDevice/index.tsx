@@ -10,15 +10,41 @@ import {
 import { Close } from "@mui/icons-material";
 import { DefaultForm } from "../../../components/forms/DefaultForm";
 import { FormGroup } from "../../../components/forms/FormGroup";
-import { DefaultInput } from "../../../components/forms/DefaultInput";
+import {
+  DefaultInput,
+  DefaultSelect,
+} from "../../../components/forms/DefaultInput";
 import { DeviceFormData, deviceSchema } from "./schema";
 import DeviceService from "../../../app/services/devices";
+import vehicleService from "../../../app/services/vehicle";
 import { AddDeviceProps } from "./types";
+import { useEffect, useState } from "react";
+
+interface Vehicle {
+  id: number;
+  model: string;
+  manufacturer: string;
+}
 
 export const AddDevice = ({ open, onClose, onSubmitted }: AddDeviceProps) => {
-  const { control, handleSubmit } = useForm<DeviceFormData>({
+  const { control, handleSubmit, setValue } = useForm<DeviceFormData>({
     resolver: zodResolver(deviceSchema),
   });
+
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await vehicleService.getVehicles();
+        setVehicles(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
 
   const onSubmit = async (data: DeviceFormData) => {
     try {
@@ -52,6 +78,31 @@ export const AddDevice = ({ open, onClose, onSubmitted }: AddDeviceProps) => {
                   placeholder="Digite o código do dispositivo"
                   type="text"
                 />
+              )}
+            />
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="vehicle_id">Veículo</label>
+            <Controller
+              name="vehicle_id"
+              control={control}
+              defaultValue={0}
+              render={({ field }) => (
+                <DefaultSelect
+                  {...field}
+                  onChange={(e) =>
+                    setValue("vehicle_id", Number(e.target.value))
+                  }
+                >
+                  <option value="" disabled>
+                    Selecione um veículo
+                  </option>
+                  {vehicles.map((vehicle) => (
+                    <option key={vehicle.id} value={vehicle.id}>
+                      {vehicle.model} - {vehicle.manufacturer}
+                    </option>
+                  ))}
+                </DefaultSelect>
               )}
             />
           </FormGroup>
