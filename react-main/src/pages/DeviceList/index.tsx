@@ -12,7 +12,6 @@ import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
 import {
   AddCircle,
   AirplanemodeActive,
-  AirplanemodeInactive,
   DirectionsCarFilled,
 } from "@mui/icons-material";
 import { AddDevice } from "./AddDevice";

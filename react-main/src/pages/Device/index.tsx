@@ -1,15 +1,15 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
-import { SacDmProps } from "../SacDm/types";
-import { Description } from "./styles";
-import { SacDmDevice } from "../SacDm/components/SacDmDevice";
-import { formatTime } from "../../utils/formatTime";
-import { BackPage } from "../../components/BackPage";
-import { AirplanemodeActive } from "@mui/icons-material";
-import { DeviceProps } from "../../types";
-import sacDmService from "../../app/services/sac_dm";
-import deviceService from "../../app/services/devices";
-import DataCountSelect from "../../components/DataCountSelect";
+// import { useParams } from "react-router-dom";
+// import { useEffect, useState, useCallback } from "react";
+// import { SacDmProps } from "../SacDm/types";
+// import { Description } from "./styles";
+// import { SacDmDevice } from "../SacDm/components/SacDmDevice";
+// import { formatTime } from "../../utils/formatTime";
+// import { BackPage } from "../../components/BackPage";
+// import { AirplanemodeActive } from "@mui/icons-material";
+// import { DeviceProps } from "../../types";
+// import sacDmService from "../../app/services/sac_dm";
+// import deviceService from "../../app/services/devices";
+// import DataCountSelect from "../../components/DataCountSelect";
 
 export const Device = () => {
   // const { id } = useParams();

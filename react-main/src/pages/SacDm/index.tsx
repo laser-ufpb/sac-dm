@@ -6,14 +6,13 @@ import vehicleService from "../../app/services/vehicle";
 import sacDmService from "../../app/services/sac_dm";
 import SacDmDevice from "./components/SacDmDevice";
 import { formatTime } from "../../utils/formatTime";
-import DataCountSelect from "../../components/DataCountSelect";
 import { CustomSelect } from "../../components/CustomSelect";
 
 export const SacDm = () => {
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState<number | null>(1);
   const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
-  const [dataCount, setDataCount] = useState(100);
+  const [dataCount] = useState(100);
 
   const loadVehicles = useCallback(async () => {
     try {

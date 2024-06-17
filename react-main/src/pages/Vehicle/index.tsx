@@ -9,14 +9,13 @@ import { DirectionsCarFilled } from "@mui/icons-material";
 import { StatusProps, VehicleProps } from "../../types";
 import sacDmService from "../../app/services/sac_dm";
 import vehicleService from "../../app/services/vehicle";
-import DataCountSelect from "../../components/DataCountSelect";
 import { getStatusColor } from "../../utils/getStatusColor";
 import statusService from "../../app/services/status";
 
 export const Vehicle = () => {
   const { id } = useParams();
   const numericId = Number(id);
-  const [dataCount, setDataCount] = useState(100);
+  const [dataCount] = useState(100);
 
   const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
   const [vehicle, setVehicle] = useState<VehicleProps>();
