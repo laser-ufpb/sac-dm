@@ -55,10 +55,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
             <div
               key={option.id}
               onClick={() => handleOptionChange(option.id)}
-              style={{
-                backgroundColor:
-                  selectedOption === option.id ? "#333" : "transparent",
-              }}
+              className={selectedOption === option.id ? "selected" : ""}
             >
               {option.description}
             </div>

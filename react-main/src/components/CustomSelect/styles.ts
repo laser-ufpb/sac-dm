@@ -51,8 +51,13 @@ export const StyledOptions = styled.div`
     transition: background-color 0.2s;
     border-top: 1px solid ${({ theme }) => theme.gray600};
 
+    &.selected {
+      background-color: ${({ theme }) => theme.lighterBlue};
+      color: ${({ theme }) => theme.text};
+    }
+
     &:hover {
-      background-color: ${({ theme }) => theme.gray600};
+      background-color: ${({ theme }) => theme.primary};
     }
 
     &:last-child {
