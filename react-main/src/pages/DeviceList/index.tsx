@@ -9,11 +9,7 @@ import {
   FilterContainer,
 } from "./styles";
 import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
-import {
-  AddCircle,
-  AirplanemodeActive,
-  DirectionsCarFilled,
-} from "@mui/icons-material";
+import { AddCircle, AirplanemodeActive, DeviceHub } from "@mui/icons-material";
 import { AddDevice } from "./AddDevice";
 import { AddVehicle } from "./AddVehicle";
 import { useNavigate } from "react-router-dom";
@@ -158,7 +154,7 @@ export const DeviceList = () => {
                   key={device.id}
                   // onClick={() => handleCellClick(device.id, "device")}
                 >
-                  <AirplanemodeActive
+                  <DeviceHub
                     sx={{
                       color: getStatusColor(device.status_id, statusOptions),
                     }}
@@ -178,7 +174,7 @@ export const DeviceList = () => {
                   key={vehicle.id}
                   onClick={() => handleCellClick(vehicle.id, "vehicle")}
                 >
-                  <DirectionsCarFilled
+                  <AirplanemodeActive
                     sx={{
                       color: getStatusColor(vehicle.status_id, statusOptions),
                     }}
