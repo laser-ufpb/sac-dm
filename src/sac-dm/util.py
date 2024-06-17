@@ -3,18 +3,7 @@ import scipy.io
 import numpy as np
 import matplotlib.colors as mcolors
 import time
-
-def average_sac(dataset, start, end):
-
-	average = np.average(dataset[start:end])
-
-	return average
-
-def deviation_sac(dataset, start, end):
-
-	standard_deviation = np.std(dataset[start:end])
-
-	return standard_deviation
+from math_utils import average_sac, deviation_sac
 
 def sampling_sac(dataset, start, end):
 
