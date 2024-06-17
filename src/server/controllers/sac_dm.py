@@ -1,5 +1,5 @@
 import datetime
-from models.models import SACDM, Device
+from models.models import SACDM, Device, Log
 from schemas.sacdm import SACDMSchema
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
@@ -13,8 +13,12 @@ from controllers.fault import log_verifier
 
 def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
     try:
-        aux = db.query(Device.vehicle_id).filter(Device.id == sac_dm_schema[0].device_id).first()
-        sac_dm_data = [SACDM(**{**sac_dm.dict(), 'vehicle_id' : aux[0]}) for sac_dm in sac_dm_schema]
+        vehicle_id_query = db.query(Device.vehicle_id).filter(Device.id == sac_dm_schema[0].device_id).first()
+        status_query = db.query(Log.status_id).filter(Log.vehicle_id == vehicle_id_query[0]).order_by(desc(Log.id)).first()
+        if status_query == None:
+            status_query = (3, )
+        sac_dm_data = [SACDM(**{**sac_dm.dict(), 'vehicle_id' : vehicle_id_query[0]}) for sac_dm in sac_dm_schema]
+        log_schema = LogSchema(device_id=sac_dm_data[0].device_id, vehicle_id=sac_dm_data[0].vehicle_id, status_id=status_query[0], timestamp=sac_dm_data[0].timestamp, axis="x")
         db.add_all(sac_dm_data)
         db.commit()
     except Exception:
@@ -22,8 +26,7 @@ def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"error": "Failed to insert data to the database."}
     )
-    aux1 = LogSchema(device_id=1, vehicle_id=1, status_id=4, timestamp="2024", axis="x")
-    return log_verifier(aux1, sac_dm_schema, db)
+    return log_verifier(log_schema, sac_dm_schema, db)
     # return JSONResponse(
     #     status_code=status.HTTP_200_OK,
     #     content="Successfully entered data!")

@@ -18,9 +18,8 @@ def log_verifier(data: LogSchema, sac_dm_list: List[SACDMSchema], db: Session):
     faults_limit = db.query(FaultCounter.limit).filter(FaultCounter.vehicle_id == data.vehicle_id).order_by(desc(FaultCounter.id)).first()
     if faults_limit == None:
         faults_limit = (3, )
-    print (len(sac_dm_list))
-    for sacdm in sac_dm_list:        
-        print("*******************************")
+    logs_created: List[LogSchema] = []
+    for sacdm in sac_dm_list:
         if sacdm.value > x_mean[0] + x_standard_deviation[0] or sacdm.value < x_mean[0] - x_standard_deviation[0]:
             faults_counter += 1
 
@@ -31,6 +30,7 @@ def log_verifier(data: LogSchema, sac_dm_list: List[SACDMSchema], db: Session):
             if faults_counter >= faults_limit[0] and data.status_id == 3: # 3 = normal condition vou add na tabela status
                 data.status_id = 4
                 create_log(data, db) # passando fault condition
+                logs_created.append(data)
         else:
             faults_counter = 0
 
@@ -41,6 +41,8 @@ def log_verifier(data: LogSchema, sac_dm_list: List[SACDMSchema], db: Session):
             if data.status_id == 4: # 4 = fault condition vou add na tabela status
                 data.status_id = 3
                 create_log(data, db) # passando normal condition
+                logs_created.append(data)
+    return logs_created
 
 def create_log(data: LogSchema, db: Session):
     data_to_insert = Log(**data.dict())
