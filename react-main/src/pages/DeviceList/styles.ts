@@ -72,6 +72,6 @@ export const FilterContainer = styled.div`
   padding-left: 15px;
 
   > * {
-    margin-right: 12px; // Espaçamento entre controles de filtro se houver mais de um
+    margin-right: 12px;
   }
 `;

@@ -22,7 +22,7 @@ export const Account = () => {
 
     const parsedUser = JSON.parse(storedUser);
     try {
-      const response = await accountService.getAccount(parsedUser); // Assuming username is saved in local storage
+      const response = await accountService.getAccount(parsedUser);
       setUserData(response);
     } catch (error) {
       console.error(error);
