@@ -21,7 +21,7 @@ from typing_extensions import Annotated
 from uuid import uuid4
 from controllers.accelerometer import *
 from controllers.device import create_device, get_all_devices, get_device, delete_a_device, change_device_status
-from controllers.sac_dm import create_sacdm, get_all_sacdm, get_sacdm_by_filter
+from controllers.sac_dm import *
 from controllers.status import create_status, get_all_status
 from controllers.vehicle import *
 from controllers.sacdm_default import *
@@ -129,9 +129,10 @@ def get_sacdm(db: Session=Depends(get_db), limit: Optional[int] = Query(None, de
 @app.get("/sac_dm_by_filter")
 def sacdm_by_filter(vehicle_id: Optional[int] = Query(None, description="Optional vehicle id for filter"),
                                     datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
-                                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"),
+                                    limit: Optional[int] = Query(None, description="Limit the number of records returned"),
                                     db: Session=Depends(get_db)):
-    data: List[SACDM] = get_sacdm_by_filter(vehicle_id, datetime_initial, datetime_final, db)
+    data: List[SACDM] = get_sacdm_by_filter(vehicle_id, datetime_initial, datetime_final, limit, db)
     return data
 
 
@@ -139,6 +140,20 @@ def sacdm_by_filter(vehicle_id: Optional[int] = Query(None, description="Optiona
 @app.post("/sac_dm")
 def new_sacdm(sac_dm_data: List[SACDMSchema], db: Session=Depends(get_db)):
     return create_sacdm(sac_dm_data, db)
+
+
+# Route to delete data from sacdm table by vehicle_id
+@app.delete("/sacdm_by_vehicle_id/{vehicle_id}")
+def delete_sacdm_by_vehicle_id(vehicle_id: int, db: Session=Depends(get_db)):
+    return delete_sacdm_records_by_vehicle_id(vehicle_id, db)
+
+
+# Route to delete data from sacdm table by datetime
+@app.delete("/sacdm_by_datetime")
+def delete_sacdm_by_datetime(datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
+                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                    db: Session=Depends(get_db)):
+    return delete_sacdm_records_by_datetime(datetime_initial, datetime_final, db)
 
 
 # Route to get all data from accelerometer table
@@ -164,7 +179,7 @@ def new_accelerometer_record(accelerometer_data: List[AccelerometerSchema], db: 
     return create_accelerometer_record(accelerometer_data, db)
 
 
-# Route to delete data from accelerometer table by device_id
+# Route to delete data from accelerometer table by device_code
 @app.delete("/accelerometer_by_device_code/{device_code}")
 def delete_accelerometer_by_device_id(device_code: str, db: Session=Depends(get_db)):
     return delete_accelerometer_records_by_device_code(device_code, db)
