@@ -17,6 +17,7 @@ export const DevicesList = styled.ul`
   gap: 20px;
   padding: 0;
   list-style: none;
+  margin-bottom: 32px;
 `;
 
 export const DeviceItem = styled.li`
@@ -54,4 +55,23 @@ export const NoDevicesMessage = styled.div`
   font-weight: normal;
   margin-top: 48px;
   opacity: 0.5;
+`;
+
+export const SectionTitle = styled.h2`
+  font-size: 18px;
+  color: ${({ theme }) => theme.text};
+  margin-bottom: 10px;
+  padding-left: 15px;
+  border-left: 4px solid ${({ theme }) => theme.primaryColor};
+`;
+
+export const FilterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-left: 15px;
+
+  > * {
+    margin-right: 12px;
+  }
 `;

@@ -1,73 +1,73 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
-import { SacDmProps } from "../SacDm/types";
-import { Description } from "./styles";
-import { SacDmDevice } from "../SacDm/components/SacDmDevice";
-import { formatTime } from "../../utils/formatTime";
-import { BackPage } from "../../components/BackPage";
-import { AirplanemodeActive } from "@mui/icons-material";
-import { DeviceProps } from "../DeviceList/types";
-import sacDmService from "../../app/services/sac_dm";
-import deviceService from "../../app/services/devices";
-import DataCountSelect from "../../components/DataCountSelect";
+// import { useParams } from "react-router-dom";
+// import { useEffect, useState, useCallback } from "react";
+// import { SacDmProps } from "../SacDm/types";
+// import { Description } from "./styles";
+// import { SacDmDevice } from "../SacDm/components/SacDmDevice";
+// import { formatTime } from "../../utils/formatTime";
+// import { BackPage } from "../../components/BackPage";
+// import { AirplanemodeActive } from "@mui/icons-material";
+// import { DeviceProps } from "../../types";
+// import sacDmService from "../../app/services/sac_dm";
+// import deviceService from "../../app/services/devices";
+// import DataCountSelect from "../../components/DataCountSelect";
 
 export const Device = () => {
-  const { id } = useParams();
-  const numericId = Number(id);
-  const [dataCount, setDataCount] = useState(100);
+  // const { id } = useParams();
+  // const numericId = Number(id);
+  // const [dataCount, setDataCount] = useState(100);
 
-  const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
-  const [device, setDevice] = useState<DeviceProps>();
+  // const [sacDm, setSacDm] = useState<SacDmProps[]>([]);
+  // const [device, setDevice] = useState<DeviceProps>();
 
-  const loadSacDm = useCallback(async () => {
-    if (!numericId) return;
-    try {
-      const response = await sacDmService.getSacDm(dataCount);
-      const formattedResponse = response.map((item: SacDmProps) => ({
-        ...item,
-        timestamp: formatTime(item.timestamp),
-      }));
-      const filteredData = formattedResponse.filter(
-        (item: SacDmProps) => item.device_id === numericId
-      );
+  // const loadSacDm = useCallback(async () => {
+  //   if (!numericId) return;
+  //   try {
+  //     const response = await sacDmService.getSacDmByFilter({
+  //       deviceId: numericId,
+  //       limit: dataCount,
+  //     });
+  //     const formattedResponse = response.map((item: SacDmProps) => ({
+  //       ...item,
+  //       timestamp: formatTime(item.timestamp),
+  //     }));
 
-      if (JSON.stringify(sacDm) !== JSON.stringify(filteredData)) {
-        setSacDm(filteredData);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [numericId, sacDm, dataCount]);
+  //     setSacDm(formattedResponse);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [numericId, dataCount]);
 
-  const loadDevices = useCallback(async () => {
-    try {
-      const response = await deviceService.getDevices();
-      if (response.length > 0) {
-        setDevice(
-          response.find((device: DeviceProps) => device.id === numericId)
-        );
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [numericId]);
+  // const loadDevices = useCallback(async () => {
+  //   try {
+  //     const response = await deviceService.getDevices();
+  //     const foundDevice = response.find(
+  //       (device: DeviceProps) => device.id === numericId
+  //     );
+  //     if (foundDevice) {
+  //       setDevice(foundDevice);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [numericId]);
 
-  useEffect(() => {
-    loadSacDm();
-    loadDevices();
-  }, [loadSacDm, loadDevices]);
+  // useEffect(() => {
+  //   loadSacDm();
+  //   loadDevices();
+  // }, [loadSacDm, loadDevices]);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      loadSacDm();
-    }, 2000);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     loadSacDm();
+  //   }, 2000);
 
-    return () => clearInterval(intervalId);
-  }, [loadSacDm]);
+  //   return () => clearInterval(intervalId);
+  // }, [loadSacDm]);
 
   return (
     <>
-      <BackPage />
+      Device
+      {/* <BackPage />
       {device && (
         <Description>
           <h1>
@@ -86,8 +86,8 @@ export const Device = () => {
         </Description>
       )}
 
-      <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} />
-      <SacDmDevice deviceId={numericId} sacDm={sacDm} />
+      {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
+      {/* <SacDmDevice deviceId={numericId} sacDm={sacDm} />  */}
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { Container } from "./styles";
 import { Link } from "react-router-dom";
 
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 
 export function Footer() {
   return (

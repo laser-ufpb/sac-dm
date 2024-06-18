@@ -24,7 +24,11 @@ export const Login = () => {
         </>
       ) : (
         <>
-          <SignUp />
+          <SignUp
+            open={!showSignIn}
+            onClose={hideLoginModal}
+            toggleForms={toggleForms}
+          />
           <Button onClick={toggleForms} style={{ marginTop: "10px" }}>
             Já tem uma conta? Entre aqui
           </Button>

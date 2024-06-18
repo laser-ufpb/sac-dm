@@ -1,6 +1,9 @@
 import Chart from "react-apexcharts";
 import { SacDmProps } from "../../SacDm/types";
 import { EmptyData } from "../../../components/EmptyData";
+import React, { useCallback, useEffect, useState } from "react";
+import { SacDmDefaultProps } from "../../../types";
+import sacDmDefault from "../../../app/services/sacdm_default";
 
 export const SacDmDevice = ({
   deviceId,
@@ -9,21 +12,25 @@ export const SacDmDevice = ({
   deviceId: number | null;
   sacDm: SacDmProps[];
 }) => {
+  const [sacDmMean, setsacDmMean] = useState<SacDmDefaultProps>();
+
+  const loadSacDmDefault = useCallback(async () => {
+    try {
+      const response = await sacDmDefault.getSacDmDefault(1);
+      // TODO: Alterar para pegar o veículo selecionado
+      setsacDmMean(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSacDmDefault();
+  }, [loadSacDmDefault]);
+
   if (!deviceId) {
     return null;
   }
-
-  // Calcular média e desvio padrão
-  const values = sacDm.map((item: SacDmProps) => +item.value.toFixed(8));
-  const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
-  const stdDev = Math.sqrt(
-    values.reduce((acc, value) => acc + (value - mean) ** 2, 0) / values.length
-  );
-
-  // Criar séries para média e desvio padrão
-  const meanSeries = Array(values.length).fill(mean);
-  const stdDevUpper = meanSeries.map((m) => m + stdDev);
-  const stdDevLower = meanSeries.map((m) => m - stdDev);
 
   const optionsChart = {
     chart: {
@@ -37,13 +44,21 @@ export const SacDmDevice = ({
     },
     yaxis: {
       labels: {
-        formatter: (value: number) => value.toFixed(8), // Formatando labels do eixo y para mostrar 8 casas decimais
+        formatter: (value: number) => (value ? value.toFixed(8) : "0.00000000"),
+        style: {
+          colors: ["#E0E0E0"],
+        },
       },
     },
     tooltip: {
       theme: "dark",
       y: {
-        formatter: (value: number) => value.toFixed(8), // Formatando valores do tooltip para mostrar 8 casas decimais
+        formatter: (value: number) => (value ? value.toFixed(8) : "0.00000000"),
+      },
+    },
+    legend: {
+      labels: {
+        colors: ["E0E0E0", "E0E0E0", "E0E0E0", "E0E0E0"],
       },
     },
   };
@@ -51,19 +66,27 @@ export const SacDmDevice = ({
   const seriesChart = [
     {
       name: "Valor",
-      data: values,
+      data: sacDm.map((item) => parseFloat(item.value.toFixed(8))),
     },
     {
       name: "Média",
-      data: meanSeries.map((value) => parseFloat(value.toFixed(8))), // Garantindo a precisão de 8 casas decimais
+      data: Array(sacDm.length).fill(sacDmMean?.x_mean),
     },
     {
       name: "Desvio Padrão Superior",
-      data: stdDevUpper.map((value) => parseFloat(value.toFixed(8))),
+      data: sacDmMean
+        ? Array(sacDm.length).fill(
+            sacDmMean.x_mean + sacDmMean.x_standard_deviation
+          )
+        : [],
     },
     {
       name: "Desvio Padrão Inferior",
-      data: stdDevLower.map((value) => parseFloat(value.toFixed(8))),
+      data: sacDmMean
+        ? Array(sacDm.length).fill(
+            sacDmMean.x_mean - sacDmMean.x_standard_deviation
+          )
+        : [],
     },
   ];
 
@@ -81,3 +104,10 @@ export const SacDmDevice = ({
     </div>
   );
 };
+
+export default React.memo(SacDmDevice, (prevProps, nextProps) => {
+  return (
+    prevProps.deviceId === nextProps.deviceId &&
+    JSON.stringify(prevProps.sacDm) === JSON.stringify(nextProps.sacDm)
+  );
+});

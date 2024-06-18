@@ -42,7 +42,7 @@ export const ModalContent = styled.div`
 export const ModalFooter = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
   margin-top: 16px;
   gap: 8px;
