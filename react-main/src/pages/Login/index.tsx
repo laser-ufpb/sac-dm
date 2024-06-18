@@ -8,11 +8,9 @@ import { Button } from "@mui/material";
 export const Login = () => {
   const { isLoginModalVisible, hideLoginModal } = useContext(AuthContext);
   const [showSignIn, setShowSignIn] = useState(true);
-  const [showSignUp, setShowSignUp] = useState(false);
 
   const toggleForms = () => {
     setShowSignIn(!showSignIn);
-    setShowSignUp(!showSignUp);
   };
 
   return (
@@ -26,7 +24,11 @@ export const Login = () => {
         </>
       ) : (
         <>
-          <SignUp open={showSignUp} onClose={() => setShowSignUp(false)} />
+          <SignUp
+            open={!showSignIn}
+            onClose={hideLoginModal}
+            toggleForms={toggleForms}
+          />
           <Button onClick={toggleForms} style={{ marginTop: "10px" }}>
             Já tem uma conta? Entre aqui
           </Button>

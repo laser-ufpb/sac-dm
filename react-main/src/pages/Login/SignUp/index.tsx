@@ -16,13 +16,13 @@ import { userSchema } from "./schema";
 import { AuthContext } from "../../../app/contexts/AuthContext";
 import { UserPayload } from "../../../app/services/login/types";
 
-export const SignUp = ({
-  open,
-  onClose,
-}: {
+interface SignUpProps {
   open: boolean;
   onClose: () => void;
-}) => {
+  toggleForms: () => void;
+}
+
+export const SignUp = ({ open, onClose, toggleForms }: SignUpProps) => {
   const { signUp } = useContext(AuthContext);
   const { control, handleSubmit } = useForm<UserPayload>({
     resolver: zodResolver(userSchema),
@@ -114,6 +114,9 @@ export const SignUp = ({
           </FormGroup>
         </ModalContent>
         <ModalFooter>
+          <Button onClick={toggleForms} style={{ marginTop: "10px" }}>
+            Voltar
+          </Button>
           <Button type="submit" variant="contained" disabled={isLoading}>
             {isLoading ? "Carregando..." : "Cadastrar"}
           </Button>
