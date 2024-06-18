@@ -1,147 +1,124 @@
-import { useContext, useState } from "react";
-import { FormContainer, HeaderContent } from "../styles";
-import { AuthContext } from "../../../app/contexts/AuthContext";
+import { useState, useContext } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, IconButton } from "@mui/material";
+import { CustomModal } from "../../../components/CustomModal";
+import {
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "../../../components/CustomModal/styles";
+import { Close } from "@mui/icons-material";
+import { DefaultForm } from "../../../components/forms/DefaultForm";
 import { FormGroup } from "../../../components/forms/FormGroup";
 import { DefaultInput } from "../../../components/forms/DefaultInput";
-import { Button } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { theme } from "../../../styles/theme";
+import { userSchema } from "./schema";
+import { AuthContext } from "../../../app/contexts/AuthContext";
+import { UserPayload } from "../../../app/services/login/types";
 
-export const SignUp = () => {
+export const SignUp = ({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const { signUp } = useContext(AuthContext);
+  const { control, handleSubmit } = useForm<UserPayload>({
+    resolver: zodResolver(userSchema),
+  });
+
   const [isLoading, setIsLoading] = useState(false);
-  const { signUp, hideLoginModal } = useContext(AuthContext);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [full_name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleSignUp = async () => {
-    if (password !== confirmPassword) {
-      alert("Senhas não coincidem");
-      return;
-    }
+  const onSubmit = async (data: UserPayload) => {
     setIsLoading(true);
     try {
-      await signUp({
-        username,
-        email,
-        full_name,
-        disabled: false,
-        hashed_password: password,
-      });
+      await signUp(data);
+      onClose();
     } catch (error) {
-      console.error({ error });
+      console.error(error);
     } finally {
       setIsLoading(false);
-      hideLoginModal();
     }
   };
 
   return (
-    <FormContainer>
-      <HeaderContent>
-        <h2>Cadastre-se</h2>
-      </HeaderContent>
-
-      <FormGroup>
-        <label htmlFor="username">Usuário</label>
-        <DefaultInput
-          placeholder="Digite seu usuário"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-        />
-      </FormGroup>
-
-      <FormGroup>
-        <label htmlFor="email">E-mail</label>
-        <DefaultInput
-          placeholder="Digite seu e-mail"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
-      </FormGroup>
-
-      <FormGroup>
-        <label htmlFor="full_name">Nome completo</label>
-        <DefaultInput
-          placeholder="Digite seu nome completo"
-          value={full_name}
-          onChange={(event) => setName(event.target.value)}
-        />
-      </FormGroup>
-
-      <FormGroup>
-        <label htmlFor="password">Senha</label>
-        <div className="flex">
-          <DefaultInput
-            placeholder="Digite sua senha"
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          {showPassword ? (
-            <VisibilityOff
-              className="toggle-password"
-              onClick={togglePasswordVisibility}
-              sx={{
-                color: theme.text,
-              }}
+    <CustomModal open={open} onClose={onClose} size="sm">
+      <ModalHeader>
+        <h2>Cadastrar Usuário</h2>
+        <IconButton onClick={onClose}>
+          <Close />
+        </IconButton>
+      </ModalHeader>
+      <DefaultForm onSubmit={handleSubmit(onSubmit)}>
+        <ModalContent>
+          <FormGroup>
+            <label htmlFor="username">Nome de Usuário</label>
+            <Controller
+              name="username"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <DefaultInput
+                  {...field}
+                  placeholder="Digite o nome de usuário"
+                  type="text"
+                />
+              )}
             />
-          ) : (
-            <Visibility
-              className="toggle-password"
-              onClick={togglePasswordVisibility}
-              sx={{
-                color: theme.text,
-              }}
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="email">E-mail</label>
+            <Controller
+              name="email"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <DefaultInput
+                  {...field}
+                  placeholder="Digite seu e-mail"
+                  type="email"
+                />
+              )}
             />
-          )}
-        </div>
-      </FormGroup>
-
-      <FormGroup>
-        <label htmlFor="confirmPassword">Confirme sua senha</label>
-        <div className="flex">
-          <DefaultInput
-            placeholder="Confirme sua senha"
-            type={showPassword ? "text" : "password"}
-            value={confirmPassword}
-            onChange={(event) => setConfirmPassword(event.target.value)}
-          />
-          {showPassword ? (
-            <VisibilityOff
-              className="toggle-password"
-              onClick={togglePasswordVisibility}
-              sx={{
-                color: theme.text,
-              }}
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="full_name">Nome Completo</label>
+            <Controller
+              name="full_name"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <DefaultInput
+                  {...field}
+                  placeholder="Digite seu nome completo"
+                  type="text"
+                />
+              )}
             />
-          ) : (
-            <Visibility
-              className="toggle-password"
-              onClick={togglePasswordVisibility}
-              sx={{
-                color: theme.text,
-              }}
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="hashed_password">Senha</label>
+            <Controller
+              name="hashed_password"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <DefaultInput
+                  {...field}
+                  placeholder="Digite sua senha"
+                  type="password"
+                />
+              )}
             />
-          )}
-        </div>
-      </FormGroup>
-
-      <Button
-        onClick={handleSignUp}
-        disabled={isLoading}
-        style={{ marginTop: "10px" }}
-        variant="contained"
-      >
-        {isLoading ? "Carregando..." : "Cadastrar"}
-      </Button>
-    </FormContainer>
+          </FormGroup>
+        </ModalContent>
+        <ModalFooter>
+          <Button type="submit" variant="contained" disabled={isLoading}>
+            {isLoading ? "Carregando..." : "Cadastrar"}
+          </Button>
+        </ModalFooter>
+      </DefaultForm>
+    </CustomModal>
   );
 };

@@ -8,7 +8,7 @@ export const Header = () => {
   const navigate = useNavigate();
   return (
     <Container>
-      <Tooltip title="Dispositivos">
+      <Tooltip title="Dispositivos e Veículos">
         {/* <NavigationButton
             isActive={isMenuItemActive("/dashboard")}
             onClick={() => navigate("/dashboard")}

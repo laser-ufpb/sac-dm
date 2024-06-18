@@ -41,24 +41,22 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signOut = useCallback(() => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
   }, [navigate]);
 
-  const signUp = useCallback(async (user: CreateUserPayload) => {
-    try {
-      await api.post("/user", {
-        ...user,
-        status_id: 0,
-      });
-
-      localStorage.setItem("user", JSON.stringify(user.email));
-
-      setUser(JSON.parse(localStorage.getItem("user") || "null"));
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  const signUp = useCallback(
+    async (user: CreateUserPayload) => {
+      try {
+        await api.post("/user", user);
+        await signIn(user.username, user.hashed_password);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [signIn]
+  );
 
   const updateUser = useCallback(async (user: UserProps) => {
     try {

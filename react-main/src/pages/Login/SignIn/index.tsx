@@ -44,9 +44,9 @@ export const SignIn = () => {
       </HeaderContent>
 
       <FormGroup>
-        <label htmlFor="username">E-mail</label>
+        <label htmlFor="username">Nome de Usuário</label>
         <DefaultInput
-          placeholder="Digite seu e-mail"
+          placeholder="Digite seu nome de usuário"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
         />
