@@ -129,9 +129,10 @@ def get_sacdm(db: Session=Depends(get_db), limit: Optional[int] = Query(None, de
 @app.get("/sac_dm_by_filter")
 def sacdm_by_filter(vehicle_id: Optional[int] = Query(None, description="Optional vehicle id for filter"),
                                     datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
-                                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"),
+                                    limit: Optional[int] = Query(None, description="Limit the number of records returned"),
                                     db: Session=Depends(get_db)):
-    data: List[SACDM] = get_sacdm_by_filter(vehicle_id, datetime_initial, datetime_final, db)
+    data: List[SACDM] = get_sacdm_by_filter(vehicle_id, datetime_initial, datetime_final, limit, db)
     return data
 
 

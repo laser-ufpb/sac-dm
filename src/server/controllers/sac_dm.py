@@ -39,21 +39,17 @@ def get_all_sacdm(db: Session, limit: Optional[int] = None):
     return query.all()
 
 
-def get_sacdm_by_filter(vehicle_id: int, datetime_initial: str, datetime_final: str, db: Session):
-    if vehicle_id and not datetime_initial and not datetime_final:
-        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id).all()
-    elif vehicle_id and datetime_initial and not datetime_final:
-        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id, SACDM.timestamp >= datetime_initial).all()
-    elif vehicle_id and datetime_final and not datetime_initial:
-        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id, SACDM.timestamp <= datetime_final).all()
-    elif vehicle_id and datetime_initial and datetime_final:
-        return db.query(SACDM).filter(SACDM.vehicle_id == vehicle_id, SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
-    elif datetime_initial and not datetime_final and not vehicle_id:
-        return db.query(SACDM).filter(SACDM.timestamp >= datetime_initial).all()
-    elif datetime_final and not datetime_initial and not vehicle_id:
-        return db.query(SACDM).filter(SACDM.timestamp <= datetime_final).all()
-    elif datetime_initial and datetime_final and not vehicle_id:
-        return db.query(SACDM).filter(SACDM.timestamp >= datetime_initial, SACDM.timestamp <= datetime_final ).all()
+def get_sacdm_by_filter(vehicle_id: int, datetime_initial: str, datetime_final: str, limit: int, db: Session):
+    query = db.query(SACDM).order_by(desc(SACDM.id))
+    if vehicle_id:
+        query = query.filter(SACDM.vehicle_id == vehicle_id)
+    if datetime_initial:
+        query = query.filter(SACDM.timestamp >= datetime_initial)
+    if datetime_final:
+        query = query.filter(SACDM.timestamp <= datetime_final)
+    if limit:
+        query = query.limit(limit)
+    return query.all()
     
 
 def delete_sacdm_records_by_vehicle_id(vehicle_id: int, db: Session):
