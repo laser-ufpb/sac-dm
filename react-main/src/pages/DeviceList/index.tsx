@@ -66,17 +66,19 @@ export const DeviceList = () => {
     navigate(`/${type}/${id}`);
   };
 
-  const filteredDevices = devices.filter((device) => {
-    return filterStatus.length > 0
-      ? filterStatus.includes(device.status_id)
-      : true;
-  });
+  const filteredDevices = Array.isArray(devices)
+    ? devices.filter((device) =>
+        filterStatus.length > 0 ? filterStatus.includes(device.status_id) : true
+      )
+    : [];
 
-  const filteredVehicles = vehicles.filter((vehicle) => {
-    return filterStatus.length > 0
-      ? filterStatus.includes(vehicle.status_id)
-      : true;
-  });
+  const filteredVehicles = Array.isArray(vehicles)
+    ? vehicles.filter((vehicle) =>
+        filterStatus.length > 0
+          ? filterStatus.includes(vehicle.status_id)
+          : true
+      )
+    : [];
 
   const handleAddClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -138,10 +140,14 @@ export const DeviceList = () => {
           <FilterContainer>
             <MultiSelect
               label="Filtrar"
-              options={statusOptions.map((status: StatusProps) => ({
-                id: status.id,
-                description: status.description,
-              }))}
+              options={
+                Array.isArray(statusOptions)
+                  ? statusOptions.map((status: StatusProps) => ({
+                      id: status.id,
+                      description: status.description,
+                    }))
+                  : []
+              }
               selectedOptions={filterStatus}
               setSelectedOptions={setFilterStatus}
             />
