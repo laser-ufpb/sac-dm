@@ -6,21 +6,16 @@ import serial
 import json as JSON
 
 import numpy as np
+import sys
+import os
+
 from scipy.signal import find_peaks
-
 from uuid import getnode as get_mac
-
-
-
-
-#import sys
-#import os
-#sys.path.append(os.path.abspath("../../sac-dm/"))
-#from sacdm import sac_am
-
 from threading import Thread
 from threading import Lock
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../sac-dm')))
+from math_utils import average_sac, deviation_sac
 
 # Calcula SAC-AM (amplitude media dos maximos) utilizando a funcao find_peaks do Python
 def sac_am(data, N):
@@ -41,27 +36,7 @@ def sac_am(data, N):
 		inicio = fim
 		fim = fim + N
 
-	return sacdm
-
-def average_sac(dataset):
-
-	start=0
-	end=len(dataset)
-
-	average = np.average(dataset[start:end])
-
-	return average
-
-def deviation_sac(dataset):
-	
-	start=0
-	end=len(dataset)
-
-	standard_deviation = np.std(dataset[start:end])
-
-	return standard_deviation	
-	
-	
+	return sacdm	
 	
 def get_device_code(interface):
 	#endereco mac da rasp e retorna
