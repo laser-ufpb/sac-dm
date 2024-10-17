@@ -41,8 +41,8 @@ def wavelet_denoise(input_wav_file, output_wav_file, wavelet='db1', level=1):
     write_wav(output_wav_file, audio_denoised, params)
 
 
-input_wav_file = '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/original/galvao_ia.wav'
-output_wav_file = '/home/pesquisador/Documentos/sac-dm/files/voice_signals/sample/denoised/galvao_ia_denoised.wav'
+input_wav_file = '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/original/f01.wav'
+output_wav_file = '/Users/Raul/Documents/GitHub/sac-dm/files/voice_signals/sample/denoised/f01_denoised.wav'
 wavelet_denoise(input_wav_file, output_wav_file)
 
 
