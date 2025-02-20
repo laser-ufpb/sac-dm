@@ -12,6 +12,7 @@ import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
 import { AddCircle, AirplanemodeActive, DeviceHub } from "@mui/icons-material";
 import { AddDevice } from "./AddDevice";
 import { AddVehicle } from "./AddVehicle";
+import { UpdateDevice } from "./UpdateDevice";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../utils/getStatusColor";
 import { MultiSelect } from "../../components/MultiSelect";
@@ -25,6 +26,8 @@ export const DeviceList = () => {
   const [vehicles, setVehicles] = useState<VehicleProps[]>([]);
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
   const [openAddVehicleModal, setOpenAddVehicleModal] = useState(false);
+  const [selectedDeviceCode, setSelectedDeviceCode] = useState<string | null>(null);
+  const [openUpdateDeviceModal, setOpenUpdateDeviceModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState<number[]>([]);
   const [statusOptions, setStatusOptions] = useState<StatusProps[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -100,6 +103,12 @@ export const DeviceList = () => {
         onClose={() => setOpenAddVehicleModal(false)}
         onSubmitted={loadItems}
       />
+      <UpdateDevice
+        open={openUpdateDeviceModal}
+        onClose={() => setOpenUpdateDeviceModal(false)}
+        deviceCode={selectedDeviceCode}
+        onSubmitted={loadItems}
+      />
       <Header>
         <h2>Gerenciamento de Dispositivos e Veículos</h2>
         <Button
@@ -158,15 +167,19 @@ export const DeviceList = () => {
               {filteredDevices.map((device) => (
                 <DeviceItem
                   key={device.id}
-                  // onClick={() => handleCellClick(device.id, "device")}
-                >
-                  <DeviceHub
-                    sx={{
-                      color: getStatusColor(device.status_id, statusOptions),
-                    }}
-                  />
-                  <h3>{device.device_code}</h3>
-                </DeviceItem>
+                  onClick={() => {
+                    setSelectedDeviceCode(device.device_code); // Armazena o objeto completo
+                    setOpenUpdateDeviceModal(true);
+                  }}
+              >
+                <DeviceHub
+                  sx={{
+                    color: getStatusColor(device.status_id, statusOptions),
+                  }}
+                />
+                <h3>{device.device_code}</h3>
+              </DeviceItem>
+              
               ))}
             </DevicesList>
           ) : (

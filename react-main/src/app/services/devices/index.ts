@@ -11,6 +11,15 @@ class DeviceService {
     }
   }
 
+  async getDeviceByCode(code: string) {
+    try {
+      const response = await api.get(`/device_by_code/${code}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async postDevices(payload: DevicePayload) {
     try {
       const response = await api.post("/device", {
@@ -18,6 +27,15 @@ class DeviceService {
         status_id: 1,
       });
       console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async putDevice(payload: DevicePayload) {
+    try {
+      const response = await api.put("/device", payload);
+      return response.data;
     } catch (error) {
       console.error(error);
     }

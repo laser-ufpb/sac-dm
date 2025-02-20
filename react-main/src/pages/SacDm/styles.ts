@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { CSSProperties } from "react";
 
 export const Container = styled.div`
   width: 100%;
@@ -84,3 +85,31 @@ export const statusOkStyle = {
 export const statusFailStyle = {
   backgroundColor: "#F44336",
 };
+
+export const checklistContainerStyle: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  marginTop: "10px",
+};
+
+export const checklistItemStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  marginBottom: "5px",
+};
+
+export const checklistCircleStyle = (hasError: boolean): CSSProperties => ({
+  width: 12,
+  height: 12,
+  borderRadius: "50%",
+  backgroundColor: hasError ? "red" : "green",
+  marginRight: 8,
+});
+
+export const chartContainerStyle = {
+  flex: "1 1 300px", // Cresce, encolhe e tem um mínimo de 300px
+  maxWidth: "400px", // Evita que fiquem largos demais
+  minWidth: "400px", // Evita que fiquem pequenos demais
+  margin: "10px",
+};
+

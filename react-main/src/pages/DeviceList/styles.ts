@@ -12,7 +12,8 @@ export const Header = styled.div`
 `;
 
 export const DevicesList = styled.ul`
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 0;
@@ -25,6 +26,8 @@ export const DeviceItem = styled.li`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 300px; 
+  min-width: 200px; 
   padding: 16px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.gray800};
@@ -46,7 +49,16 @@ export const DeviceItem = styled.li`
     font-size: 16px;
     color: ${({ theme }) => theme.text};
   }
+
+  @media (max-width: 768px) {
+    width: calc(50% - 16px); /* Em telas médias, 2 itens por linha */
+  }
+
+  @media (max-width: 480px) {
+    width: 100%; /* Em telas pequenas, 1 item por linha */
+  }
 `;
+
 
 export const NoDevicesMessage = styled.div`
   text-align: center;
@@ -74,4 +86,14 @@ export const FilterContainer = styled.div`
   > * {
     margin-right: 12px;
   }
+`;
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
 `;
