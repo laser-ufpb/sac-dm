@@ -2,7 +2,7 @@ import sqlite3
 import datetime
 import json
 import random
-from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User, Status, Vehicle, SACDMDefault
+from models.models import Device, SACDM, AccelerometerAcquisition, LoginRequest, User, Status, Vehicle, SACDMDefault, Condition
 from models.users import authenticate_user, get_current_user
 from models.token import create_access_token
 from schemas.accelerometer import AccelerometerSchema
@@ -12,6 +12,7 @@ from schemas.status import StatusSchema
 from schemas.user import UserSchema
 from schemas.vehicle import VehicleSchema
 from schemas.sacdm_default import SACDMDefaultSchema
+from schemas.condition import ConditionSchema
 from fastapi import Depends, FastAPI, Query, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -25,6 +26,8 @@ from controllers.sac_dm import *
 from controllers.status import create_status, get_all_status
 from controllers.vehicle import *
 from controllers.sacdm_default import *
+from controllers.fault import get_log
+from controllers.condition import create_condition, get_all_condition
 from database import (get_db, Session)
 from controllers.user import create_user, get_all_users, delete_user, get_user_by_username
 
@@ -42,7 +45,7 @@ app.add_middleware(
 
 
 @app.get("/")
-def show_devices():
+def default_page():
     return {"SUCCESS"}
 
 
@@ -111,10 +114,24 @@ def new_vehicle(vehicle: VehicleSchema, db: Session=Depends(get_db)):
 def new_status(status: StatusSchema, db: Session=Depends(get_db)):
     return create_status(status, db)
 
+
 # Route to get all data from status table
 @app.get("/status")
 def get_status(db: Session=Depends(get_db)):
     data: List[Status] = get_all_status(db)
+    return data
+
+
+# Route to insert a new data into the condition table
+@app.post("/condition")
+def new_condition(condition: ConditionSchema, db: Session=Depends(get_db)):
+    return create_condition(condition, db)
+
+
+# Route to get all data from condition table
+@app.get("/condition")
+def get_condition(db: Session=Depends(get_db)):
+    data: List[Condition] = get_all_condition(db)
     return data
 
 
@@ -154,6 +171,13 @@ def delete_sacdm_by_datetime(datetime_initial: Optional[str] = Query(None, descr
                     datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
                     db: Session=Depends(get_db)):
     return delete_sacdm_records_by_datetime(datetime_initial, datetime_final, db)
+
+
+# Route to get log by vehicle_id
+@app.get("/log_by_vehicle_id/{id}")
+def get_log_by_vehicle_id(id: int, db: Session=Depends(get_db)):
+    data: List[Log] = get_log(id, db)
+    return data
 
 
 # Route to get all data from accelerometer table

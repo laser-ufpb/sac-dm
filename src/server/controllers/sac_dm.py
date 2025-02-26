@@ -16,23 +16,6 @@ sys.path.append(os.path.abspath("../sac-dm/"))
 from util import classification
 
 
-def format_data_for_classification(sac_dm_schema: List[SACDMSchema], db: Session):
-    axis_values = [[entry.x_value, entry.y_value, entry.z_value] for entry in sac_dm_schema]
-
-    x_mean = db.query(SACDMDefault.x_mean).filter(SACDMDefault.vehicle_id == sac_dm_schema[0].vehicle_id).first()
-    y_mean = db.query(SACDMDefault.y_mean).filter(SACDMDefault.vehicle_id == sac_dm_schema[0].vehicle_id).first()
-    z_mean = db.query(SACDMDefault.z_mean).filter(SACDMDefault.vehicle_id == sac_dm_schema[0].vehicle_id).first()
-    #if (x_mean == None) or (y_mean == None) or (z_mean == None):
-    #    return("Mean values not found!")
-    means = [x_mean[0], y_mean[0], z_mean[0]]
-
-    x_standard_deviation = db.query(SACDMDefault.x_standard_deviation).filter(SACDMDefault.vehicle_id == sac_dm_schema[0].vehicle_id).first()
-    y_standard_deviation = db.query(SACDMDefault.y_standard_deviation).filter(SACDMDefault.vehicle_id == sac_dm_schema[0].vehicle_id).first()
-    z_standard_deviation = db.query(SACDMDefault.z_standard_deviation).filter(SACDMDefault.vehicle_id == sac_dm_schema[0].vehicle_id).first()
-    standard_deviations = [x_standard_deviation[0], y_standard_deviation[0], z_standard_deviation[0]]
-    return axis_values, means, standard_deviations
-
-
 def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
     try:
         vehicle_id_query = db.query(Device.vehicle_id).filter(Device.id == sac_dm_schema[0].device_id).first()
@@ -44,8 +27,7 @@ def create_sacdm(sac_dm_schema: List[SACDMSchema], db: Session):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"error": "Failed to insert data to the database."}
     )
-    formated_data = format_data_for_classification(sac_dm_data, db)
-    return classification(*formated_data,  5, ["NF"])
+    return log_verifier(sac_dm_data, db)
 
 
 def get_all_sacdm(db: Session, limit: Optional[int] = None):

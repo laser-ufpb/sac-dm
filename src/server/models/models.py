@@ -22,6 +22,12 @@ class Status(Base):
     description = Column(String, nullable=False)
 
 
+class Condition(Base):
+    __tablename__ = "condition_description"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    description = Column(String, nullable=False)
+
+
 class SACDM(Base):
     __tablename__ = "sac_dm"
 
@@ -73,6 +79,7 @@ class Vehicle(Base):
     engine_type = Column(String, nullable=True)  # e.g., piston, turboprop, jet
     number_of_engines = Column(Integer, nullable=True)
     status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
+    condition_id = Column(Integer, ForeignKey('condition_description.id'), nullable=True)
 
 
 class SACDMDefault(Base):
@@ -93,9 +100,8 @@ class Log(Base):
     vehicle_id = Column(Integer, ForeignKey('vehicle.id'), nullable=True)
     device_id = Column(Integer, ForeignKey('device.id'), nullable=True)
     sacdm_id = Column(Integer, ForeignKey('sac_dm.id'), nullable=True)
-    status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
+    condition_id = Column(Integer, ForeignKey('condition_description.id'), nullable=True)
     timestamp = Column(String, nullable=True)
-    axis = Column(String, nullable=True)
 
 
 class FaultCounter(Base):

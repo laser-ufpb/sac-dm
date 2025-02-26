@@ -21,6 +21,7 @@ def create_device(device_schema: DeviceSchema, db: Session):
             return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content="Failed to enter data!")
+            #return str(e)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content="Successfully entered data!")

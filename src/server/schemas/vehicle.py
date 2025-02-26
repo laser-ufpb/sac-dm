@@ -9,3 +9,4 @@ class VehicleSchema(BaseModel):
     engine_type: Optional[str]
     number_of_engines: Optional[int]
     status_id: Optional[int]
+    condition_id: Optional[int]
