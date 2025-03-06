@@ -109,6 +109,12 @@ def new_vehicle(vehicle: VehicleSchema, db: Session=Depends(get_db)):
         content="Invalid data!")
 
 
+# Route to delete data from vehicle table
+@app.delete("/vehicle/{vehicle_id}")
+def delete_vehicle(vehicle_id: int, db: Session=Depends(get_db)):
+    return delete_a_vehicle(vehicle_id, db)
+
+
 # Route to insert a new data into the status table
 @app.post("/status")
 def new_status(status: StatusSchema, db: Session=Depends(get_db)):

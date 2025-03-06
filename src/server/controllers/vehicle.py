@@ -32,3 +32,27 @@ def get_all_vehicles(db: Session):
 def get_vehicle(id: int, db: Session):
     if id:
         return db.query(Vehicle).filter(Vehicle.id == id).first()
+    
+
+def delete_a_vehicle(vehicle_id: int, db: Session):
+    try:
+        vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
+        if(not vehicle):
+            return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content="Vehicle not exist!")
+        db.delete(vehicle)
+        db.commit()
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content="Successfully deleted data!")
+    except Exception as e:
+        if "foreign key" in str(e):
+            return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content="Can't delete a vehicle with registered data!")
+        else:
+            return str(e)
+            #return JSONResponse(
+            #tatus_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            #content="Delete failed!")
