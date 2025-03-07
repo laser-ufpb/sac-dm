@@ -15,6 +15,8 @@ class Device(Base):
     status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
     vehicle_id = Column(Integer, ForeignKey('vehicle.id'), nullable=True)
 
+    vehicle = relationship("Vehicle", back_populates="devices")
+
 
 class Status(Base):
     __tablename__ = "status_description"
@@ -39,6 +41,8 @@ class SACDM(Base):
     z_value = Column(Float, nullable=False)
     timestamp = Column(String, nullable=False)
     label = Column(String, nullable=True)
+
+    vehicle = relationship("Vehicle", back_populates="sacdms")
 
 
 class AccelerometerAcquisition(Base):
@@ -81,6 +85,12 @@ class Vehicle(Base):
     status_id = Column(Integer, ForeignKey('status_description.id'), nullable=True)
     condition_id = Column(Integer, ForeignKey('condition_description.id'), nullable=True)
 
+    devices = relationship("Device", back_populates="vehicle", cascade="save-update, merge")
+    
+    sacdms = relationship("SACDM", back_populates="vehicle", cascade="all, delete-orphan")
+    sacdm_defaults = relationship("SACDMDefault", back_populates="vehicle", cascade="all, delete-orphan")
+    logs = relationship("Log", back_populates="vehicle", cascade="all, delete-orphan")
+
 
 class SACDMDefault(Base):
     __tablename__ = "sacdm_default"
@@ -93,6 +103,8 @@ class SACDMDefault(Base):
     z_mean = Column(Float, nullable=False)
     z_standard_deviation = Column(Float, nullable=False)
 
+    vehicle = relationship("Vehicle", back_populates="sacdm_defaults")
+
 
 class Log(Base):
     __tablename__ = "log"
@@ -102,6 +114,8 @@ class Log(Base):
     sacdm_id = Column(Integer, ForeignKey('sac_dm.id'), nullable=True)
     condition_id = Column(Integer, ForeignKey('condition_description.id'), nullable=True)
     timestamp = Column(String, nullable=True)
+
+    vehicle = relationship("Vehicle", back_populates="logs")
 
 
 class FaultCounter(Base):
