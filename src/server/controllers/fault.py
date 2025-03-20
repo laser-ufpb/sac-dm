@@ -27,10 +27,7 @@ def format_data_for_classification(sac_dm_schema: List[SACDMSchema], db: Session
     ).filter(SACDMDefault.vehicle_id == sac_dm_schema[0].vehicle_id).first()
 
     if not default_values:
-        return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"error": "Mean values or standard deviations not found for the vehicle."}
-        )
+        return False
 
     means = [default_values.x_mean, default_values.y_mean, default_values.z_mean]
     standard_deviations = [default_values.x_standard_deviation, default_values.y_standard_deviation, default_values.z_standard_deviation]
@@ -40,6 +37,11 @@ def format_data_for_classification(sac_dm_schema: List[SACDMSchema], db: Session
 
 def log_verifier(sac_dm_data: List[SACDMSchema], db: Session):
     formated_data = format_data_for_classification(sac_dm_data, db)
+    if formated_data == False:
+        return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"error": "Mean values or standard deviations not found for the vehicle."}
+        )
     # Consulta o último status do dispositivo
     vehicle = db.query(Vehicle).filter(Vehicle.id == sac_dm_data[-1].vehicle_id).order_by(desc(Vehicle.id)).first()
     
