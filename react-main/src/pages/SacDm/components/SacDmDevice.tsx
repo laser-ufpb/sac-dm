@@ -6,8 +6,7 @@ import { SacDmDefaultProps } from "../../../types";
 import sacDmDefault from "../../../app/services/sacdm_default";
 import logsVehicle from "../../../app/services/logs";
 import conditionService from "../../../app/services/condition";
-import sacDmService from "../../../app/services/sac_dm";
-import { Divider, Section, containerStyle, statusBoxStyle, statusOkStyle, statusFailStyle, logContainerStyle, logItemStyle, checklistContainerStyle, checklistItemStyle, checklistCircleStyle, chartContainerStyle } from "../styles";
+import { Section, containerStyle, statusBoxStyle, statusOkStyle, statusFailStyle, logContainerStyle, logItemStyle, checklistContainerStyle, checklistItemStyle, checklistCircleStyle, chartContainerStyle } from "../styles";
 import {LogsVehicle} from "./Log_vehicles";
 import vehicleService from "../../../app/services/vehicle";
 
@@ -92,7 +91,7 @@ const fetchLogs = useCallback(async () => {
   } catch (error) {
     console.error("Erro ao buscar logs", error);
   }
-}, [vehicleId,conditions]);
+}, [vehicleId,conditions,sacDm]);
 
 const checkDataStatus = useCallback(async () => {
   try {
@@ -125,7 +124,7 @@ useEffect(() => {
     clearInterval(dataInterval);
     //clearInterval(statusInterval);
   };
-}, [loadSacDmDefault,fetchLogs,checkDataStatus]);
+}, [loadSacDmDefault,fetchConditions,fetchLogs,checkDataStatus]);
 
 if (!vehicleId) {
   return null;

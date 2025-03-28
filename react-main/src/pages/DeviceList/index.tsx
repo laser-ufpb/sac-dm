@@ -7,9 +7,11 @@ import {
   NoDevicesMessage,
   SectionTitle,
   FilterContainer,
+  DeleteButton,
 } from "./styles";
-import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
-import { AddCircle, AirplanemodeActive, DeviceHub } from "@mui/icons-material";
+import { Button, CircularProgress, Menu, MenuItem} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { AddCircle, AirplanemodeActive, DeviceHub} from "@mui/icons-material";
 import { AddDevice } from "./AddDevice";
 import { AddVehicle } from "./AddVehicle";
 import { UpdateDevice } from "./UpdateDevice";
@@ -62,6 +64,17 @@ export const DeviceList = () => {
       setStatusOptions(response);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleDelete = async (deviceCode: string) => {
+    try {
+      await deviceService.DeleteDevice(deviceCode); // Chama a API para deletar
+      setDevices((prevDevices) =>
+        prevDevices.filter((device) => device.device_code !== deviceCode)
+      ); // Remove o dispositivo deletado da lista
+    } catch (error) {
+      console.error("Erro ao deletar dispositivo:", error);
     }
   };
 
@@ -168,17 +181,26 @@ export const DeviceList = () => {
                 <DeviceItem
                   key={device.id}
                   onClick={() => {
-                    setSelectedDeviceCode(device.device_code); // Armazena o objeto completo
+                    setSelectedDeviceCode(device.device_code);
                     setOpenUpdateDeviceModal(true);
-                  }}
-              >
-                <DeviceHub
-                  sx={{
-                    color: getStatusColor(device.status_id, statusOptions),
-                  }}
-                />
-                <h3>{device.device_code}</h3>
-              </DeviceItem>
+                  }}>
+                  <DeleteButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(device.device_code);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </DeleteButton>
+                  
+                  {/* Ícone principal do dispositivo */}
+                  <DeviceHub
+                    sx={{
+                      color: getStatusColor(device.status_id, statusOptions),
+                    }}
+                  />
+                  <h3>{device.device_code}</h3>
+                </DeviceItem>
               
               ))}
             </DevicesList>
