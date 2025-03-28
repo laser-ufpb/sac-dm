@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { CustomModal } from "../../../../components/CustomModal";
 import {
   ModalContent,
@@ -14,10 +13,16 @@ export const LogsVehicle = ({ open, onClose, logs }: LogsVehicleProps) => {
         <h2>Logs do Veículo</h2>
       </ModalHeader>
       <ModalContent>
-        <div style={{ maxHeight: "300px", overflowY: "auto", color: "white" }}>
+        <div
+          style={{maxHeight: "300px", overflowY: "auto", color: "white", width: "100%", // Faz a div ocupar toda a largura
+          }}
+        >
           {logs.length > 0 ? (
             logs.map((log, index) => (
-              <div key={index} style={{ padding: "8px 0", borderBottom: "1px solid #ddd" }}>
+              <div
+                key={index}
+                style={{ padding: "8px 0", borderBottom: "1px solid #ddd", wordBreak: "break-word"}}
+              >
                 {log}
               </div>
             ))

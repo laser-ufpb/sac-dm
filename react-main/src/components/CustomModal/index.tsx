@@ -12,7 +12,7 @@ export const CustomModal = ({
 
   const sizes = {
     xsm: "350px",
-    sm: "400px",
+    sm: "500px",
     md: "600px",
     lg: "800px",
     xl: "1000px",
