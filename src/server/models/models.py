@@ -114,6 +114,9 @@ class Log(Base):
     sacdm_id = Column(Integer, ForeignKey('sac_dm.id'), nullable=True)
     condition_id = Column(Integer, ForeignKey('condition_description.id'), nullable=True)
     timestamp = Column(String, nullable=True)
+    x_value = Column(Float, nullable=False)
+    y_value = Column(Float, nullable=False)
+    z_value = Column(Float, nullable=False)
 
     vehicle = relationship("Vehicle", back_populates="logs")
 

@@ -56,7 +56,10 @@ def log_verifier(sac_dm_data: List[SACDMSchema], db: Session):
             device_id = sac_dm_data[-1].device_id,
             sacdm_id = db.query(SACDM.id).order_by(desc(SACDM.id)).first()[0],
             condition_id = 2,  # 2 = alguma falha
-            timestamp = sac_dm_data[-1].timestamp
+            timestamp = sac_dm_data[-1].timestamp,
+            x_value = sac_dm_data[-1].x_value,
+            y_value = sac_dm_data[-1].y_value,
+            z_value = sac_dm_data[-1].z_value
         )
         vehicle_aux = db.query(Vehicle).filter(Vehicle.id == sac_dm_data[-1].vehicle_id).order_by(desc(Vehicle.id)).first()
         vehicle_aux.condition_id = 2
@@ -68,7 +71,10 @@ def log_verifier(sac_dm_data: List[SACDMSchema], db: Session):
             device_id = sac_dm_data[-1].device_id,
             sacdm_id = db.query(SACDM.id).order_by(desc(SACDM.id)).first()[0],
             condition_id = 1,  # 1 = normal
-            timestamp = sac_dm_data[-1].timestamp
+            timestamp = sac_dm_data[-1].timestamp,
+            x_value = sac_dm_data[-1].x_value,
+            y_value = sac_dm_data[-1].y_value,
+            z_value = sac_dm_data[-1].z_value
         )
         vehicle_aux = db.query(Vehicle).filter(Vehicle.id == sac_dm_data[-1].vehicle_id).order_by(desc(Vehicle.id)).first()
         vehicle_aux.condition_id = 1
