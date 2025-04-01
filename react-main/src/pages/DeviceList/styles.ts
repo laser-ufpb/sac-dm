@@ -107,3 +107,10 @@ export const DeleteButton = styled(IconButton)`
   right: 5px;
   color: red !important;
 `;
+
+export const OnOffButton = styled(IconButton)`
+  position: absolute !important;
+  top: 5px;
+  left: 5px;
+  color: #9AA0A6 !important;
+`;

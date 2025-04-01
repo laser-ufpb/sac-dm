@@ -34,22 +34,25 @@ export const AddDevice = ({ open, onClose, onSubmitted }: AddDeviceProps) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const response = await vehicleService.getVehicles();
-        setVehicles(response);
-        
-        // Se houver veículos, define o primeiro como valor padrão
-        if (response.length > 0) {
-          setValue("vehicle_id", response[0].id);
+    if (open) { // Só busca os veículos quando o modal for aberto
+      const fetchVehicles = async () => {
+        try {
+          const response = await vehicleService.getVehicles();
+          setVehicles(response);
+          
+          // Se houver veículos, define o primeiro como valor padrão
+          if (response.length > 0) {
+            setValue("vehicle_id", response[0].id);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      };
   
-    fetchVehicles();
-  }, [setValue]);
+      fetchVehicles();
+    }
+  }, [open, setValue]); // Adicionado 'open' como dependência
+  
 
   const onSubmit = async (data: DeviceFormData) => {
     try {

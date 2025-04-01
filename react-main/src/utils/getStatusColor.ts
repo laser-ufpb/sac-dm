@@ -11,11 +11,15 @@ export const getStatusColor = (
       return "#35F33D";
     case "ONLINE":
       return "#35F33D";
+    case "online":
+      return "#35F33D";
     case "Alerta":
       return "#FFA500";
     case "Crítico":
       return "#FF0000";
     case "Offline":
+      return "#9AA0A6";
+    case "offline":
       return "#9AA0A6";
     default:
       return "#9AA0A6";

@@ -42,7 +42,6 @@ const fetchConditions = useCallback(async () => {
     const response = await conditionService.getConditions()
     setConditions(response);
     
-    //setLogs(response);
   } catch (error) {
     console.error("Erro ao buscar condições", error);
   }
@@ -57,8 +56,9 @@ const fetchLogs = useCallback(async () => {
       const condition = conditions.find(c => c.id === log.condition_id);
       const sac = sacDm.find(sac => sac.id === log.sacdm_id);
 
-      // Converter timestamp para objeto Date
-      const dateObj = new Date(log.timestamp);
+      // Converter timestamp de nanosegundos para milissegundos
+      const timestampMs = log.timestamp / 1_000_000_000_000;
+      const dateObj = new Date(timestampMs);
 
       const formattedDate = dateObj.toLocaleDateString("pt-BR", {
         day: "2-digit",
@@ -74,6 +74,7 @@ const fetchLogs = useCallback(async () => {
 
       const colorCondition = condition?.description === "falha"? "#F44336": "#4CAF50"
       return <>
+      {log.sacdm_id}
       <span style={{color: colorCondition }}>
       [{condition?.description || "Desconhecido"}]
       </span>
@@ -87,7 +88,6 @@ const fetchLogs = useCallback(async () => {
     }).reverse();
     setLogs(formattedLogs);
     
-    //setLogs(response);
   } catch (error) {
     console.error("Erro ao buscar logs", error);
   }
