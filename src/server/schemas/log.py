@@ -7,3 +7,6 @@ class LogSchema(BaseModel):
     vehicle_id: int
     condition_id: int
     timestamp: str
+    x_value: float
+    y_value: float
+    z_value: float
