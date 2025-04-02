@@ -7,9 +7,13 @@ import {
   NoDevicesMessage,
   SectionTitle,
   FilterContainer,
+  DeleteButton,
+  OnOffButton,
 } from "./styles";
-import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
-import { AddCircle, AirplanemodeActive, DeviceHub } from "@mui/icons-material";
+import { Button, CircularProgress, Menu, MenuItem} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SettingsPowerIcon from '@mui/icons-material/SettingsPower';
+import { AddCircle, AirplanemodeActive, DeviceHub} from "@mui/icons-material";
 import { AddDevice } from "./AddDevice";
 import { AddVehicle } from "./AddVehicle";
 import { UpdateDevice } from "./UpdateDevice";
@@ -64,6 +68,45 @@ export const DeviceList = () => {
       console.error(error);
     }
   };
+
+  const handleDelete = async (deviceCode: string) => {
+    try {
+      await deviceService.DeleteDevice(deviceCode); // Chama a API para deletar
+      setDevices((prevDevices) =>
+        prevDevices.filter((device) => device.device_code !== deviceCode)
+      ); // Remove o dispositivo deletado da lista
+    } catch (error) {
+      console.error("Erro ao deletar dispositivo:", error);
+    }
+  };
+
+  const onOffDevice = async (deviceCode: string) => {
+    try {
+        const device = await deviceService.getDeviceByCode(deviceCode);
+        
+        if (!device || typeof device.status_id === 'undefined') {
+            console.error("Dispositivo não encontrado ou status_id indefinido");
+            return;
+        }
+        
+        const newStatusId = device.status_id === 1 ? 2 : 1;
+        
+        const data = {
+            device_code: deviceCode,
+            status_id: newStatusId,
+            vehicle_id: device.vehicle_id
+        };
+        
+        await deviceService.putDevice(data);
+
+        // Atualiza os dispositivos na página sem recarregá-la
+        setDevices((prevDevices: any[]) =>
+          prevDevices.map(d => d.device_code === deviceCode ? { ...d, status_id: newStatusId } : d)
+      );
+    } catch (error) {
+        console.error("Erro ao atualizar status do dispositivo", error);
+    }
+};
 
   const handleCellClick = (id: number, type: string) => {
     navigate(`/${type}/${id}`);
@@ -168,17 +211,34 @@ export const DeviceList = () => {
                 <DeviceItem
                   key={device.id}
                   onClick={() => {
-                    setSelectedDeviceCode(device.device_code); // Armazena o objeto completo
+                    setSelectedDeviceCode(device.device_code);
                     setOpenUpdateDeviceModal(true);
-                  }}
-              >
-                <DeviceHub
-                  sx={{
-                    color: getStatusColor(device.status_id, statusOptions),
-                  }}
-                />
-                <h3>{device.device_code}</h3>
-              </DeviceItem>
+                  }}>
+                  <OnOffButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOffDevice(device.device_code);
+                    }}
+                  >
+                    <SettingsPowerIcon />
+                  </OnOffButton>
+                  <DeleteButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(device.device_code);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </DeleteButton>
+                  
+                  {/* Ícone principal do dispositivo */}
+                  <DeviceHub
+                    sx={{
+                      color: getStatusColor(device.status_id, statusOptions),
+                    }}
+                  />
+                  <h3>{device.device_code}</h3>
+                </DeviceItem>
               
               ))}
             </DevicesList>

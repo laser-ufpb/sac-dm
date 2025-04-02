@@ -113,3 +113,17 @@ export const chartContainerStyle = {
   margin: "10px",
 };
 
+export const logContainerStyle = {
+  maxHeight: "150px",
+  backgroundColor: "#1e1e1e",
+  padding: "10px",
+  borderRadius: "8px",
+  color: "#fff",
+};
+
+export const logItemStyle = {
+  padding: "5px",
+  borderBottom: "1px solid #444",
+  fontSize: "14px",
+};
+

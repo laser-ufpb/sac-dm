@@ -34,17 +34,25 @@ export const AddDevice = ({ open, onClose, onSubmitted }: AddDeviceProps) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const response = await vehicleService.getVehicles();
-        setVehicles(response);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchVehicles();
-  }, []);
+    if (open) { // Só busca os veículos quando o modal for aberto
+      const fetchVehicles = async () => {
+        try {
+          const response = await vehicleService.getVehicles();
+          setVehicles(response);
+          
+          // Se houver veículos, define o primeiro como valor padrão
+          if (response.length > 0) {
+            setValue("vehicle_id", response[0].id);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+  
+      fetchVehicles();
+    }
+  }, [open, setValue]); // Adicionado 'open' como dependência
+  
 
   const onSubmit = async (data: DeviceFormData) => {
     try {
@@ -86,17 +94,17 @@ export const AddDevice = ({ open, onClose, onSubmitted }: AddDeviceProps) => {
             <Controller
               name="vehicle_id"
               control={control}
-              defaultValue={0}
+              defaultValue={vehicles.length > 0 ? vehicles[0].id : undefined} // Corrigido
               render={({ field }) => (
                 <DefaultSelect
                   {...field}
-                  onChange={(e) =>
-                    setValue("vehicle_id", Number(e.target.value))
-                  }
+                  onChange={(e) => setValue("vehicle_id", Number(e.target.value))}
                 >
-                  <option value="" disabled>
-                    Selecione um veículo
-                  </option>
+                  {vehicles.length === 0 ? (
+                    <option value={undefined} disabled>
+                      Carregando veículos...
+                    </option>
+                  ) : null}
                   {vehicles.map((vehicle) => (
                     <option key={vehicle.id} value={vehicle.id}>
                       {vehicle.model} - {vehicle.manufacturer}

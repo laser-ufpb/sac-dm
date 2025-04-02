@@ -1,5 +1,5 @@
 export interface SacDmProps {
-  device_id: number;
+  vehicleId: number;
   label: string;
   x_value: number;
   y_value: number;

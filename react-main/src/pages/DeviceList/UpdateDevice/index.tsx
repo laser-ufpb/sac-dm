@@ -33,20 +33,22 @@ export const UpdateDevice = ({ open, onClose, onSubmitted, deviceCode }: UpdateD
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   useEffect(() => {
-    const fetchDevice = async () => {
-      if (!deviceCode) return;
-      try {
-        const response = await DeviceService.getDeviceByCode(deviceCode);
-        if (response) {
-          setValue("device_code", response.device_code);
-          setValue("vehicle_id", response.vehicle_id || 0);
+    if(open){
+      const fetchDevice = async () => {
+        if (!deviceCode) return;
+        try {
+          const response = await DeviceService.getDeviceByCode(deviceCode);
+          if (response) {
+            setValue("device_code", response.device_code);
+            setValue("vehicle_id", response.vehicle_id || 0);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchDevice();
+      };
+    
+      fetchDevice();
+    }
   }, [deviceCode, setValue]);
 
   useEffect(() => {
