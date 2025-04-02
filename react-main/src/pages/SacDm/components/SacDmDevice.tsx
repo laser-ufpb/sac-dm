@@ -54,7 +54,6 @@ const fetchLogs = useCallback(async () => {
     // Substituir condition_id pela description correspondente
     const formattedLogs = response.map((log: any) => {
       const condition = conditions.find(c => c.id === log.condition_id);
-      const sac = sacDm.find(sac => sac.id === log.sacdm_id);
 
       // Converter timestamp de nanosegundos para milissegundos
       const timestampMs = log.timestamp / 1_000_000_000_000;
@@ -74,7 +73,6 @@ const fetchLogs = useCallback(async () => {
 
       const colorCondition = condition?.description === "falha"? "#F44336": "#4CAF50"
       return <>
-      {log.sacdm_id}
       <span style={{color: colorCondition }}>
       [{condition?.description || "Desconhecido"}]
       </span>
@@ -83,7 +81,7 @@ const fetchLogs = useCallback(async () => {
       Data: {formattedDate} - Hora: {formattedTime}
       </span>
       <br />
-      SACDM: {sac ? `x: ${sac.x_value}, y: ${sac.y_value}, z: ${sac.z_value}, label: ${sac.label}` : "Desconhecido"}
+      SACDM: {`x: ${log.x_value}, y: ${log.y_value}, z: ${log.z_value}, label: ${log.label}`}
     </>
     }).reverse();
     setLogs(formattedLogs);

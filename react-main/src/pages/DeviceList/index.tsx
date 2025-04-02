@@ -69,11 +69,22 @@ export const DeviceList = () => {
     }
   };
 
-  const handleDelete = async (deviceCode: string) => {
+  const handleDeleteDevice = async (deviceCode: string) => {
     try {
       await deviceService.DeleteDevice(deviceCode); // Chama a API para deletar
       setDevices((prevDevices) =>
         prevDevices.filter((device) => device.device_code !== deviceCode)
+      ); // Remove o dispositivo deletado da lista
+    } catch (error) {
+      console.error("Erro ao deletar dispositivo:", error);
+    }
+  };
+
+  const handleDeleteVehicle = async (vehicle_id: number) => {
+    try {
+      await vehicleService.deleteVehicleById(vehicle_id) // Chama a API para deletar
+      setVehicles((prevVehicles) =>
+        prevVehicles.filter((vehicle) => vehicle.id !== vehicle_id)
       ); // Remove o dispositivo deletado da lista
     } catch (error) {
       console.error("Erro ao deletar dispositivo:", error);
@@ -225,7 +236,7 @@ export const DeviceList = () => {
                   <DeleteButton
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDelete(device.device_code);
+                      handleDeleteDevice(device.device_code);
                     }}
                   >
                     <DeleteIcon />
@@ -261,6 +272,15 @@ export const DeviceList = () => {
                   <h3>
                     {vehicle.model} - {vehicle.manufacturer}
                   </h3>
+
+                  <DeleteButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteVehicle(vehicle.id);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </DeleteButton>
                 </DeviceItem>
               ))}
             </DevicesList>
