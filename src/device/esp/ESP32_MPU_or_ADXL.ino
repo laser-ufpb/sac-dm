@@ -6,7 +6,10 @@
 #include <freertos/semphr.h>
 
 // Configuração geral
+#define ADXL345_ADDRESS 0x53
 #define BUFFER_SIZE 10000
+#define INIT_DELAY_MS 500
+#define SERIAL_BAUDRATE 921600
 
 // Objetos do acelerômetro
 Adafruit_MPU6050 accelMPU;
@@ -32,33 +35,89 @@ String acc = "";
 // Flag para ativar/desativar o contador de leituras por segundo
 bool enableRateMonitor = true;
 
-void task1(void *pvParameters) {
-  (void)pvParameters;
-  sensors_event_t event, g, temp;
+void setupADXL_FIFO() {
+  Wire.beginTransmission(ADXL345_ADDRESS);
+  Wire.write(0x2D); // POWER_CTL
+  Wire.write(0x08); // Measure mode
+  Wire.endTransmission();
 
-  while (1) {
-    // Leitura do acelerômetro
-    if (acc == "MPU") {
-      accelMPU.getEvent(&event, &g, &temp);
-    } else {
-      accelADXL.getEvent(&event);
-    }
+  Wire.beginTransmission(ADXL345_ADDRESS);
+  Wire.write(0x31); // DATA_FORMAT
+  Wire.write(0x0B); // Full resolution, +/-16g
+  Wire.endTransmission();
 
-    // Espera até haver espaço livre no buffer
+  Wire.beginTransmission(ADXL345_ADDRESS);
+  Wire.write(0x38); // FIFO_CTL
+  Wire.write(0x9F); // FIFO mode = Stream (0b10), Trigger = INT1, Samples = 31
+  Wire.endTransmission();
+}
+
+uint8_t getFifoSampleCount() {
+  Wire.beginTransmission(ADXL345_ADDRESS);
+  Wire.write(0x39); // FIFO_STATUS
+  Wire.endTransmission(false);
+  Wire.requestFrom(ADXL345_ADDRESS, 1);
+  return Wire.read() & 0x3F; // Bits 0-5: sample count
+}
+
+void readAdxlFifoAndStoreInBuffer(uint8_t sampleCount) {
+  for (int i = 0; i < sampleCount; i++) {
+    // Espera por espaço no buffer circular
     xSemaphoreTake(freeSpaceSemaphore, portMAX_DELAY);
 
-    // Escreve no buffer com proteção
+    // Leitura dos 6 bytes (X, Y, Z)
+    Wire.beginTransmission(ADXL345_ADDRESS);
+    Wire.write(0x32); // Início do registro de dados
+    Wire.endTransmission(false);
+    Wire.requestFrom(ADXL345_ADDRESS, 6);
+
+    int16_t rawX = Wire.read() | (Wire.read() << 8);
+    int16_t rawY = Wire.read() | (Wire.read() << 8);
+    int16_t rawZ = Wire.read() | (Wire.read() << 8);
+
+    // Converte para G: 4mg/LSB (full-res, ±16g)
+    float x = rawX * 0.0039;
+    float y = rawY * 0.0039;
+    float z = rawZ * 0.0039;
+
+    // Escreve no buffer circular com proteção
     portENTER_CRITICAL(&mux);
-    accelDataX[writeIndex] = event.acceleration.x;
-    accelDataY[writeIndex] = event.acceleration.y;
-    accelDataZ[writeIndex] = event.acceleration.z;
+    accelDataX[writeIndex] = x;
+    accelDataY[writeIndex] = y;
+    accelDataZ[writeIndex] = z;
     writeIndex = (writeIndex + 1) % BUFFER_SIZE;
     portEXIT_CRITICAL(&mux);
 
-    // Sinaliza que há dado disponível para leitura
+    // Sinaliza que há dado disponível
     xSemaphoreGive(bufferHasDataSemaphore);
+  }
+}
 
-    delay(10); // Intervalo entre leituras
+void task1(void *pvParameters) {
+  (void)pvParameters;
+
+  while (1) {
+    if (acc == "ADXL") {
+      uint8_t availableSamples = getFifoSampleCount();
+      if (availableSamples > 0) {
+        readAdxlFifoAndStoreInBuffer(availableSamples);
+      }
+    } else {
+      // Leitura normal do MPU6050 (caso esteja sendo usado)
+      sensors_event_t event, g, temp;
+      accelMPU.getEvent(&event, &g, &temp);
+
+      xSemaphoreTake(freeSpaceSemaphore, portMAX_DELAY);
+      portENTER_CRITICAL(&mux);
+      accelDataX[writeIndex] = event.acceleration.x;
+      accelDataY[writeIndex] = event.acceleration.y;
+      accelDataZ[writeIndex] = event.acceleration.z;
+      writeIndex = (writeIndex + 1) % BUFFER_SIZE;
+      portEXIT_CRITICAL(&mux);
+      xSemaphoreGive(bufferHasDataSemaphore);
+    }
+
+    delay(1); // Evita uso excessivo da CPU
   }
 }
 
@@ -108,8 +167,8 @@ void task2(void *pvParameters) {
 }
 
 void setup() {
-  Serial.begin(921600);
-  delay(1000);
+  Serial.begin(SERIAL_BAUDRATE);
+  delay(INIT_DELAY_MS);
   Serial.println("Testando inicio");
 
   // Inicializa acelerômetro
@@ -119,16 +178,17 @@ void setup() {
       Serial.println("Falha ao iniciar o ADXL345!");
       while (1) {
         Serial.println("Falha ao iniciar os dois!");
-        delay(1000);
+        delay(INIT_DELAY_MS);
       }
     } else {
       acc = "ADXL";
+      setupADXL_FIFO();
     }
   } else {
     acc = "MPU";
   }
 
-  delay(500);
+  delay(INIT_DELAY_MS);
   if (acc == "MPU") {
     accelMPU.setAccelerometerRange(MPU6050_RANGE_2_G);
     accelMPU.setGyroRange(MPU6050_RANGE_500_DEG);
