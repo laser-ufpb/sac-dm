@@ -2,113 +2,153 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_ADXL345_U.h>
- 
-String acc = "";
- 
-volatile int line = 0;
- 
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+
+// Configuração geral
+#define BUFFER_SIZE 10000
+
 // Objetos do acelerômetro
 Adafruit_MPU6050 accelMPU;
 Adafruit_ADXL345_Unified accelADXL = Adafruit_ADXL345_Unified(12345);
- 
-// Mutex para garantir acesso exclusivo às variáveis compartilhadas
+
+// Buffer circular
+volatile float accelDataX[BUFFER_SIZE] = {0.0};
+volatile float accelDataY[BUFFER_SIZE] = {0.0};
+volatile float accelDataZ[BUFFER_SIZE] = {0.0};
+
+// Índices do buffer
+volatile int readIndex = 0;
+volatile int writeIndex = 0;
+
+// Semáforos de controle
+SemaphoreHandle_t freeSpaceSemaphore;         // Espaços livres no buffer
+SemaphoreHandle_t bufferHasDataSemaphore;     // Dados disponíveis para leitura
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
- 
-// Variáveis compartilhadas entre os núcleos
-volatile float accelDataX = 0.0;
-volatile float accelDataY = 0.0;
-volatile float accelDataZ = 0.0;
- 
+
+// Controle do sensor usado
+String acc = "";
+
+// Flag para ativar/desativar o contador de leituras por segundo
+bool enableRateMonitor = true;
+
 void task1(void *pvParameters) {
   (void)pvParameters;
- 
   sensors_event_t event, g, temp;
- 
+
   while (1) {
-    // Leitura dos dados do acelerômetro
-    if(acc == "MPU"){
+    // Leitura do acelerômetro
+    if (acc == "MPU") {
       accelMPU.getEvent(&event, &g, &temp);
-    } else{
+    } else {
       accelADXL.getEvent(&event);
     }
- 
-    // Aquisição do mutex para garantir acesso exclusivo às variáveis compartilhadas
+
+    // Espera até haver espaço livre no buffer
+    xSemaphoreTake(freeSpaceSemaphore, portMAX_DELAY);
+
+    // Escreve no buffer com proteção
     portENTER_CRITICAL(&mux);
-    accelDataX = event.acceleration.x;
-    accelDataY = event.acceleration.y;
-    accelDataZ = event.acceleration.z;
+    accelDataX[writeIndex] = event.acceleration.x;
+    accelDataY[writeIndex] = event.acceleration.y;
+    accelDataZ[writeIndex] = event.acceleration.z;
+    writeIndex = (writeIndex + 1) % BUFFER_SIZE;
     portEXIT_CRITICAL(&mux);
- 
+
+    // Sinaliza que há dado disponível para leitura
+    xSemaphoreGive(bufferHasDataSemaphore);
+
+    delay(10); // Intervalo entre leituras
   }
 }
- 
+
 void task2(void *pvParameters) {
   (void)pvParameters;
   char cMsg[254];
-  line++;
-  int delay = 320;
- 
-  if(acc == "ADXL"){
-    delay = 160;
-  } 
- 
+  int delayTime = (acc == "ADXL") ? 160 : 320;
+
+  // Variáveis do contador de leituras por segundo
+  unsigned long lastTime = millis();
+  int readCount = 0;
+
   while (1) {
-    // Aquisição do mutex para garantir acesso exclusivo às variáveis compartilhadas
+    // Espera até haver dado no buffer
+    xSemaphoreTake(bufferHasDataSemaphore, portMAX_DELAY);
+
+    float x, y, z;
+
+    // Lê do buffer com proteção
     portENTER_CRITICAL(&mux);
-    float x = accelDataX;
-    float y = accelDataY;
-    float z = accelDataZ;
- 
+    x = accelDataX[readIndex];
+    y = accelDataY[readIndex];
+    z = accelDataZ[readIndex];
+    readIndex = (readIndex + 1) % BUFFER_SIZE;
     portEXIT_CRITICAL(&mux);
- 
-    sprintf(cMsg, "%0.2f;%0.2f;%0.2f", x, y, z );
-    //sprintf(cMsg, "%0.2f;%0.2f;%0.2f", x, y, z);
+
+    // Sinaliza que há um espaço livre no buffer
+    xSemaphoreGive(freeSpaceSemaphore);
+
+    // Exibe os dados na serial
+    sprintf(cMsg, "%0.2f;%0.2f;%0.2f", x, y, z);
     Serial.println(cMsg);
-    delayMicroseconds(delay);
+
+    // Contador de leituras por segundo
+    if (enableRateMonitor) {
+      readCount++;
+      if (millis() - lastTime >= 1000) {
+        Serial.print("Leituras por segundo: ");
+        Serial.println(readCount);
+        readCount = 0;
+        lastTime = millis();
+      }
+    }
+
+    delayMicroseconds(delayTime);
   }
 }
- 
- 
+
 void setup() {
   Serial.begin(921600);
-  //Serial.begin(230400);  
   delay(1000);
-  // Inicialização do acelerômetro
   Serial.println("Testando inicio");
- 
-    if (!accelMPU.begin()) {
-      Serial.println("Falha ao iniciar o MPU6050!");
- 
-      if (!accelADXL.begin()) {
-        Serial.println("Falha ao iniciar o ADXL345!");
-        while (1){
-          Serial.println("Falha ao iniciar os dois!");
-          delay(1000);
-        }
+
+  // Inicializa acelerômetro
+  if (!accelMPU.begin()) {
+    Serial.println("Falha ao iniciar o MPU6050!");
+    if (!accelADXL.begin()) {
+      Serial.println("Falha ao iniciar o ADXL345!");
+      while (1) {
+        Serial.println("Falha ao iniciar os dois!");
+        delay(1000);
       }
-      else {
-        acc = "ADXL";
-      }
- 
     } else {
-      acc = "MPU";
+      acc = "ADXL";
     }
-  delay(500); 
-  if(acc == "MPU"){
+  } else {
+    acc = "MPU";
+  }
+
+  delay(500);
+  if (acc == "MPU") {
     accelMPU.setAccelerometerRange(MPU6050_RANGE_2_G);
     accelMPU.setGyroRange(MPU6050_RANGE_500_DEG);
     accelMPU.setFilterBandwidth(MPU6050_BAND_5_HZ);
-  } else { 
+  } else {
     accelADXL.setRange(ADXL345_RANGE_2_G);
     accelADXL.setDataRate(ADXL345_DATARATE_1600_HZ);
   }
+
   delay(500);
- 
-  // Criação das tasks
-  xTaskCreatePinnedToCore(task1, "Task1", 10000, NULL, 1, NULL, 0); // Task 1 no núcleo 0
-  xTaskCreatePinnedToCore(task2, "Task2", 10000, NULL, 1, NULL, 1); // Task 2 no núcleo 1
+
+  // Criação dos semáforos
+  freeSpaceSemaphore = xSemaphoreCreateCounting(BUFFER_SIZE, BUFFER_SIZE); // Começa cheio de espaço
+  bufferHasDataSemaphore = xSemaphoreCreateCounting(BUFFER_SIZE, 0);       // Nenhum dado no início
+
+  // Criação das tarefas
+  xTaskCreatePinnedToCore(task1, "Task1", 10000, NULL, 1, NULL, 0); // Núcleo 0
+  xTaskCreatePinnedToCore(task2, "Task2", 10000, NULL, 1, NULL, 1); // Núcleo 1
 }
- 
+
 void loop() {
-  // O loop principal é deixado vazio, já que as tasks estão sendo executadas nos núcleos separados
+  // Nada aqui — as tarefas rodam nos núcleos separadamente
 }
