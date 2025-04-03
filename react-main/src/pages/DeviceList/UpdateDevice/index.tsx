@@ -10,9 +10,7 @@ import {
 import { Close } from "@mui/icons-material";
 import { DefaultForm } from "../../../components/forms/DefaultForm";
 import { FormGroup } from "../../../components/forms/FormGroup";
-import {
-  DefaultSelect,
-} from "../../../components/forms/DefaultInput";
+import { DefaultSelect } from "../../../components/forms/DefaultInput";
 import { DeviceFormData, deviceSchema } from "./schema";
 import DeviceService from "../../../app/services/devices";
 import vehicleService from "../../../app/services/vehicle";
@@ -32,39 +30,40 @@ export const UpdateDevice = ({ open, onClose, onSubmitted, deviceCode }: UpdateD
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
+  // Função para carregar os veículos
+  const fetchVehicles = async () => {
+    try {
+      const response = await vehicleService.getVehicles();
+      setVehicles(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchDevice = async () => {
-      if (!deviceCode) return;
-      try {
-        const response = await DeviceService.getDeviceByCode(deviceCode);
-        if (response) {
-          setValue("device_code", response.device_code);
-          setValue("vehicle_id", response.vehicle_id || 0);
+    if (open) {
+      const fetchDevice = async () => {
+        if (!deviceCode) return;
+        try {
+          const response = await DeviceService.getDeviceByCode(deviceCode);
+          if (response) {
+            setValue("device_code", response.device_code);
+            setValue("vehicle_id", response.vehicle_id || 0);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      };
 
-    fetchDevice();
-  }, [deviceCode, setValue]);
-
-  useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const response = await vehicleService.getVehicles();
-        setVehicles(response);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchVehicles();
-  }, []);
+      fetchDevice();
+      fetchVehicles(); // Atualiza a lista de veículos quando o modal abre
+    }
+  }, [open, deviceCode, setValue]);
 
   const onSubmit = async (data: DeviceFormData) => {
     try {
       await DeviceService.putDevice(data);
+      await fetchVehicles(); // Recarrega a lista de veículos após atualização
       onSubmitted && onSubmitted();
       onClose();
     } catch (error) {

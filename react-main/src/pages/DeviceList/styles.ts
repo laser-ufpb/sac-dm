@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { IconButton } from "@mui/material";
 
 export const Header = styled.div`
   display: flex;
@@ -23,6 +24,7 @@ export const DevicesList = styled.ul`
 
 export const DeviceItem = styled.li`
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -96,4 +98,36 @@ export const Container = styled.div`
   width: 100%;
   max-width: 1200px;
   margin: auto;
+`;
+
+// Estilização do botão de deletar (posição absoluta no canto superior direito)
+export const DeleteButton = styled(IconButton)`
+  position: absolute !important;
+  top: 5px;
+  right: 5px;
+  color: #9AA0A6 !important;
+  &:hover {
+    background-color: ${({ theme }) => theme.gray900} !important;
+  }
+`;
+
+export const OnOffButton = styled(IconButton)`
+  position: absolute !important;
+  top: 5px;
+  left: 5px;
+  color: #9AA0A6 !important;
+  &:hover {
+    background-color: ${({ theme }) => theme.gray900} !important;
+  }
+`;
+
+export const OnOffContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const OnOffLabel = styled.span`
+  font-size: 14px;
+  color: #9AA0A6;
 `;

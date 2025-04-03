@@ -78,7 +78,7 @@ export const SacDm = () => {
       {selectedVehicleId && (
         <SacDmDevice
           key={selectedVehicleId}
-          deviceId={selectedVehicleId}
+          vehicleId={selectedVehicleId}
           sacDm={sacDm}
         />
       )}

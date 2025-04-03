@@ -98,7 +98,7 @@ export const Vehicle = () => {
           </Description>
   
           {/* Renderiza SacDmDevice apenas quando vehicle está carregado */}
-          <SacDmDevice deviceId={numericId} sacDm={sacDm} />
+          <SacDmDevice vehicleId={numericId} sacDm={sacDm} />
         </>
       )}
     </>

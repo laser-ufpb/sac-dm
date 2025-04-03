@@ -38,6 +38,15 @@ class VehicleService {
       console.error(error);
     }
   }
+
+  async deleteVehicleById(id: number) {
+    try {
+      const response = await api.delete(`/vehicle/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 const vehicleService = new VehicleService();

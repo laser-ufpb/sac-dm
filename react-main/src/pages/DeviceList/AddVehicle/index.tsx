@@ -86,6 +86,7 @@ export const AddVehicle = ({ open, onClose, onSubmitted }: AddVehicleProps) => {
                   {...field}
                   placeholder="Digite o ano de fabricação do veículo"
                   type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber || '')}
                 />
               )}
             />
@@ -116,6 +117,7 @@ export const AddVehicle = ({ open, onClose, onSubmitted }: AddVehicleProps) => {
                   {...field}
                   placeholder="Digite o número de motores"
                   type="number"
+                  onChange={(e) => field.onChange(e.target.valueAsNumber || '')}
                 />
               )}
             />

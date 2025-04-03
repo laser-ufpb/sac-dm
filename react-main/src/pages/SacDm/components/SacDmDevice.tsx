@@ -4,32 +4,114 @@ import { EmptyData } from "../../../components/EmptyData";
 import React, { useCallback, useEffect, useState } from "react";
 import { SacDmDefaultProps } from "../../../types";
 import sacDmDefault from "../../../app/services/sacdm_default";
-import { Divider, Section, containerStyle, statusBoxStyle, statusOkStyle, statusFailStyle, checklistContainerStyle, checklistItemStyle, checklistCircleStyle, chartContainerStyle } from "../styles";
+import logsVehicle from "../../../app/services/logs";
+import conditionService from "../../../app/services/condition";
+import { Section, containerStyle, statusBoxStyle, statusOkStyle, statusFailStyle, logContainerStyle, logItemStyle, checklistContainerStyle, checklistItemStyle, checklistCircleStyle, chartContainerStyle } from "../styles";
+import {LogsVehicle} from "./Log_vehicles";
+import vehicleService from "../../../app/services/vehicle";
 
 export const SacDmDevice = ({
-  deviceId,
+  vehicleId,
   sacDm,
 }: {
-  deviceId: number;
+  vehicleId: number;
   sacDm: SacDmProps[];
 }) => {
   const [sacDmMean, setsacDmMean] = useState<SacDmDefaultProps>();
   //const [problemStatus, setProblemStatus] = useState<"OK" | "Falha">("OK");
+  const [conditions, setConditions] = useState<{ id: number; description: string }[]>([]);
+  const [newStatus, setStatus] = useState<string>();
+  const [logs, setLogs] = useState<string[]>([]);
+  const [isLogsModalOpen, setLogsModalOpen] = useState(false);
+
+  const handleOpenLogModal = () => setLogsModalOpen(true);
+  const handleCloseLogModal = () => setLogsModalOpen(false);
+
 
 const loadSacDmDefault = useCallback(async () => {
   try {
-    const response = await sacDmDefault.getSacDmDefault(deviceId);
+    const response = await sacDmDefault.getSacDmDefault(vehicleId);
     setsacDmMean(response);
   } catch (error) {
     console.error(error);
   }
-}, [deviceId]);
+}, [vehicleId]);
+
+const fetchConditions = useCallback(async () => {
+  try {
+    const response = await conditionService.getConditions()
+    setConditions(response);
+    
+  } catch (error) {
+    console.error("Erro ao buscar condições", error);
+  }
+}, []);
+
+const fetchLogs = useCallback(async () => {
+  try {
+    const response = await logsVehicle.getLogs(vehicleId);
+
+    // Substituir condition_id pela description correspondente
+    const formattedLogs = response.map((log: any) => {
+      const condition = conditions.find(c => c.id === log.condition_id);
+
+      // Converter timestamp de nanosegundos para milissegundos
+      const timestampMs = log.timestamp / 1_000_000_000_000;
+      const dateObj = new Date(timestampMs);
+
+      const formattedDate = dateObj.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }).replace(".", "");
+
+      const formattedTime = dateObj.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+      const colorCondition = condition?.description === "falha"? "#F44336": "#4CAF50"
+      return <>
+      <span style={{color: colorCondition }}>
+      [{condition?.description || "Desconhecido"}]
+      </span>
+      {" - "}
+      <span style={{ color: "#1E88E5" }}>
+      Data: {formattedDate} - Hora: {formattedTime}
+      </span>
+      <br />
+      {`label: ${log.label}`}
+    </>
+    }).reverse();
+    setLogs(formattedLogs);
+    
+  } catch (error) {
+    console.error("Erro ao buscar logs", error);
+  }
+}, [vehicleId,conditions]);
+
+const checkDataStatus = useCallback(async () => {
+  try {
+    const response = await vehicleService.getVehicleById(vehicleId);
+    const condition = conditions.find(c => c.id === response.condition_id);
+
+    setStatus(condition?.description);
+  } catch (error) {
+    console.error(error);
+  }
+}, [vehicleId,conditions]);
 
 useEffect(() => {
   loadSacDmDefault();
+  fetchConditions();
+  fetchLogs();
+  checkDataStatus();
 
   const dataInterval = setInterval(() => {
     loadSacDmDefault();
+    fetchLogs();
+    checkDataStatus();
   }, 5000);
 
   // const statusInterval = setInterval(() => {
@@ -40,17 +122,11 @@ useEffect(() => {
     clearInterval(dataInterval);
     //clearInterval(statusInterval);
   };
-}, [loadSacDmDefault]);
+}, [loadSacDmDefault,fetchConditions,fetchLogs,checkDataStatus]);
 
-if (!deviceId) {
+if (!vehicleId) {
   return null;
 }
-
-// Hardcoded[WiP]
-const checkDataStatus = () => {
-  return "OK"
-  // return problemStatus;
-};
 
 // Hardcoded[WiP]
 const checkProblemStatus = () => {
@@ -100,7 +176,7 @@ const checkProblemStatus = () => {
   const dataX = getChartData("x");
   const dataY = getChartData("y");
   const dataZ = getChartData("z");
-  const status = checkDataStatus() === "OK" ? statusOkStyle : statusFailStyle;
+  const status = newStatus === "falha" ? statusFailStyle : statusOkStyle;
 
   const createOptionsChart = (limits: { min: number; max: number }) => {
     // Função para formatar valores em notação científica com expoente sobrescrito
@@ -164,7 +240,7 @@ const checkProblemStatus = () => {
 
   return (
     <div style={containerStyle}>
-      <div style={{ ...statusBoxStyle, ...status }}>{checkDataStatus()}</div>
+      <div style={{ ...statusBoxStyle, ...status }}>{status === statusFailStyle ? "Falha" : "Ok"}</div>
       <div style={checklistContainerStyle}>
         {["Item 1", "Item 2", "Item 3", "Item 4"].map((item, index) => {
           const hasError = checkProblemStatus() === "Falha"; // Condição para erro
@@ -176,6 +252,14 @@ const checkProblemStatus = () => {
           );
         })}
       </div>
+
+      <div style={logContainerStyle} onClick={handleOpenLogModal}>
+        {logs.slice(0, 3).map((log, index) => (
+      <div key={index} style={logItemStyle}>{log}</div>
+      ))}
+      </div>
+
+      <LogsVehicle open={isLogsModalOpen} onClose={handleCloseLogModal} logs={logs} />
 
       <div
   style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px", }}
