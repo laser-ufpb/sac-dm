@@ -81,7 +81,7 @@ const fetchLogs = useCallback(async () => {
       Data: {formattedDate} - Hora: {formattedTime}
       </span>
       <br />
-      SACDM: {`x: ${log.x_value}, y: ${log.y_value}, z: ${log.z_value}, label: ${log.label}`}
+      {`label: ${log.label}`}
     </>
     }).reverse();
     setLogs(formattedLogs);
@@ -89,7 +89,7 @@ const fetchLogs = useCallback(async () => {
   } catch (error) {
     console.error("Erro ao buscar logs", error);
   }
-}, [vehicleId,conditions,sacDm]);
+}, [vehicleId,conditions]);
 
 const checkDataStatus = useCallback(async () => {
   try {

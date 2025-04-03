@@ -9,6 +9,8 @@ import {
   FilterContainer,
   DeleteButton,
   OnOffButton,
+  OnOffContainer,
+  OnOffLabel,
 } from "./styles";
 import { Button, CircularProgress, Menu, MenuItem} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,6 +19,8 @@ import { AddCircle, AirplanemodeActive, DeviceHub} from "@mui/icons-material";
 import { AddDevice } from "./AddDevice";
 import { AddVehicle } from "./AddVehicle";
 import { UpdateDevice } from "./UpdateDevice";
+import { DeleteDevice } from "./DeleteDevice";
+import { DeleteVehicle } from "./DeleteVehicle";
 import { useNavigate } from "react-router-dom";
 import { getStatusColor } from "../../utils/getStatusColor";
 import { MultiSelect } from "../../components/MultiSelect";
@@ -31,16 +35,28 @@ export const DeviceList = () => {
   const [openAddDeviceModal, setOpenAddDeviceModal] = useState(false);
   const [openAddVehicleModal, setOpenAddVehicleModal] = useState(false);
   const [selectedDeviceCode, setSelectedDeviceCode] = useState<string | null>(null);
+  const [selectedVehicleCode, setSelectedVehicleCode] = useState<number | null>(null);
   const [openUpdateDeviceModal, setOpenUpdateDeviceModal] = useState(false);
+  const [openDeleteDeviceModal, setOpenDeleteDeviceModal] = useState(false);
+  const [openDeleteVehicleModal, setOpenDeleteVehicleModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState<number[]>([]);
   const [statusOptions, setStatusOptions] = useState<StatusProps[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [blinkingColor, setBlinkingColor] = useState("#1E88E5");
+  const [transitionStyle] = useState({ transition: "color 1s ease-in-out" });
 
   const navigate = useNavigate();
 
   useEffect(() => {
     loadItems();
     loadStatusOptions();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBlinkingColor((prevColor) => (prevColor === "#1E88E5" ? "#9AA0A6" : "#1E88E5"));
+    }, 800);
+    return () => clearInterval(interval);
   }, []);
 
   const loadItems = async () => {
@@ -69,27 +85,27 @@ export const DeviceList = () => {
     }
   };
 
-  const handleDeleteDevice = async (deviceCode: string) => {
-    try {
-      await deviceService.DeleteDevice(deviceCode); // Chama a API para deletar
-      setDevices((prevDevices) =>
-        prevDevices.filter((device) => device.device_code !== deviceCode)
-      ); // Remove o dispositivo deletado da lista
-    } catch (error) {
-      console.error("Erro ao deletar dispositivo:", error);
-    }
-  };
-
-  const handleDeleteVehicle = async (vehicle_id: number) => {
-    try {
-      await vehicleService.deleteVehicleById(vehicle_id) // Chama a API para deletar
-      setVehicles((prevVehicles) =>
-        prevVehicles.filter((vehicle) => vehicle.id !== vehicle_id)
-      ); // Remove o dispositivo deletado da lista
-    } catch (error) {
-      console.error("Erro ao deletar dispositivo:", error);
-    }
-  };
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const deviceResponse: DeviceProps[] = await deviceService.getDevices();
+  
+        // Verifica se há mudanças nos status antes de atualizar o estado
+        const hasChanges = deviceResponse.some((newDevice: DeviceProps) => {
+          const currentDevice = devices.find((d) => d.device_code === newDevice.device_code);
+          return currentDevice && currentDevice.status_id !== newDevice.status_id;
+        });
+  
+        if (hasChanges) {
+          setDevices(deviceResponse); // Atualiza somente se houver mudanças
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar dispositivos:", error);
+      }
+    }, 5000);
+  
+    return () => clearInterval(interval); // Limpa o intervalo ao desmontar o componente
+  }, [devices]); // Observa 'devices' para detectar mudanças
 
   const onOffDevice = async (deviceCode: string) => {
     try {
@@ -163,6 +179,18 @@ export const DeviceList = () => {
         deviceCode={selectedDeviceCode}
         onSubmitted={loadItems}
       />
+      <DeleteDevice
+        open={openDeleteDeviceModal}
+        onClose={() => setOpenDeleteDeviceModal(false)}
+        deviceCode={selectedDeviceCode}
+        onSubmitted={loadItems}
+      />
+      <DeleteVehicle
+        open={openDeleteVehicleModal}
+        onClose={() => setOpenDeleteVehicleModal(false)}
+        vehicleId={selectedVehicleCode}
+        onSubmitted={loadItems}
+      />
       <Header>
         <h2>Gerenciamento de Dispositivos e Veículos</h2>
         <Button
@@ -225,18 +253,29 @@ export const DeviceList = () => {
                     setSelectedDeviceCode(device.device_code);
                     setOpenUpdateDeviceModal(true);
                   }}>
-                  <OnOffButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onOffDevice(device.device_code);
-                    }}
-                  >
-                    <SettingsPowerIcon />
-                  </OnOffButton>
+                  <OnOffContainer>
+                    <OnOffButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOffDevice(device.device_code);
+                      }}
+                    >
+                      <SettingsPowerIcon
+                        sx={{
+                          color: device.status_id === 2 ? blinkingColor : getStatusColor(device.status_id, statusOptions),
+                          ...transitionStyle,
+                        }}
+                      />
+                    </OnOffButton>
+                      
+                    {device.status_id === 2 && <OnOffLabel>Ligando...</OnOffLabel>}
+                  </OnOffContainer>
                   <DeleteButton
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteDevice(device.device_code);
+                      setSelectedDeviceCode(device.device_code);
+                      setOpenDeleteDeviceModal(true);
+                      // handleDeleteDevice(device.device_code);
                     }}
                   >
                     <DeleteIcon />
@@ -244,10 +283,13 @@ export const DeviceList = () => {
                   
                   {/* Ícone principal do dispositivo */}
                   <DeviceHub
+                    sx={{ color: device.status_id === 2 ? blinkingColor : getStatusColor(device.status_id, statusOptions),...transitionStyle,}}
+                  />
+                  {/* <DeviceHub
                     sx={{
                       color: getStatusColor(device.status_id, statusOptions),
                     }}
-                  />
+                  /> */}
                   <h3>{device.device_code}</h3>
                 </DeviceItem>
               
@@ -276,7 +318,9 @@ export const DeviceList = () => {
                   <DeleteButton
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteVehicle(vehicle.id);
+                      setSelectedVehicleCode(vehicle.id);
+                      setOpenDeleteVehicleModal(true);
+                      // handleDeleteDevice(device.device_code);
                     }}
                   >
                     <DeleteIcon />

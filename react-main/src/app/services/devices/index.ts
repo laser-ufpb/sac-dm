@@ -41,7 +41,7 @@ class DeviceService {
     }
   }
 
-  async DeleteDevice(device_code: string) {
+  async deleteDevice(device_code: string) {
     try {
       const response = await api.delete(`/device/${device_code}`);
       return response.data;

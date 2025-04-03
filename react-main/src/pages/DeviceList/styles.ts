@@ -105,7 +105,10 @@ export const DeleteButton = styled(IconButton)`
   position: absolute !important;
   top: 5px;
   right: 5px;
-  color: red !important;
+  color: #9AA0A6 !important;
+  &:hover {
+    background-color: ${({ theme }) => theme.gray900} !important;
+  }
 `;
 
 export const OnOffButton = styled(IconButton)`
@@ -113,4 +116,18 @@ export const OnOffButton = styled(IconButton)`
   top: 5px;
   left: 5px;
   color: #9AA0A6 !important;
+  &:hover {
+    background-color: ${({ theme }) => theme.gray900} !important;
+  }
+`;
+
+export const OnOffContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const OnOffLabel = styled.span`
+  font-size: 14px;
+  color: #9AA0A6;
 `;
