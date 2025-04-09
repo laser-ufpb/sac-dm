@@ -127,3 +127,11 @@ export const logItemStyle = {
   fontSize: "14px",
 };
 
+export const columnWrapperStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  gap: "24px",
+  marginBottom: "32px",
+};
+

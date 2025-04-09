@@ -32,6 +32,7 @@ class VehicleService {
       const response = await api.post("/vehicle", {
         ...vehicle,
         status_id: 1,
+        condition_id: 1,
       });
       return response.data;
     } catch (error) {
