@@ -74,13 +74,15 @@ export const SacDm = () => {
         />
       </Container>
 
+      <div style={{ marginBottom: "24px" }}></div>
+
       {/* <DataCountSelect dataCount={dataCount} setDataCount={setDataCount} /> */}
       {selectedVehicleId && (
         <SacDmDevice
           key={selectedVehicleId}
           vehicleId={selectedVehicleId}
-          sacDm={sacDm}
-        />
+          sacDm={sacDm} 
+          description={undefined}        />
       )}
     </>
   );

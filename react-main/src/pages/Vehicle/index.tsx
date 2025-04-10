@@ -77,28 +77,31 @@ export const Vehicle = () => {
       <BackPage />
       {vehicle && (
         <>
-          <Description>
-            <h1>
-              <DirectionsCarFilled
-                sx={{
-                  color: getStatusColor(vehicle.status_id, statusOptions),
-                }}
-              />
-              {vehicle.model} - {vehicle.manufacturer}
-            </h1>
-            <p>
-              Última atualização:{" "}
-              {sacDm.length > 0 ? sacDm[sacDm.length - 1].timestamp : "N/A"}
-            </p>
-            <p>
-              Ano de fabricação: {vehicle.manufacture_year} / Tipo de motor:{" "}
-              {vehicle.engine_type} / Número de motores:{" "}
-              {vehicle.number_of_engines}
-            </p>
-          </Description>
-  
-          {/* Renderiza SacDmDevice apenas quando vehicle está carregado */}
-          <SacDmDevice vehicleId={numericId} sacDm={sacDm} />
+          <SacDmDevice
+  vehicleId={numericId}
+  sacDm={sacDm}
+  description={
+    <Description>
+      <h1>
+        <DirectionsCarFilled
+          sx={{
+            color: getStatusColor(vehicle.status_id, statusOptions),
+          }}
+        />
+        {vehicle.model} - {vehicle.manufacturer}
+      </h1>
+      <p>
+        Última atualização:{" "}
+        {sacDm.length > 0 ? sacDm[sacDm.length - 1].timestamp : "N/A"}
+      </p>
+      <p>
+        Ano de fabricação: {vehicle.manufacture_year} / Tipo de motor:{" "}
+        {vehicle.engine_type} / Número de motores: {vehicle.number_of_engines}
+      </p>
+    </Description>
+  }
+/>
+
         </>
       )}
     </>

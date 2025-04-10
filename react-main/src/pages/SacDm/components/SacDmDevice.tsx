@@ -6,20 +6,23 @@ import { SacDmDefaultProps } from "../../../types";
 import sacDmDefault from "../../../app/services/sacdm_default";
 import logsVehicle from "../../../app/services/logs";
 import conditionService from "../../../app/services/condition";
-import { Section, containerStyle, statusBoxStyle, statusOkStyle, statusFailStyle, logContainerStyle, logItemStyle, checklistContainerStyle, checklistItemStyle, checklistCircleStyle, chartContainerStyle } from "../styles";
+import { Section, containerStyle,columnWrapperStyle, statusBoxStyle, statusOkStyle, statusFailStyle, logContainerStyle, logItemStyle, checklistContainerStyle, checklistItemStyle, checklistCircleStyle, chartContainerStyle } from "../styles";
 import {LogsVehicle} from "./Log_vehicles";
 import vehicleService from "../../../app/services/vehicle";
 
 export const SacDmDevice = ({
   vehicleId,
   sacDm,
+  description,
 }: {
   vehicleId: number;
   sacDm: SacDmProps[];
+  description: React.ReactNode;
 }) => {
+
   const [sacDmMean, setsacDmMean] = useState<SacDmDefaultProps>();
   //const [problemStatus, setProblemStatus] = useState<"OK" | "Falha">("OK");
-  const [conditions, setConditions] = useState<{ id: number; description: string }[]>([]);
+  type Condition = { id: number; description: string };
   const [newStatus, setStatus] = useState<string>();
   const [logs, setLogs] = useState<string[]>([]);
   const [isLogsModalOpen, setLogsModalOpen] = useState(false);
@@ -37,92 +40,97 @@ const loadSacDmDefault = useCallback(async () => {
   }
 }, [vehicleId]);
 
-const fetchConditions = useCallback(async () => {
+const fetchConditions = useCallback(async (): Promise<Condition[]> => {
   try {
-    const response = await conditionService.getConditions()
-    setConditions(response);
-    
+    const response = await conditionService.getConditions();
+    return response;
   } catch (error) {
     console.error("Erro ao buscar condições", error);
+    return [];
   }
 }, []);
 
-const fetchLogs = useCallback(async () => {
-  try {
-    const response = await logsVehicle.getLogs(vehicleId);
+const fetchLogs = useCallback(
+  async (conditionsList: Condition[]) => {
+    try {
+      const response = await logsVehicle.getLogs(vehicleId);
+      const formattedLogs = response.map((log: any) => {
+        const condition = conditionsList.find(c => c.id === log.condition_id);
 
-    // Substituir condition_id pela description correspondente
-    const formattedLogs = response.map((log: any) => {
-      const condition = conditions.find(c => c.id === log.condition_id);
+        const timestampMs = log.timestamp / 1_000_000_000_000;
+        const dateObj = new Date(timestampMs);
 
-      // Converter timestamp de nanosegundos para milissegundos
-      const timestampMs = log.timestamp / 1_000_000_000_000;
-      const dateObj = new Date(timestampMs);
+        const formattedDate = dateObj.toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }).replace(".", "");
 
-      const formattedDate = dateObj.toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }).replace(".", "");
+        const formattedTime = dateObj.toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
 
-      const formattedTime = dateObj.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
+        const colorCondition = condition?.description === "falha" ? "#F44336" : "#4CAF50";
 
-      const colorCondition = condition?.description === "falha"? "#F44336": "#4CAF50"
-      return <>
-      <span style={{color: colorCondition }}>
-      [{condition?.description || "Desconhecido"}]
-      </span>
-      {" - "}
-      <span style={{ color: "#1E88E5" }}>
-      Data: {formattedDate} - Hora: {formattedTime}
-      </span>
-      <br />
-      {`label: ${log.label}`}
-    </>
-    }).reverse();
-    setLogs(formattedLogs);
-    
-  } catch (error) {
-    console.error("Erro ao buscar logs", error);
-  }
-}, [vehicleId,conditions]);
+        return (
+          <>
+            <span style={{ color: colorCondition }}>
+              [{condition?.description || "Desconhecido"}]
+            </span>
+            {" - "}
+            <span style={{ color: "#1E88E5" }}>
+              Data: {formattedDate} - Hora: {formattedTime}
+            </span>
+            <br />
+            {`label: ${log.label}`}
+          </>
+        );
+      }).reverse();
 
-const checkDataStatus = useCallback(async () => {
-  try {
-    const response = await vehicleService.getVehicleById(vehicleId);
-    const condition = conditions.find(c => c.id === response.condition_id);
+      setLogs(formattedLogs);
+    } catch (error) {
+      console.error("Erro ao buscar logs", error);
+    }
+  },
+  [vehicleId]
+);
 
-    setStatus(condition?.description);
-  } catch (error) {
-    console.error(error);
-  }
-}, [vehicleId,conditions]);
+const checkDataStatus = useCallback(
+  async (conditionsList: Condition[]) => {
+    try {
+      const response = await vehicleService.getVehicleById(vehicleId);
+      const condition = conditionsList.find(c => c.id === response.condition_id);
+      setStatus(condition?.description);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  [vehicleId]
+);
+
 
 useEffect(() => {
-  loadSacDmDefault();
-  fetchConditions();
-  fetchLogs();
-  checkDataStatus();
+  const fetchAllData = async () => {
+    try {
+      const conditionsList: Condition[] = await fetchConditions(); // obtém e armazena as condições
+      await loadSacDmDefault();
+      await fetchLogs(conditionsList);
+      await checkDataStatus(conditionsList);
+    } catch (error) {
+      console.error("Erro ao buscar dados:", error);
+    }
+  };
+
+  fetchAllData(); // Executa imediatamente ao montar
 
   const dataInterval = setInterval(() => {
-    loadSacDmDefault();
-    fetchLogs();
-    checkDataStatus();
+    fetchAllData();
   }, 5000);
 
-  // const statusInterval = setInterval(() => {
-  //   setProblemStatus((prevStatus) => (prevStatus === "OK" ? "Falha" : "OK"));
-  // }, 5000);
-
-  return () => {
-    clearInterval(dataInterval);
-    //clearInterval(statusInterval);
-  };
-}, [loadSacDmDefault,fetchConditions,fetchLogs,checkDataStatus]);
+  return () => clearInterval(dataInterval);
+}, [loadSacDmDefault, fetchConditions, fetchLogs, checkDataStatus]);
 
 if (!vehicleId) {
   return null;
@@ -240,23 +248,33 @@ const checkProblemStatus = () => {
 
   return (
     <div style={containerStyle}>
-      <div style={{ ...statusBoxStyle, ...status }}>{status === statusFailStyle ? "Falha" : "Ok"}</div>
-      <div style={checklistContainerStyle}>
-        {["Item 1", "Item 2", "Item 3", "Item 4"].map((item, index) => {
-          const hasError = checkProblemStatus() === "Falha"; // Condição para erro
-          return (
-            <div key={index} style={checklistItemStyle}>
-              <div style={checklistCircleStyle(hasError)}></div>
-              <span>{item}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      <div style={logContainerStyle} onClick={handleOpenLogModal}>
-        {logs.slice(0, 3).map((log, index) => (
-      <div key={index} style={logItemStyle}>{log}</div>
-      ))}
+      <div style={columnWrapperStyle}>
+        <div style={{ flex: 1, minWidth: "200px" }}>{description}</div>
+        
+        <div style={{ flex: 1, minWidth: "200px" }}>
+          <div style={{ ...statusBoxStyle, ...status }}>
+            {status === statusFailStyle ? "Falha" : "Ok"}
+          </div>
+          <div style={checklistContainerStyle}>
+            {["Item 1", "Item 2", "Item 3", "Item 4"].map((item, index) => {
+              const hasError = checkProblemStatus() === "Falha";
+              return (
+                <div key={index} style={checklistItemStyle}>
+                  <div style={checklistCircleStyle(hasError)}></div>
+                  <span>{item}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+          
+        <div style={{ flex: 1, minWidth: "250px" }}>
+          <div style={logContainerStyle} onClick={handleOpenLogModal}>
+            {logs.slice(0, 3).map((log, index) => (
+              <div key={index} style={logItemStyle}>{log}</div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <LogsVehicle open={isLogsModalOpen} onClose={handleCloseLogModal} logs={logs} />
