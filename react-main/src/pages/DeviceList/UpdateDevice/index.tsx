@@ -48,6 +48,7 @@ export const UpdateDevice = ({ open, onClose, onSubmitted, deviceCode }: UpdateD
           const response = await DeviceService.getDeviceByCode(deviceCode);
           if (response) {
             setValue("device_code", response.device_code);
+            setValue("status_id", response.status_id);
             setValue("vehicle_id", response.vehicle_id || 0);
           }
         } catch (error) {

@@ -92,7 +92,8 @@ export const Vehicle = () => {
       </h1>
       <p>
         Última atualização:{" "}
-        {sacDm.length > 0 ? sacDm[sacDm.length - 1].timestamp : "N/A"}
+        {sacDm.length > 0 ? sacDm[0].timestamp : "N/A"}
+        
       </p>
       <p>
         Ano de fabricação: {vehicle.manufacture_year} / Tipo de motor:{" "}

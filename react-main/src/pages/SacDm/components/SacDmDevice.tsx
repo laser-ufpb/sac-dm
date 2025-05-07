@@ -83,8 +83,8 @@ const fetchLogs = useCallback(
             <span style={{ color: "#1E88E5" }}>
               Data: {formattedDate} - Hora: {formattedTime}
             </span>
-            <br />
-            {`label: ${log.label}`}
+            {/* <br />
+            {`label: ${log.label}`} */}
           </>
         );
       }).reverse();
