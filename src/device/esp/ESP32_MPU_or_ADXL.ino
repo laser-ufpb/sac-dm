@@ -7,7 +7,7 @@
 
 // Configuração geral
 #define ADXL345_ADDRESS 0x53
-#define BUFFER_SIZE 10000
+#define BUFFER_SIZE 2000
 #define INIT_DELAY_MS 500
 #define SERIAL_BAUDRATE 921600
 
@@ -117,14 +117,14 @@ void task1(void *pvParameters) {
       xSemaphoreGive(bufferHasDataSemaphore);
     }
 
-    delay(1); // Evita uso excessivo da CPU
+    delayMicroseconds(200); // Evita uso excessivo da CPU
   }
 }
 
 void task2(void *pvParameters) {
   (void)pvParameters;
   char cMsg[254];
-  int delayTime = (acc == "ADXL") ? 160 : 320;
+  int delayTime = (acc == "ADXL") ? 80 : 320;
 
   // Variáveis do contador de leituras por segundo
   unsigned long lastTime = millis();
@@ -148,7 +148,7 @@ void task2(void *pvParameters) {
     xSemaphoreGive(freeSpaceSemaphore);
 
     // Exibe os dados na serial
-    sprintf(cMsg, "%0.2f;%0.2f;%0.2f", x, y, z);
+    sprintf(cMsg, "%0.4f;%0.4f;%0.4f", x, y, z);
     Serial.println(cMsg);
 
     // Contador de leituras por segundo
@@ -159,6 +159,9 @@ void task2(void *pvParameters) {
         Serial.println(readCount);
         readCount = 0;
         lastTime = millis();
+        if (digitalRead(GPIO_NUM_15) == LOW){
+          esp_deep_sleep_start();
+        }
       }
     }
 
@@ -195,7 +198,7 @@ void setup() {
     accelMPU.setFilterBandwidth(MPU6050_BAND_5_HZ);
   } else {
     accelADXL.setRange(ADXL345_RANGE_2_G);
-    accelADXL.setDataRate(ADXL345_DATARATE_1600_HZ);
+    accelADXL.setDataRate(ADXL345_DATARATE_3200_HZ);
   }
 
   delay(500);
@@ -205,6 +208,9 @@ void setup() {
   bufferHasDataSemaphore = xSemaphoreCreateCounting(BUFFER_SIZE, 0);       // Nenhum dado no início
 
   // Criação das tarefas
+  pinMode(GPIO_NUM_15, INPUT_PULLDOWN);
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_15, 1);
+
   xTaskCreatePinnedToCore(task1, "Task1", 10000, NULL, 1, NULL, 0); // Núcleo 0
   xTaskCreatePinnedToCore(task2, "Task2", 10000, NULL, 1, NULL, 1); // Núcleo 1
 }
