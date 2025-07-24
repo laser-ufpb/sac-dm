@@ -1,5 +1,5 @@
 import datetime
-from models.models import Device, AccelerometerAcquisition
+from models.models import Device
 from schemas.device import DeviceSchema
 from sqlalchemy.orm import Session
 from fastapi import status
@@ -16,15 +16,15 @@ def create_device(device_schema: DeviceSchema, db: Session):
         if "foreign key" in str(e).lower():
             return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content="Invalid Vehicle or Status!")
+            content={"message": "Invalid Vehicle or Status!"})
         else:
             return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content="Failed to enter data!")
+            content={"message": "Failed to enter data!"})
             #return str(e)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content="Successfully entered data!")
+        content={"message": "Successfully entered data!"})
 
 
 def get_all_devices(db: Session):
@@ -41,20 +41,20 @@ def delete_a_device(device_code: str, db: Session):
         if(not device):
             return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content="Device not exist!")
+            content={"message": "Device not exist!"})
         db.delete(device)
         db.commit()
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content="Successfully deleted data!")
+            content={"message": "Successfully deleted data!"})
     except Exception as e:
         if "foreign key" in str(e):
             return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content="Can't delete a device with registered data!")
+            content={"message": "Can't delete a device with registered data!"})
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content="Delete failed!")
+            content={"message": "Delete failed!"})
 
 
 def change_device_status(device_schema: DeviceSchema, db: Session):
@@ -64,7 +64,7 @@ def change_device_status(device_schema: DeviceSchema, db: Session):
         if(not device):
             return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content="Device not exist!")
+            content={"message": "Device not exist!"})
         if device_schema.status_id:
             device.status_id = device_schema.status_id
         if device_schema.vehicle_id:
@@ -72,8 +72,8 @@ def change_device_status(device_schema: DeviceSchema, db: Session):
         db.commit()
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content="Successfully updated data!")
+            content={"message": "Successfully updated data!"})
     except Exception:
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content="Update failed!")
+            content={"message": "Update failed!"})

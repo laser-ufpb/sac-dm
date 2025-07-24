@@ -15,7 +15,7 @@ def create_vehicle(vehicle_schema: VehicleSchema, db: Session):
         if "foreign key" in str(e).lower():
             return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content="Invalid Status!")
+            content="Invalid Data!")
         else:
             return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
