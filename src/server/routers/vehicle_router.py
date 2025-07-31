@@ -6,7 +6,7 @@ from controllers.vehicle import *
 from schemas.vehicle import VehicleSchema
 from database import get_db
 
-router = APIRouter(prefix="/vehicle", tags=["Vehicle"])
+router = APIRouter(tags=["Vehicle"])
 
 # Route to get all data from vehicle table
 @router.get("/vehicle")

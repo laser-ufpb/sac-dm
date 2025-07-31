@@ -9,7 +9,7 @@ from controllers.device import (
 from schemas.device import DeviceSchema
 from database import get_db
 
-router = APIRouter(prefix="/device", tags=["Device"])
+router = APIRouter(tags=["Device"])
 
 
 # Route to get all data from device table

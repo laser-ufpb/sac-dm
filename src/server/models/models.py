@@ -119,4 +119,15 @@ class FaultCounter(Base):
     limit = Column(Integer, nullable=False)
 
 
+class AccelerometerAcquisition(Base):
+    __tablename__ = "accelerometer_acquisition"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    device_id = Column(Integer, ForeignKey('device.id'), nullable=False)
+    ACx = Column(Float, nullable=False)
+    ACy = Column(Float, nullable=False)
+    ACz = Column(Float, nullable=False)
+    timestamp = Column(String, nullable=True)
+    label = Column(String, nullable=True)
+
 Base.metadata.create_all(bind=engine)
