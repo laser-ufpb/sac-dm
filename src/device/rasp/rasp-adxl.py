@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 import time
 import serial
 import json as JSON
+from pathlib import Path
 
 import numpy as np
 from scipy.signal import find_peaks
@@ -196,6 +197,12 @@ def write_log(data, lock):
 			log.write(reading + "\n")
 	log.close()
 
+def ler_linhas_arquivo(caminho):
+    """Gera linhas do arquivo continuamente (uma passada)."""
+    with open(caminho, "r", encoding="utf-8") as f:
+        for raw in f:
+            yield raw
+
 #def read_log_send(lock)
 #	sendHttp = []
 #
@@ -232,6 +239,8 @@ http_lock = Lock()
 
 send_count =0
 
+ARQUIVO = Path("NFlt04n2.csv")  # ajuste o caminho
+
 ############################ MAIN CODE #################################
 
 esp_serial = str(ser.readline())
@@ -240,11 +249,33 @@ compute_mean_dev()
 	
 
 while True:
+
+	for raw_line in ler_linhas_arquivo(ARQUIVO):
+		line = raw_line.strip()
+		if not line:
+			continue
+
+		# divide por ';' e remove espaços extras
+		parts = [p.strip() for p in line.split(';')]
+
+		# precisa de 4 colunas
+		if len(parts) < 4:
+			# loga e segue
+			# print(f"Linha inválida (menos de 3 colunas): {line}")
+			continue
+
+		x, y, z, t = parts[0], parts[1], parts[2], parts[3]
+
+		# monta string no mesmo formato que você já usava: "x;y;z;<timestamp>"
+		# OBS: time.time_ns() já está em nanossegundos; você usava *1_000_000.
+		# Vou manter igual ao seu código original.
+		registro = f"{x};{y};{z};{t}"
+		sensor_buffer.append(registro)
 	
 	start=time.time()	
 	
-	esp_serial = str(ser.readline())
-	sensor_buffer.append(esp_serial[2:][:-5] + ';'+ str(time.time_ns()*1000000))
+	#esp_serial = str(ser.readline())
+	#sensor_buffer.append(esp_serial[2:][:-5] + ';'+ str(time.time_ns()*1000000))
 	
 #	if len(sensor_buffer) %1000 == 0:
 #		print(sensor_buffer[-1])
