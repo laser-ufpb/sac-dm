@@ -2,6 +2,9 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_ADXL345_U.h>
+#include <Arduino.h>
+#include <FS.h>          // ou <SD.h> se for cartão SD
+#include <SPI.h>
  
 String acc = "";
  
@@ -42,28 +45,50 @@ void task1(void *pvParameters) {
   }
 }
  
+// Variável global para armazenar o arquivo
+File dataFile;
+
 void task2(void *pvParameters) {
   (void)pvParameters;
   char cMsg[254];
-  line++;
   int delay = 320;
- 
-  if(acc == "ADXL"){
+
+  if (acc == "ADXL") {
     delay = 160;
-  } 
- 
+  }
+
+  // Abre o arquivo (ajuste o nome conforme o que você tiver)
+  dataFile = SPIFFS.open("/dados.txt", "r"); // se for SD, use SD.open()
+  if (!dataFile) {
+    Serial.println("Erro ao abrir o arquivo!");
+    vTaskDelete(NULL); // encerra a task se não conseguiu abrir
+    return;
+  }
+
   while (1) {
-    // Aquisição do mutex para garantir acesso exclusivo às variáveis compartilhadas
-    portENTER_CRITICAL(&mux);
-    float x = accelDataX;
-    float y = accelDataY;
-    float z = accelDataZ;
- 
-    portEXIT_CRITICAL(&mux);
- 
-    sprintf(cMsg, "%0.2f;%0.2f;%0.2f", x, y, z );
-    //sprintf(cMsg, "%0.2f;%0.2f;%0.2f", x, y, z);
-    Serial.println(cMsg);
+    if (!dataFile.available()) {
+      // se chegou ao fim do arquivo, pode reabrir ou encerrar
+      dataFile.seek(0); // volta pro início do arquivo
+      // vTaskDelete(NULL); // se quiser encerrar a task em vez de repetir
+    }
+
+    String line = dataFile.readStringUntil('\n'); // lê uma linha
+    if (line.length() == 0) continue;
+
+    // Parse da linha
+    float x, y, z;
+    int dummy; // valor a ser ignorado
+    int matched = sscanf(line.c_str(), "%f ; %f ; %f ; %d", &x, &y, &z, &dummy);
+
+    Serial.println("%f ; %f ; %f ; %d", &x, &y, &z, &dummy);
+
+    if (matched == 4) {
+      sprintf(cMsg, "%0.2f;%0.2f;%0.2f", x, y, z);
+      Serial.println(cMsg);
+    } else {
+      Serial.println("Erro ao ler linha: " + line);
+    }
+
     delayMicroseconds(delay);
   }
 }
