@@ -8,7 +8,7 @@ from schemas.sacdm import SACDMSchema
 from schemas.sacdm_default import SACDMDefaultSchema
 from database import get_db
 
-router = APIRouter(prefix="/sac_dm", tags=["SACDM"])
+router = APIRouter(tags=["SACDM"])
 
 # Route to get data from sac_dm table with an optional limit
 @router.get("/sac_dm")

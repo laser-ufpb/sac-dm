@@ -6,7 +6,7 @@ from controllers.status import *
 from schemas.status import StatusSchema
 from database import get_db
 
-router = APIRouter(prefix="/status", tags=["Status"])
+router = APIRouter(tags=["Status"])
 
 # Route to insert a new data into the status table
 @router.post("/status")

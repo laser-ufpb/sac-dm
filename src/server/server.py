@@ -28,16 +28,19 @@ from models.models import (
     User,
     Vehicle,
     LoginRequest,
+    AccelerometerAcquisition
 )
 from models.token import create_access_token
 from models.users import authenticate_user, get_current_user
 
 # Schemas
 from schemas.user import UserSchema
+from schemas.accelerometer import AccelerometerSchema
 
 # Controllers
 
 from controllers.fault import get_log
+from controllers.accelerometer import *
 from controllers.user import (
     create_user,
     delete_user,
@@ -119,3 +122,40 @@ async def login(login_request: LoginRequest):
             content="Usuário ou senha incorretos")
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+# Route to get all data from accelerometer table
+@app.get("/accelerometer")
+def get_accelerometter_data(db: Session=Depends(get_db)):
+    registers: List[AccelerometerAcquisition] = get_all_accelerometer_records(db)
+    return registers
+
+
+# Route to get data from accelerometer table filtered by anything
+@app.get("/accelerometer_by_filter")
+def accelerometer_by_filter(device_id: Optional[int] = Query(None, description="Optional device id for filter"),
+                                    datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
+                                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                                    db: Session=Depends(get_db)):
+    data: List[SACDM] = get_accelerometer_by_filter(device_id, datetime_initial, datetime_final, db)
+    return data
+
+
+# Route to insert data into accelerometer table
+@app.post("/accelerometer")
+def new_accelerometer_record(accelerometer_data: List[AccelerometerSchema], db: Session=Depends(get_db)):
+    return create_accelerometer_record(accelerometer_data, db)
+
+
+# Route to delete data from accelerometer table by device_code
+@app.delete("/accelerometer_by_device_code/{device_code}")
+def delete_accelerometer_by_device_id(device_code: str, db: Session=Depends(get_db)):
+    return delete_accelerometer_records_by_device_code(device_code, db)
+
+
+# Route to delete data from accelerometer table by datetime
+@app.delete("/accelerometer_by_datetime")
+def delete_accelerometer_by_datetime(datetime_initial: Optional[str] = Query(None, description="Optional initial datetime"),
+                    datetime_final: Optional[str] = Query(None, description="Optional final datetime"), 
+                    db: Session=Depends(get_db)):
+    return delete_accelerometer_records_by_datetime(datetime_initial, datetime_final, db)

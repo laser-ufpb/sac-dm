@@ -88,135 +88,117 @@ def instantCompare( instant, average, deviation, file_tags):
 
 	return conclusion
 
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 def instantsClassification(instant, file_tags):
-	"""
-	This function receives 2 parameters with the objective of unifying the classifications of the axis X, Y or Z, 
-	into just one classification.
+    instant = np.array(instant)
 
-	:param instant: List that contains 3 integer values, which correspond to the return of the <function instantCompare> for an instant, that is, a point in X, Y and Z at the same moment.
-	:param file_tags: List that has the size of the labels for classification, not necessarily being filled with the labels themselves.
-	
-	:param return: Returns an integer value that corresponds to the weighting of the classification of the points contained at an instant.
-	"""
+    # Caso binário (só "NF"): NF somente se TODOS forem NF
+    if len(file_tags) == 1:
+        return 0 if np.all(instant == 0) else len(file_tags)
 
-	instant = np.array(instant)
-	#check if the axes are in the same condition
-	for i in range(len(file_tags)):
-		auxConclusion = np.where(instant == i)[0]
-		if(len(auxConclusion) == len(instant)):
-			# print(f"Instant: {instant} classified: F{i} 3-Equals")
-			return i
+    # --- abaixo mantém sua lógica original para múltiplos rótulos (NF, FC1, FC2, ...) ---
 
-		if(len(auxConclusion) == 2):
-			# print(f"Instant: {instant} classified: F{i} 2-Equals")
-			#If 2 axes are healthy and the other is not
-			if(instant[auxConclusion[0]] == 0):
-				for j in range(len(instant)):
-					if(instant[j] > 0):
-						#2 healthy axes and another inconclusive
-						if(instant[j] == len(file_tags)):
-							return 0
+    for i in range(len(file_tags)):
+        auxConclusion = np.where(instant == i)[0]
+        if len(auxConclusion) == len(instant):
+            return i
+        if len(auxConclusion) == 2:
+            if instant[auxConclusion[0]] == 0:
+                for j in range(len(instant)):
+                    if instant[j] > 0:
+                        if instant[j] == len(file_tags):
+                            return 0
+                        return instant[j]
+            return i
 
-						return instant[j]
+    if len(instant) == 2:
+        healthy = np.where(instant == 0)[0]
+        failure = np.where(instant > 0)[0]
+        if len(failure) == 2:
+            if (instant[failure[0]] >= 1 and instant[failure[0]] < len(file_tags) and
+                instant[failure[1]] >= 1 and instant[failure[1]] < len(file_tags)):
+                return len(file_tags)
+            if instant[failure[0]] < len(file_tags):
+                return instant[failure[0]]
+            else:
+                return instant[failure[1]]
+        if len(failure) == 1 and instant[failure[0]] == len(file_tags):
+            return instant[healthy[0]]
+        if len(failure) == 1:
+            return instant[failure[0]]
 
-			return i
-	if(len(instant) == 2):
-		healthy = np.where(instant == 0)[0]
-		failure = np.where(instant > 0)[0]
-		if(len(failure) == 2 ):
+    return len(file_tags)
 
-			# Different failures
-			if(instant[failure[0]] >= 1 and instant[failure[0]] < len(file_tags) and instant[failure[1]] >= 1 and instant[failure[1]] < len(file_tags) ):
-				return (len(file_tags))
-			
-			# 1 axis with failure and another inconclusive: classified as failure
-			if(instant[failure[0]] < len(file_tags)):
-				return (instant[failure[0]])
-			else:
-				return (instant[failure[1]])
-		
-		# 1 axis inclusive and another one healthy
-		if(len(failure) == 1 and instant[failure[0]] == len(file_tags)):
-			return (instant[healthy[0]])
 
-		# 1 axis with failure
-		if(len(failure) == 1):
-			return (instant[failure[0]])
-		
-	# print(f"Instant: {instant} classified: Inconclusivo")
-	return len(file_tags)
+import numpy as np
 
-def windowingClassification(axes_classification, window_size, file_tags):
+INCONCLUSIVE = "inconclusivo"
 
-	"""
-	This function receives 3 parameters and aims to partition (separate into windows) the list 
-	axes_classification, and from that build a new classification list through simple voting.
+def windowing_classification(axes_classification, window_size, hop=1):
+    """
+    axes_classification: lista de rótulos por instante (strings: "NF" ou "inconclusivo")
+    window_size: tamanho da janela
+    hop: passo do deslizamento (1 = máxima sobreposição)
+    """
+    out = []
+    N = len(axes_classification)
+    if N == 0 or window_size <= 0 or hop <= 0:
+        return out
 
-	:param axes_classification: List that contains the axes classification, which correspond to the return of the <function instantsClassification>.
-	:param window_size: Value that corresponds to the interval in which the windowing will be performed.
-	:param file_tags: List that has the labels for classification.
-	
-	:param return: List that contains the classification of the data.
-	"""
+    # garante ao menos 1 iteração quando N < window_size
+    last_start = 0 if N < window_size else (N - window_size)
+    for start in range(0, last_start + 1, hop):
+        end = min(start + window_size, N)
+        window = axes_classification[start:end]
 
-	window_classification = []
-	count_window = 0
+        # ignora votos inconclusivos na contagem
+        valid = [w for w in window if w != INCONCLUSIVE]
+        if not valid:
+            out.append(INCONCLUSIVE)
+            continue
 
-	for j in range(0,(len(axes_classification)), window_size):
-		window = np.zeros(window_size)
-		count_window += 1
-		if (j + window_size <= len(axes_classification)):
-			window = axes_classification[j:j+window_size]
-		else:
-			window = axes_classification[j:]
-		
-		values, counts = np.unique(window, return_counts=True)
+        values, counts = np.unique(valid, return_counts=True)
+        top = counts.max()
+        winners = values[counts == top]
 
-		#	checks if there is more than one value with the same and greater repetition
-		if(np.count_nonzero(counts == counts[np.argmax(counts)]) > 1):
-			window_classification.append(len(file_tags))
-			# print(f"window: {(window)}  classification: {len(file_tags)}")
-		else:
-			window_classification.append(values[np.argmax(counts)])
-			# print(f"window: {(window)}  classification: {values[np.argmax(counts)]}")
+        out.append(INCONCLUSIVE if len(winners) > 1 else str(winners[0]))
+    return out
 
-	return window_classification
 
-def classification(sac_instants, average, deviation, window_size, file_tags):
+def classification(sac_instants, means, deviations, window_size=5, hop=1, file_tags=("NF",)):
+    """
+    Retorna "NF" ou "inconclusivo".
+    - testingInstants(...) deve classificar por eixo/instante usando média±desvio.
+    - instantsClassification(...) deve combinar X/Y/Z por instante aplicando
+      as regras do artigo; como você usa só "NF" como rótulo válido, qualquer
+      coisa que não seja unanimidade/maioria para "NF" vira "inconclusivo".
+    """
+    sac_classification = testingInstants(sac_instants, means, deviations, file_tags)
 
-	"""
-	This function receives 5 parameters with the objective of classifying the data.
+    # rótulo COMBINADO por instante (string): "NF" ou "inconclusivo"
+    axes_classification = [instantsClassification(sac_classification[i], file_tags)
+                           for i in range(len(sac_classification))]
 
-	:param instant: List that contains instant, which each position are composed of 3 floating values coming from <function sac_am>
-	:param average: List containing the averages that will be used in the test
-	:param deviation: List containing the standard deviations that will be used in the test
-	:param window_size: Value that corresponds to the interval in which the windowing will be performed
-	:param file_tags: List of the labels for classification
-	
-	:return: Returns the label of the classification data.
-	"""
-	
-	sac_classification = testingInstants(sac_instants, average, deviation, file_tags)
+    # janelamento deslizante
+    window_cls = windowing_classification(axes_classification, window_size, hop)
+    if not window_cls:
+        return INCONCLUSIVE
 
-	axes_classification = []
+    # decisão final por maioria sobre as janelas (ignora inconclusivo)
+    valid = [c for c in window_cls if c != INCONCLUSIVE]
+    if not valid:
+        return INCONCLUSIVE
 
-	for i in range(len(sac_classification)):
-		axes_classification.append(instantsClassification(sac_classification[i], file_tags))
-
-	window_classification = windowingClassification(axes_classification, window_size, file_tags)
-
-	values, counts = np.unique(window_classification, return_counts=True)
-
-	#	checks if there is more than one value with the same and greater repetition
-	#	simple voting to classify the data
-	if(np.count_nonzero(counts == counts[np.argmax(counts)]) > 1 or values[np.argmax(counts)] == len(file_tags)):
-		# return len(file_tags)
-		return "inconclusivo"
-	else:
-		return file_tags[values[np.argmax(counts)]]
+    values, counts = np.unique(valid, return_counts=True)
+    top = counts.max()
+    winners = values[counts == top]
+    return INCONCLUSIVE if len(winners) > 1 else str(winners[0])
 
 
 
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 def plotEditingHalfTraining(dataset, title, fig, ax, file_tag):
 	

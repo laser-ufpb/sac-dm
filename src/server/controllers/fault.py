@@ -48,7 +48,8 @@ def log_verifier(sac_dm_data: List[SACDMSchema], db: Session):
     # Estado atual do dispositivo (assumindo que 1 = normal, not 1 = falha)
     current_condition = vehicle.condition_id if vehicle.condition_id else 1  # Se não houver logs, assume que está normal
 
-    is_faulty = classification(*formated_data,  5, ["NF"])
+
+    is_faulty = classification(*formated_data, window_size=5, hop=1, file_tags=["NF"])
 
     if is_faulty == "inconclusivo" and current_condition == 1:  # Se estava normal e agora está em falha
         new_log = Log(

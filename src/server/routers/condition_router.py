@@ -6,7 +6,7 @@ from controllers.condition import *
 from schemas.condition import ConditionSchema
 from database import get_db
 
-router = APIRouter(prefix="/condition", tags=["Condition"])
+router = APIRouter(tags=["Condition"])
 
 # Route to insert a new data into the condition table
 @router.post("/condition")

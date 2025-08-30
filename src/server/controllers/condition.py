@@ -19,5 +19,5 @@ def create_condition(condition_schema: ConditionSchema, db: Session):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"message": "Failed to create condition!"})
 
-async def get_all_condition(db: Session):
+def get_all_condition(db: Session):
     return db.query(Condition).all()
